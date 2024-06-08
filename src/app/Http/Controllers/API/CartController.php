@@ -1,0 +1,97 @@
+<?php
+
+namespace App\Http\Controllers\API;
+
+use App\Enums\ProductTypeEnum;
+use App\Models\Product;
+use App\ShoppingCart\CartAdaptor;
+use App\ShoppingCart\Exceptions\ItemDoesNotExistsInShoppingCart;
+use App\ShoppingCart\Exceptions\ItemExistsInShoppingCart;
+use App\ShoppingCart\Exceptions\ItemNotInstallmentableException;
+use App\ShoppingCart\Exceptions\ProductDoesNotExistsException;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Throwable;
+
+class CartController
+{
+    public function add(Product $product)
+    {
+        CartAdaptor::init(1);
+        try{
+            if ($product->product_type_id === ProductTypeEnum::COURSE){
+                CartAdaptor::addCourse($product->id);
+            }elseif ($product->product_type_id === ProductTypeEnum::CUSTOM_PACKAGE){
+                CartAdaptor::addPackage($product->id);
+            }
+        }catch (ProductDoesNotExistsException){
+            return response(
+                ['message' => 'این محصول وجود ندارد.'],
+                Response::HTTP_NOT_FOUND
+            );
+        }catch (ItemExistsInShoppingCart) {
+            return response(
+                ['message' => 'این محصول قبلا به سبد خرید اضافه شده است.'],
+                Response::HTTP_NOT_ACCEPTABLE
+
+            );
+        }catch (Throwable $e) {
+            report($e);
+            return response(
+                ['message' => 'مشکلی پیش آمده است لطفادقایقی دیگر تلاش کنید'],
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+
+        return response(
+            ['message' => 'محصول با موفقیت به سبد خرید اضافه شد.'],
+            Response::HTTP_OK
+        );
+    }
+    public function changeToInstallmentCart(Request $request)
+    {
+        $request->validate([
+            'is_installment' => ['in:0,1']
+        ]);
+        $isInstallment = $request->input('is_installment');
+
+        CartAdaptor::init(1);
+
+        try{
+            CartAdaptor::changeInstallment($isInstallment);
+
+        }catch (ItemNotInstallmentableException) {
+            return response(
+                ['message' => 'محصولی قابلیت قسطی شدن را ندارند'],
+                Response::HTTP_UNPROCESSABLE_ENTITY
+            );
+        }catch (Throwable $e){
+            report($e);
+            return response(
+                ['message' => 'مشکلی پیش آمده است لطفا دقایقی دیگر تلاش کنید'],
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+
+        return response(
+            [],
+            Response::HTTP_NO_CONTENT
+        );
+    }
+
+    public function remove(Product $product)
+    {
+        CartAdaptor::init(1);
+
+        try{
+            CartAdaptor::remove($product->id);
+        }catch (ItemDoesNotExistsInShoppingCart){
+            return response(
+                ['message' => 'همچین محصولی وجود ندارد.'],
+                Response::HTTP_NOT_FOUND
+            );
+        }
+
+        return response(['message' => 'محصول با موفقیت از سبد خرید حذف شد.']);
+    }
+}

@@ -1,0 +1,30 @@
+<?php
+
+use Illuminate\Support\Arr;
+
+function generatePhone() : string
+{
+    return '09' . Arr::random(['02', '10', '38', '35', '90', '22', '12', '15', '19']) . rand(1000000, 9999999);
+}
+
+function generatePassword() : string
+{
+    return  Arr::random([11, 22 , 33 , 44 , 55 , '00']).
+            Arr::random([11, 22 , 33 , 44 , 55 , '00']).
+            Arr::random([11, 22 , 33 , 44 , 55 , '00']).
+            Arr::random([11, 22 , 33 , 44 , 55 , '00']).
+            Arr::random([11, 22 , 33 , 44 , 55 , '00']);
+}
+
+function generateMemorableVerificationCode() : string
+{
+    $firstNumber=  rand(1,9);
+    $secondNumber= rand(0,9);
+    $thirdNumber=  rand(1,9);
+
+    return  Arr::random([$firstNumber,$secondNumber,$thirdNumber]).
+            Arr::random([$firstNumber,$secondNumber,$thirdNumber]).
+            Arr::random([$firstNumber,$secondNumber,$thirdNumber]).
+            Arr::random([$firstNumber,$secondNumber,$thirdNumber]).
+            Arr::random([$firstNumber,$secondNumber,$thirdNumber]);
+}

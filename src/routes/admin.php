@@ -1,0 +1,134 @@
+<?php
+
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\CouponController;
+use App\Http\Controllers\Admin\CouponRangeController;
+use App\Http\Controllers\Admin\CourseController;
+use App\Http\Controllers\Admin\DebitCardTransactionController;
+use App\Http\Controllers\Admin\ExternalSettingController;
+use App\Http\Controllers\Admin\HomeController;
+use App\Http\Controllers\Admin\InternalSettingController;
+use App\Http\Controllers\Admin\PermissionController;
+use App\Http\Controllers\Admin\ProductCategoryController;
+use App\Http\Controllers\Admin\ProductTypeController;
+use App\Http\Controllers\Admin\ProfileController;
+use App\Http\Controllers\Admin\ReferralCodeController;
+use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\RoleUserController;
+use App\Http\Controllers\Admin\SessionController;
+use App\Http\Controllers\Admin\StudentController;
+use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\UserSupportController;
+use App\Http\Controllers\Admin\SaleSupportReportController;
+use App\Http\Controllers\Admin\SupportsAllocationRateController;
+use App\Http\Controllers\Admin\ThemeController;
+use App\Http\Controllers\Admin\ClassController;
+
+Route::post('/set-theme', [ThemeController::class, 'setTheme'])->name('set-theme');
+Route::get('/', [HomeController::class, 'index'])->name('dashboard');
+
+Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+Route::patch('/profile/{admin}', [ProfileController::class, 'update'])->name('profile.update');
+Route::get('/profile/password', [ProfileController::class, 'passwordEdit'])->name('profile.password.edit');
+Route::patch('/profile/{admin}/update-password', [ProfileController::class, 'passwordUpdate'])->name('profile.password.update');
+Route::get('/profile/2fa', [ProfileController::class, 'twoFAEdit'])->name('profile.2fa.edit');
+
+Route::get('/admins', [AdminController::class, 'index'])->name('admin.index')->can('admin.index');
+Route::get('/admins/create', [AdminController::class, 'create'])->name('admin.create')->can('admin.create');
+Route::post('/admins', [AdminController::class, 'store'])->name('admin.store')->can('admin.create');
+Route::get('/admins/{admin}/edit', [AdminController::class, 'edit'])->name('admin.edit')->can('admin.edit');
+Route::patch('/admins/{admin}', [AdminController::class, 'update'])->name('admin.update')->can('admin.edit');
+Route::get('/admins/{admin}/password', [AdminController::class, 'passwordEdit'])->name('admin.password.edit')->can('admin.edit');
+Route::patch('/admins/{admin}/password', [AdminController::class, 'passwordUpdate'])->name('admin.password.update')->can('admin.edit');
+Route::get('/admins/{admin}/toggle', [AdminController::class, 'toggle'])->name('admin.toggle')->can('admin.toggle');
+
+Route::get('/role/{admin}', [RoleUserController::class, 'edit'])->name('role.user.edit')->can('role.admin.edit');
+Route::patch('/role/{admin}', [RoleUserController::class, 'update'])->name('role.user.update')->can('role.admin.edit');
+
+Route::get('/permissions', [PermissionController::class, 'index'])->name('permission.index')->can('permission.index');
+Route::get('/permissions/{permission}/edit', [PermissionController::class, 'edit'])->name('permission.edit')->can('permission.edit');
+Route::patch('/permissions/{permission}', [PermissionController::class, 'update'])->name('permission.update')->can('permission.edit');
+
+Route::get('/users/{admin}/session', [SessionController::class, 'index'])->name('session.index')->can('session.index');
+Route::delete('/users/{admin}/session/{session}', [SessionController::class, 'destroy'])->name('session.destroy')->can('session.destroy');
+Route::delete('/users/{admin}/session/purge', [SessionController::class, 'purge'])->name('session.purge')->can('session.destroy');
+
+
+Route::get('/students', [StudentController::class, 'index'])->name('student.index')->can('student.index');
+Route::get('/students/create', [StudentController::class, 'create'])->name('student.create')->can('student.create');
+Route::post('/students', [StudentController::class, 'store'])->name('student.store')->can('student.create');
+Route::get('/students/{student}/edit', [StudentController::class, 'edit'])->name('student.edit')->can('student.edit');
+Route::patch('/students/{student}/update', [StudentController::class, 'update'])->name('student.update')->can('student.edit');
+Route::get('/students/{student}/edit_support', [StudentController::class, 'editSupport'])->name('student.edit-support')->can('student.edit-support');
+Route::post('/students/{student}/edit_support_sms', [StudentController::class, 'editSupportSMS'])->name('student.edit-support-sms')->can('student.edit-support');
+Route::patch('/students/{student}/update_support', [StudentController::class, 'updateSupport'])->name('student.update-support')->can('student.edit-support');
+Route::patch('students/{student}/verify', [StudentController::class, 'verifyStudent'])->name('student.verify')->can('student.verify');
+
+Route::get('/user_support', [UserSupportController::class, 'index'])->name('user_support.get')->can('student.support.history');
+
+Route::get('/referral-codes', [ReferralCodeController::class, 'index'])->name('referral_code.index')->can('referral_code.index');
+Route::get('/referral-codes/create', [ReferralCodeController::class, 'create'])->name('referral_code.create')->can('referral_code.create');
+Route::post('/referral-codes', [ReferralCodeController::class, 'store'])->name('referral_code.store')->can('referral_code.create');
+Route::get('/referral-codes/{referral_code}/edit', [ReferralCodeController::class, 'edit'])->name('referral_code.edit')->can('referral_code.edit');
+Route::patch('/referral-codes/{referral_code}', [ReferralCodeController::class, 'update'])->name('referral_code.update')->can('referral_code.edit');
+
+Route::get('/debit-cards', [DebitCardTransactionController::class, 'index'])->name('debit-card.index')->can('debit-card.index');
+Route::get('/debit-cards/create', [DebitCardTransactionController::class, 'create'])->name('debit-card.create')->can('debit-card.create');
+Route::post('/debit-cards', [DebitCardTransactionController::class, 'store'])->name('debit-card.store')->can('debit-card.create');
+Route::get('/debit-cards/{debit_card}/edit', [DebitCardTransactionController::class, 'edit'])->name('debit-card.edit')->can('debit-card.edit');
+Route::patch('/debit-cards/{debit_card}', [DebitCardTransactionController::class, 'update'])->name('debit-card.update')->can('debit-card.edit');
+Route::delete('/debit-cards/{debit_card}', [DebitCardTransactionController::class, 'destroy'])->name('debit-card.destroy')->can('debit-card.delete');
+
+Route::get('/product_types', [ProductTypeController::class, 'index'])->name('product_type.index')->can('product_type.index');
+Route::get('/product_types/create', [ProductTypeController::class, 'create'])->name('product_type.create')->can('product_type.create');
+Route::post('/product_types', [ProductTypeController::class, 'store'])->name('product_type.store')->can('product_type.create');
+Route::get('/product_types/{product_type}/edit', [ProductTypeController::class, 'edit'])->name('product_type.edit')->can('product_type.edit');
+Route::patch('/product_types/{product_type}', [ProductTypeController::class, 'update'])->name('product_type.update')->can('product_type.edit');
+
+Route::get('/coupons', [CouponController::class, 'index'])->name('coupons.index')->can('coupons.index');
+Route::get('/coupons/excel', [CouponController::class, 'excel'])->name('coupons.excel')->can('coupons.excel');
+Route::get('/coupons/create', [CouponController::class, 'create'])->name('coupons.create')->can('coupons.create');
+Route::post('/coupons', [CouponController::class, 'store'])->name('coupons.store')->can('coupons.create');
+Route::get('/coupons/{coupon}/edit', [CouponController::class, 'edit'])->name('coupons.edit')->can('coupons.edit');
+Route::patch('/coupons/{coupon}', [CouponController::class, 'update'])->name('coupons.update')->can('coupons.edit');
+Route::delete('/coupons/{coupon}', [CouponController::class, 'destroy'])->name('coupons.destroy')->can('coupons.destroy');
+
+Route::get('/coupons-range', [CouponRangeController::class, 'edit'])->name('coupons.range.edit')->can('coupons.range.edit');
+Route::patch('/coupons-range', [CouponRangeController::class, 'update'])->name('coupons.range.update')->can('coupons.range.edit');
+
+Route::get('/roles', [RoleController::class, 'index'])->name('role.index')->can('role.index');
+Route::get('/roles/create', [RoleController::class, 'create'])->name('role.create')->can('role.create');
+Route::post('/roles', [RoleController::class, 'store'])->name('role.store')->can('role.create');
+Route::get('/roles/{role}/edit', [RoleController::class, 'edit'])->name('role.edit')->can('role.edit');
+Route::patch('/roles/{role}', [RoleController::class, 'update'])->name('role.update')->can('role.edit');
+
+Route::get('/courses', [CourseController::class, 'index'])->name('course.index')->can('course.index');
+Route::get('/courses/create', [CourseController::class, 'create'])->name('course.create')->can('course.create');
+Route::post('/courses', [CourseController::class, 'store'])->name('course.store')->can('course.create');
+Route::get('/courses/{course}/edit', [CourseController::class, 'edit'])->name('course.edit')->can('course.edit');
+Route::patch('/courses/{course}', [CourseController::class, 'update'])->name('course.update');
+
+Route::get('/courses/{course}/classes', [ClassController::class, 'index'])->name('classes.index')->can('classes.index');
+Route::get('/courses/{course}/classes/create', [ClassController::class, 'create'])->name('classes.create')->can('classes.create');
+Route::post('/courses/{course}/classes', [ClassController::class, 'store'])->name('classes.store')->can('classes.create');
+Route::get('/courses/{course}/classes/{classes}/edit', [ClassController::class, 'edit'])->name('classes.edit')->can('classes.edit');
+Route::patch('/courses/{course}/classes/{classes}', [ClassController::class, 'update'])->name('classes.update')->can('classes.edit');
+
+Route::get('/product_categories', [ProductCategoryController::class, 'index'])->name('product_category.index')->can('product_category.index');
+Route::get('/product_categories/create', [ProductCategoryController::class, 'create'])->name('product_category.create')->can('product_category.create');
+Route::post('/product_categories', [ProductCategoryController::class, 'store'])->name('product_category.store')->can('product_category.create');
+Route::get('/product_categories/{product_category}/edit', [ProductCategoryController::class, 'edit'])->name('product_category.edit')->can('product_category.edit');
+Route::patch('/product_categories/{product_category}', [ProductCategoryController::class, 'update'])->name('product_category.update')->can('product_category.edit');
+Route::delete('/product_categories/{product_category}', [ProductCategoryController::class, 'destroy'])->name('product_category.destroy')->can('product_category.delete');
+
+Route::get('/internal-settings', [InternalSettingController::class, 'index'])->name('internal.setting.index')->can('setting.int.index');
+Route::post('/internal-settings/update-permissions', [InternalSettingController::class, 'updatePermissions'])->name('setting.int.update-permissions')->can('setting.int.index');
+Route::get('/supports_allocation_rate', [SupportsAllocationRateController::class, 'edit'])->name('supports-allocation-rate.edit')->can('supports.allocation-rate-management');
+Route::patch('/supports_allocation_rate', [SupportsAllocationRateController::class, 'update'])->name('supports-allocation-rate.update')->can('supports.allocation-rate-management');
+
+Route::get('/external-settings', [ExternalSettingController::class, 'index'])->name('external-setting.index')->can('setting.ext.index');
+Route::post('/external-settings/update-ref-address', [ExternalSettingController::class, 'updateRefAddress'])->name('setting.ext.update-ref-address')->can('setting.ext.index');
+
+Route::get('/report/registered_users', [SaleSupportReportController::class, 'registeredUsers'])->name('report.registered_users')->can('report.registered_users');
+
+Route::get('/report/registered_users/{student}/verificationLogs', [SaleSupportReportController::class, 'verificationHistory'])->name('registered-users.verificationLogs')->can('report.registered_users');;

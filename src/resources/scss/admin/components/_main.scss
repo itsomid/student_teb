@@ -1,0 +1,25 @@
+.user-products-inquiry-section{
+    display: flex;
+    margin: 10px 0;
+    img{
+        border-radius: 10px;
+    }
+    div{
+        @include flexHandler(space-evenly, unset, column);
+        margin: 0 10px;
+    }
+}
+.dropdown-menu.custom.show{
+    display: flex;
+    flex-direction: column;
+}
+.user-course-buy-count{
+    span{
+        font-weight: 700;
+        margin: 4px 0;
+    }
+    @include flexHandler(space-around, center, row);
+    @include media-breakpoint-down(md){
+        flex-direction: column;
+    }
+}
