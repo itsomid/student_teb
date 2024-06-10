@@ -15,7 +15,7 @@ class AdminTableSeeder extends Seeder
     {
         foreach ($this->admin() as $admin) {
             $admin = Admin::query()->create(array_merge($admin, [
-                'password' => Hash::make('classino1234'),
+                'password' => Hash::make('11111111'),
                 'gender' => 'male',
             ]));
 
@@ -74,6 +74,13 @@ class AdminTableSeeder extends Seeder
                 'email' => 'mehdi@gmail.com',
                 'mobile' => '09121118544',
                 'supervisor_id' => self::DEFAULT_SUPERVISOR
+            ], [
+                'id' => 5,
+                'first_name' => 'محمد',
+                'last_name' => 'کثیری',
+                'email' => 'mohammad@gmail.com',
+                'mobile' => '09109529484',
+                'supervisor_id' => self::DEFAULT_SUPERVISOR
             ],
         ];
     }
@@ -82,7 +89,7 @@ class AdminTableSeeder extends Seeder
     {
         return [
             [
-                'id' => 5,
+                'id' => 6,
                 'first_name' => 'شبنم',
                 'last_name' => 'رئوفی',
                 'email' => 'shabnam.raoufi@gmail.com',
@@ -96,7 +103,7 @@ class AdminTableSeeder extends Seeder
         return [
 
             [
-                'id' => 6,
+                'id' => 7,
                 'first_name' => 'فاطمه',
                 'last_name' => 'فاضلی',
                 'email' => 'fazeli@gmail.com',
@@ -104,7 +111,7 @@ class AdminTableSeeder extends Seeder
                 'supervisor_id' => 5
             ],
             [
-                'id' => 7,
+                'id' => 8,
                 'first_name' => 'گلناز',
                 'last_name' => 'فرهمند',
                 'email' => 'farahmand@gmail.com',
@@ -112,7 +119,7 @@ class AdminTableSeeder extends Seeder
                 'supervisor_id' => 5
             ],
             [
-                'id' => 8,
+                'id' => 9,
                 'first_name' => 'سهراب',
                 'last_name' => 'کلانتری',
                 'email' => 'sohrab.kalantari@gmail.com',
@@ -120,7 +127,7 @@ class AdminTableSeeder extends Seeder
                 'supervisor_id' => 5
             ],
             [
-                'id' => 9,
+                'id' => 10,
                 'first_name' => 'روژان',
                 'last_name' => 'رونقگیر',
                 'email' => 'rojan.ronaghgir@gmail.com',
@@ -128,7 +135,7 @@ class AdminTableSeeder extends Seeder
                 'supervisor_id' => 5
             ],
             [
-                'id' => 10,
+                'id' => 11,
                 'first_name' => 'شیوا',
                 'last_name' => 'ربیعی',
                 'email' => 'shiva.rabiei@gmail.com',
