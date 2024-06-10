@@ -207,6 +207,13 @@
                     <div data-i18n="Page 1"> Pulse</div>
                 </a>
             </li>
+
+            <li class="menu-item @if(request()->is('/log-viewer*')) active @endif">
+                <a href="{{url('./log-viewer')}}" class="menu-link">
+                    <i class="menu-icon fa-sharp fa-light  fa-monitor-heart-rate fa-sm"></i>
+                    <div data-i18n="Page 1"> Logs and Errors</div>
+                </a>
+            </li>
         @endcan
 
 
