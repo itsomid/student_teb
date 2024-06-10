@@ -5,6 +5,7 @@ src/public/hot
 src/public/storage
 src/public/vendor
 src/storage/*.key
+src/storage/debugbar
 src/vendor
 src/.phpunit.result.cache
 src/Homestead.json
