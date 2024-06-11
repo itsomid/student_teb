@@ -41,7 +41,7 @@ class CustomPackageController extends Controller
 
     public function store(CreateCustomPackageRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
         DB::beginTransaction();
         try{
@@ -60,7 +60,7 @@ class CustomPackageController extends Controller
                 'installment_count' => $input['installment_count'],
                 'first_installment_ratio' => $input['first_installment_ratio'],
                 'first_installment_amount'  => $input['first_installment_amount'],
-                'final_installment_date' => $input['final_installment_date'],
+                'final_installment_date' => isset($input['final_installment_date']) ? DateFormatter::format($input['holding_date']) : null,
                 'holding_date' => isset($input['holding_date']) ? DateFormatter::format($input['holding_date']) : null
             ]);
 
@@ -123,7 +123,7 @@ class CustomPackageController extends Controller
                 'installment_count' => $input['installment_count'],
                 'first_installment_ratio' => $input['first_installment_ratio'],
                 'first_installment_amount'  => $input['first_installment_amount'],
-                'final_installment_date' => $input['final_installment_date'],
+                'final_installment_date' => isset($input['final_installment_date']) ? DateFormatter::format($input['holding_date']) : null,
                 'holding_date' => isset($input['holding_date']) ? DateFormatter::format($input['holding_date']) : null
             ]);
             $product->packages()->delete();
