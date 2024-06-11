@@ -3,14 +3,13 @@
 namespace App\Http\Controllers\API\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Resources\UserResource;
+use App\Models\ReferralCode;
 use App\Models\VerificationCode;
-use App\Models\VerifyUser;
 use App\Models\User;
 use App\Rules\RequestValidRule;
 use App\Services\JWT;
-use App\Services\Register;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -40,20 +39,17 @@ class RegisterController extends Controller
             ], Response::HTTP_FORBIDDEN);
         }
 
-
-        $register = new Register();
-        $body = $register->add(
-            $request->name,
-            $request->mobile,
-            $request->grade,
-            $request->field_of_study,
-            $request->get('reagent_code')
-        );
+        $referrer= ReferralCode::query()
+            ->where('code', request()->input('reagent_code', null))
+            ->with('admin')
+            ->first();
 
 
-
-        $user->name = $request->name;
-        $user->id   = $body->id;
+        $user->name           = $request->name;
+        $user->grade          = $request->grade;
+        $user->field_of_study = $request->field_of_study;
+        $user->referral_id    = $referrer->id;
+        $user->verified       = 1;
         $user->save();
 
         VerificationCode::query()->where('mobile', $user->mobile)->delete();
