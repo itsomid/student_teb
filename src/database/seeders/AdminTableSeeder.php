@@ -70,9 +70,9 @@ class AdminTableSeeder extends Seeder
             [
                 'id' => 4,
                 'first_name' => 'مهدی',
-                'last_name' => 'غلامرضایی',
+                'last_name' => 'رجبی',
                 'email' => 'mehdi@gmail.com',
-                'mobile' => '09121118544',
+                'mobile' => '09107588958',
                 'supervisor_id' => self::DEFAULT_SUPERVISOR
             ], [
                 'id' => 5,

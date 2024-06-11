@@ -7,7 +7,7 @@
                 <div class="card-title header-elements">
                     <h5 class="m-0 me-2">لیست پکیج های سفارشی</h5>
                     <div class="card-title-elements ms-auto">
-                        <a href="" class="btn btn-primary">
+                        <a href="{{ route('admin.custom-package.create') }}" class="btn btn-primary">
                             <i class="fa fa-plus mx-2"></i>
                             افزودن پکیج
                         </a>
@@ -23,13 +23,13 @@
                         </tr>
                         </thead>
                         <tbody class="table-border-bottom-0">
-                        @for($i = 0; $i <= 10; $i++)
+                        @foreach($packages as $package)
                             <tr>
                                 <td>
-                                    {{$i+1}}
+                                    {{$package->id}}
                                 </td>
                                 <td>
-                                    پکیج اول
+                                    {{$package->product->name}}
                                 </td>
                                 <td class="d-flex align-items-center">
                                     <div class="dropdown mx-3">
@@ -43,14 +43,14 @@
                                                 <i class="fa-solid fa-pen-to-square"></i>
                                                 ویرایش پکیج
                                             </a>
-                                            <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#exampleModal_{{$i}}"
+                                            <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#exampleModal_{{$package->id}}"
                                                data-bs-whatever="@mdo"
                                                href="#">
                                                 <i class="fa-solid fa-trash"></i>
                                                 حذف پکیج
                                             </a>
                                         </div>
-                                        <div class="modal fade" id="exampleModal_{{$i}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal fade" id="exampleModal_{{$package->id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                             <div class="modal-dialog modal-dialog-top">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
@@ -70,7 +70,7 @@
                                     </div>
                                 </td>
                             </tr>
-                        @endfor
+                        @endforeach
                         </tbody>
                     </table>
                 </div>

@@ -13,7 +13,7 @@ class Course extends Model
 {
     use HasFactory, Filterable;
 
-    protected $table = 'product_live_courses';
+    protected $table = 'courses';
     public $fillable = [
         'product_id',
         'holding_days',

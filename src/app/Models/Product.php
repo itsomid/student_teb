@@ -145,4 +145,15 @@ class Product extends Model
     {
         return $this->belongsToMany(ProductCategory::class);
     }
+
+    public function getImageSrc()
+    {
+        if ($this->img_filename) {
+            return $this->img_filename;
+        }elseif($this->parent_id) {
+            return $this->parent->getImageSrc();
+        }else{
+            return config('classino.classino_file_base_url').('/images/classino_default.jpg');
+        }
+    }
 }
