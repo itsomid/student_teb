@@ -13,6 +13,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Sanctum\HasApiTokens;
+use Morilog\Jalali\Jalalian;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Traits\HasRoles;
 
@@ -98,6 +99,10 @@ class User extends Authenticatable
 //            : User::where('referral_id', $referral_code);
     }
 
+    public function created_at()
+    {
+        return Jalalian::forge($this->created_at)->format('%A, %d %B %Y');
+    }
     public function isLocked()
     {
         return $this->sms_lock_until && now()->lte($this->sms_lock_until) && !app()->environment('local');

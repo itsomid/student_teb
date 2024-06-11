@@ -15,6 +15,8 @@ class PermissionList {
             ['admin.edit'                            ,'ویرایش پرسنل'],
             ['admin.toggle'                          ,'مسدودسازی پرسنل'],
             ['admin.manage-all-sales-support'        ,'مشاهده تمام پشتیبانان فروش'],
+            ['admin.login_as_admin'                  ,'ورود به عنوان ادمین'],
+            ['admin.inquiry'                         ,'استعلام شماره تماس'],
 
             ['supports.allocation-rate-management'   ,'نرخ تخصیص دانش آموز به پشتیبان'],
 

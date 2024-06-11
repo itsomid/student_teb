@@ -14,7 +14,6 @@
     <div class="menu-inner-shadow"></div>
 
     <ul class="menu-inner py-1">
-
         <li class="menu-item @if(request()->is('admin')) active @endif">
             <a href="{{route('admin.dashboard')}}" class="menu-link">
                 {{--                    <i class=" tf-icons ti ti-users"></i>--}}
@@ -44,8 +43,8 @@
             </li>
         @endcan
         @can('student.index')
-            <li class="menu-item @if(request()->is('admin/user_support*')) active @endif">
-                <a href="{{route('admin.student.index')}}" class="menu-link">
+            <li class="menu-item @if(request()->is('admin/inquiry*')) active @endif">
+                <a href="{{route('admin.inquiry.index')}}" class="menu-link">
                     <i class="menu-icon fa-light fa-screen-users fa-sm"></i>
                     <div data-i18n="Page 1">استعلام شماره تماس</div>
                 </a>
