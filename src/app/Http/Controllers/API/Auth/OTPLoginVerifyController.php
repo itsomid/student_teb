@@ -17,8 +17,7 @@ class OTPLoginVerifyController extends Controller
     {
         $this->validate($request,[
             'mobile' => 'required|digits:11',
-//            'token' => ['required', 'digits:5', 'bail', new RequestValidRule($request->mobile)],
-            'token' => ['required', 'digits:5', 'bail'],
+            'token' => ['required', 'digits:5', 'bail', new RequestValidRule($request->mobile)],
         ]);
 
         $user = User::where('mobile', $request->mobile)->firstOrFail();
