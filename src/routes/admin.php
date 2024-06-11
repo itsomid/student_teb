@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\InquiryController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\CouponController;
 use App\Http\Controllers\Admin\CouponRangeController;
@@ -27,6 +28,9 @@ use App\Http\Controllers\Admin\ClassController;
 Route::post('/set-theme', [ThemeController::class, 'setTheme'])->name('set-theme');
 Route::get('/', [HomeController::class, 'index'])->name('dashboard');
 
+Route::get('/inquiry',  [InquiryController::class, 'index']) ->name('inquiry.index') ->can('admin.inquiry');
+Route::post('/inquiry', [InquiryController::class, 'submit'])->name('inquiry.submit')->can('admin.inquiry');
+
 Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
 Route::patch('/profile/{admin}', [ProfileController::class, 'update'])->name('profile.update');
 Route::get('/profile/password', [ProfileController::class, 'passwordEdit'])->name('profile.password.edit');
@@ -41,6 +45,9 @@ Route::patch('/admins/{admin}', [AdminController::class, 'update'])->name('admin
 Route::get('/admins/{admin}/password', [AdminController::class, 'passwordEdit'])->name('admin.password.edit')->can('admin.edit');
 Route::patch('/admins/{admin}/password', [AdminController::class, 'passwordUpdate'])->name('admin.password.update')->can('admin.edit');
 Route::get('/admins/{admin}/toggle', [AdminController::class, 'toggle'])->name('admin.toggle')->can('admin.toggle');
+
+Route::get('/admins/{admin}/login_as_admin', [AdminController::class, 'login_as_admin'])->name('admin.login_as_admin')->can('admin.login_as_admin');
+Route::get('/admins/back_to_admin_panel', [AdminController::class, 'back_to_admin_panel'])->name('admin.back_to_admin_panel');
 
 Route::get('/role/{admin}', [RoleUserController::class, 'edit'])->name('role.user.edit')->can('role.admin.edit');
 Route::patch('/role/{admin}', [RoleUserController::class, 'update'])->name('role.user.update')->can('role.admin.edit');

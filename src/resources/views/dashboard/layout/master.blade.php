@@ -96,6 +96,19 @@
 
 @include('dashboard.layout.vendor.flash_message')
 
+@if(session()->has('super_admin'))
+    @include('dashboard.layout.login_as_admin')
+@endif
 
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
