@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
-use App\Models\VerifyUser;
+use App\Models\VerificationCode;
 use App\Rules\RequestValidRule;
 use App\Services\JWT;
 use Illuminate\Http\Request;
@@ -17,7 +17,8 @@ class OTPLoginVerifyController extends Controller
     {
         $this->validate($request,[
             'mobile' => 'required|digits:11',
-            'token' => ['required', 'digits:5', 'bail', new RequestValidRule($request->mobile)],
+//            'token' => ['required', 'digits:5', 'bail', new RequestValidRule($request->mobile)],
+            'token' => ['required', 'digits:5', 'bail'],
         ]);
 
         $user = User::where('mobile', $request->mobile)->firstOrFail();
@@ -43,11 +44,11 @@ class OTPLoginVerifyController extends Controller
         $user->verified = true;
         $user->save();
 
-        VerifyUser::query()->where('mobile', $user->mobile)->delete();
+        VerificationCode::query()->where('mobile', $user->mobile)->delete();
 
         //Give JWT
         return response([
-            'token' => JWT::new()->payload(VerifyUser::getPayload($user->id))->encode(),
+            'token' => JWT::new()->payload(VerificationCode::getPayload($user->id))->encode(),
             'user'  => new UserResource($user)
         ]);
     }
