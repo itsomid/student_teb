@@ -112,6 +112,8 @@ Route::patch('/roles/{role}', [RoleController::class, 'update'])->name('role.upd
 Route::get('/custom-packages', [\App\Http\Controllers\Admin\CustomPackageController::class, 'index'])->name('custom-package.index')->can('custom-package.index');
 Route::get('/custom-packages/create', [\App\Http\Controllers\Admin\CustomPackageController::class, 'create'])->name('custom-package.create')->can('custom-package.create');
 Route::post('/custom-packages', [\App\Http\Controllers\Admin\CustomPackageController::class, 'store'])->name('custom-package.store')->can('custom-package.create');
+Route::get('/custom-packages/{product}/edit', [\App\Http\Controllers\Admin\CustomPackageController::class, 'edit'])->name('custom-package.edit')->can('custom-package.edit');
+Route::patch('/custom-packages/{product}', [\App\Http\Controllers\Admin\CustomPackageController::class, 'update'])->name('custom-package.update')->can('custom-package.edit');
 
 Route::get('/courses', [CourseController::class, 'index'])->name('course.index')->can('course.index');
 Route::get('/courses/create', [CourseController::class, 'create'])->name('course.create')->can('course.create');

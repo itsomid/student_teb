@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use App\Models\Classes;
 use App\Models\Course;
 use App\Models\Product;
-use App\Models\ProductCategory;
+use App\Models\Category;
 use Illuminate\Database\Seeder;
 
 class ProductSeeder extends Seeder
@@ -15,7 +15,7 @@ class ProductSeeder extends Seeder
      */
     public function run(): void
     {
-        ProductCategory::factory(40)->create();
+        Category::factory(40)->create();
 
         $products= Product::factory(11)->course()->has(
             Course::factory()->count(1)

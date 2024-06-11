@@ -9,7 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Course\CreateRequest;
 use App\Http\Requests\Course\UpdateRequest;
 use App\Models\Product;
-use App\Models\ProductCategory;
+use App\Models\Category;
 use App\Models\Course;
 use Illuminate\Support\Facades\DB;
 use Throwable;
@@ -19,7 +19,7 @@ class CourseController extends Controller
 {
     public function index()
     {
-        $courses = Course::query()->filterBy(request()->all())->get();
+        $courses = Course::query()->with('product')->filterBy(request()->all())->get();
         return view('dashboard.course.index')
             ->with(['courses' => $courses]);
     }
@@ -27,7 +27,7 @@ class CourseController extends Controller
     public function create()
     {
         $types= ProductTypeEnum::TYPE_LABEL;
-        $categories= ProductCategory::query()->get();
+        $categories= Category::query()->get();
         return view('dashboard.course.create')
             ->with(['categories' => $categories])
             ->with(['types' => $types]);
@@ -81,7 +81,7 @@ class CourseController extends Controller
     public function edit(Course $course)
     {
          $types= ProductTypeEnum::TYPE_LABEL;
-        $categories= ProductCategory::query()->get();
+        $categories= Category::query()->get();
 
         return view('dashboard.course.edit')
             ->with(['types'      => $types])

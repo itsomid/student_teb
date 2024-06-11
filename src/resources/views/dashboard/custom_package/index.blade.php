@@ -2,6 +2,27 @@
 @section('title', 'مدیریت پکیج های سفارشی')
 @section('content')
     <div class="row">
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">جست و جو</h5>
+                <form class="row mt-3 d-flex align-items-end justify-content-between"
+                      action="{{route('admin.custom-package.index')}}"
+                      method="get">
+                    <div class="col-md-10 user_role">
+                        <label class="form-label" for="key">نام پکیج</label>
+                        <input type="text" class="form-control" name="name"  placeholder="نام دوره را وارد کنید" value="{{ request('name') }}">
+                    </div>
+                    <div class="col-md-2 mt-2 text-center">
+                        <button class="btn btn-success">
+                            <i class="fa-solid fa-magnifying-glass mx-2"></i>
+                            جست و جو
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="row">
         <div class="card">
             <div class="card-body">
                 <div class="card-title header-elements">
@@ -17,8 +38,10 @@
                     <table class="table">
                         <thead>
                         <tr>
-                            <th>ID</th>
+                            <th>#</th>
                             <th>نام</th>
+                            <th>قیمت</th>
+                            <th>تاریخ برگزاری</th>
                             <th>عملیات</th>
                         </tr>
                         </thead>
@@ -29,7 +52,13 @@
                                     {{$package->id}}
                                 </td>
                                 <td>
-                                    {{$package->product->name}}
+                                    {{$package->name}}
+                                </td>
+                                <td>
+                                    {{ $package->holding_date }}
+                                </td>
+                                <td>
+                                    {{ number_format($package->original_price) }}
                                 </td>
                                 <td class="d-flex align-items-center">
                                     <div class="dropdown mx-3">
@@ -39,7 +68,7 @@
                                         </button>
                                         <div class="dropdown-menu">
                                             <a class="dropdown-item"
-                                               href="#">
+                                               href="{{ route('admin.custom-package.edit', [$package->id]) }}">
                                                 <i class="fa-solid fa-pen-to-square"></i>
                                                 ویرایش پکیج
                                             </a>
