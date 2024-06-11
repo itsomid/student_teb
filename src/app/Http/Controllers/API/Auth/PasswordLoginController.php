@@ -3,11 +3,10 @@
 namespace App\Http\Controllers\API\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\PasswordLoginRequest;
+use App\Http\Requests\Auth\PasswordLoginRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Models\VerificationCode;
-use App\Models\VerifyUser;
 use App\Services\JWT;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
