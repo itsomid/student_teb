@@ -2,22 +2,18 @@
     <div class="row course-section">
         <div class="col-md-5">
             <div class="form-group">
-               <input name="name"
-                      id="name"
+               <input id="name"
+                      v-model="section_name"
+                      @keyup="fireSectionNameChange"
                       class="form-control"
                       placeholder="نام را وارد کنید."
                       required>
             </div>
         </div>
         <div class="col-md-5">
-            <dynamic-select
-                url="http://127.0.0.1:8000/api/users"
-                label="اننتخاب دانش آموز"
-                input_name="consumer_user_id"
-                default_selected=""
-                option_title="name"
-                option_value="id"
-            ></dynamic-select>
+            <select name="" id="coursesDropDown" class="select2 form-control" v-model="courseSelect">
+                <option :value="course.id" v-for="course in courseDropDown">{{ course.id }}-{{ course.title}}</option>
+            </select>
         </div>
         <div class="col-md-2 d-flex justify-content-center align-items-start">
             <button class="btn btn-success text-white mb-5" @click="addCourse" type="button">+</button>
@@ -44,6 +40,7 @@
 </template>
 
 <script>
+import axios from "axios";
 
 export default {
     name: "PackageSectionComponent",
@@ -78,20 +75,28 @@ export default {
     props: {
         section: {
             type: Object,
-            required: true
+            required: true,
         }
     },
     data() {
         return {
+            courseDropDown: [],
             courses: [],
+            courseSelect: '',
             section_name: '',
             image_src: '',
             select2_class: '',
         }
     },
+    created() {
+        axios.get('/api/course/search')
+            .then((res) => {
+                console.log(res.data)
+                this.courseDropDown = res.data
+            })
+    },
     methods: {
         fireSectionNameChange(e) {
-            console.log(e.target.value);
 
             let section = this.section;
             section.title = this.section_name;
@@ -104,18 +109,20 @@ export default {
             let image_src2 = document.getElementById('image_src')
 
             // let image_src = $('#image_src').val();
-            // let product_id = $('.'+select2Class).select2('val');
+            let product_id = this.courseSelect
+            console.log('product_id:'+ product_id)
             // let product_name = $('.'+select2Class).select2('data')[0].text;
 
-            let findId = this.courses.filter(item => item.id == 1);
+            let findId = this.courses.filter(item => item.id === product_id);
             if (findId.length > 0) {
                 return;
             }
 
+            const selectedOption = this.courseDropDown.find((i) => i.id === product_id)
             this.courses.push({
-                id: 1,
-                name: 'درس اول یکتا',
-                image_src: 'http://127.0.0.1:8000/images/avatars/male/4.png'
+                id: selectedOption.id,
+                name: selectedOption.title,
+                image_src: selectedOption.image
             });
 
             let section = this.section;
@@ -123,7 +130,7 @@ export default {
             this.$emit('changeSec', this.section)
         },
         removeItem(id) {
-            this.courses = this.courses.filter((item) => item.id != id);
+            this.courses = this.courses.filter((item) => item.id !== id);
 
             let section = this.section;
             section.title = this.section_name;

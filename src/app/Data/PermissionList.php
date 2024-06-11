@@ -52,6 +52,11 @@ class PermissionList {
             ['product_type.create'                  ,'افزودن ماهیت محصولات'],
             ['product_type.edit'                    ,'ویرایش ماهیت محصولات'],
 
+            //Custom Package Permission Lists
+            ['custom-package.index'                 ,'مشاهده لیست پکیج های سفارشی'],
+            ['custom-package.create'                ,'افزودن پکیج سفارشی'],
+            ['custom-package.edit'                  ,'ویرایش پکیج سفارشی'],
+
             ['course.index'                         ,'مشاهده لیست دوره ها'],
             ['course.create'                        ,'افزودن دوره جدید'],
             ['course.edit'                          ,'ویرایش دوره'],

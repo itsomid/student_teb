@@ -51,7 +51,7 @@ export default {
       })
     },
     changeSec(newData){
-      let index = this.sections.findIndex(section => section.id == newData.id);
+      let index = this.sections.findIndex(section => section.id === newData.id);
       this.sections[index] = newData;
     },
     removeSection(data){
