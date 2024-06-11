@@ -185,7 +185,7 @@
                                                 ویرایش نقش کاربر
                                             </a>
                                         @endcan
-                                        @can('admin.edit')
+                                        @can('admin.login_as_admin')
                                             <a class="dropdown-item"
                                                href="{{route('admin.admin.login_as_admin', ['admin' => $admin->id])}}">
                                                 <i class="far fa-sign-in mx-1"></i>

@@ -96,48 +96,10 @@
 
 @include('dashboard.layout.vendor.flash_message')
 
-<div class="support-button">
-    <button>Support</button>
-</div>
-<    <style>
-    @keyframes pulse {
-        0% {
-            transform: scale(1);
-            box-shadow: 0 0 0 0 rgba(76,175,80,.7);
-        }
+@if(session()->has('super_admin'))
+    @include('dashboard.layout.login_as_admin')
+@endif
 
-        70% {
-            transform: scale(1.05);
-            box-shadow: 0 0 0 10px rgba(76,175,80, 0);
-        }
-
-        100% {
-            transform: scale(1);
-            box-shadow: 0 0 0 0 rgba(76,175,80, 0);
-        }
-    }
-
-    .support-button {
-        position: fixed; /* Fixed/sticky position */
-        bottom: 20px; /* Place the button at the bottom of the page */
-        right: 20px; /* Place the button 20px from the right */
-        z-index: 9999; /* Ensure it sits on top of everything else */
-    }
-
-    .support-button button {
-        background-color: #4CAF50; /* Green */
-        color: white;
-        padding: 15px 32px;
-        text-align: center;
-        text-decoration: none;
-        display: inline-block;
-        font-size: 16px;
-        border: none;
-        border-radius: 50%; /* Make the button circular */
-        cursor: pointer;
-        animation: pulse 2s infinite; /* Apply the pulse animation */
-    }
-</style>
 </body>
 </html>
 

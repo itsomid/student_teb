@@ -28,8 +28,8 @@ use App\Http\Controllers\Admin\ClassController;
 Route::post('/set-theme', [ThemeController::class, 'setTheme'])->name('set-theme');
 Route::get('/', [HomeController::class, 'index'])->name('dashboard');
 
-Route::get('/inquiry',  [InquiryController::class, 'index'])->name('inquiry.index');
-Route::post('/inquiry', [InquiryController::class, 'submit'])->name('inquiry.submit');
+Route::get('/inquiry',  [InquiryController::class, 'index']) ->name('inquiry.index') ->can('admin.inquiry');
+Route::post('/inquiry', [InquiryController::class, 'submit'])->name('inquiry.submit')->can('admin.inquiry');
 
 Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
 Route::patch('/profile/{admin}', [ProfileController::class, 'update'])->name('profile.update');
@@ -46,8 +46,8 @@ Route::get('/admins/{admin}/password', [AdminController::class, 'passwordEdit'])
 Route::patch('/admins/{admin}/password', [AdminController::class, 'passwordUpdate'])->name('admin.password.update')->can('admin.edit');
 Route::get('/admins/{admin}/toggle', [AdminController::class, 'toggle'])->name('admin.toggle')->can('admin.toggle');
 
-Route::get('/admins/{admin}/login_as_admin', [AdminController::class, 'login_as_admin'])->name('admin.login_as_admin')->can('admin.toggle');
-Route::get('/admins/back_to_admin_panel', [AdminController::class, 'back_to_admin_panel'])->name('admin.back_to_admin_panel')->can('admin.toggle');
+Route::get('/admins/{admin}/login_as_admin', [AdminController::class, 'login_as_admin'])->name('admin.login_as_admin')->can('admin.login_as_admin');
+Route::get('/admins/back_to_admin_panel', [AdminController::class, 'back_to_admin_panel'])->name('admin.back_to_admin_panel');
 
 Route::get('/role/{admin}', [RoleUserController::class, 'edit'])->name('role.user.edit')->can('role.admin.edit');
 Route::patch('/role/{admin}', [RoleUserController::class, 'update'])->name('role.user.update')->can('role.admin.edit');

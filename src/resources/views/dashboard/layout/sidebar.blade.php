@@ -14,18 +14,6 @@
     <div class="menu-inner-shadow"></div>
 
     <ul class="menu-inner py-1">
-
-        @if(session()->has('super_admin'))
-            <li class="menu-item @if(request()->is('admin')) active @endif">
-                <a href="{{route('admin.admin.back_to_admin_panel')}}" class="menu-link">
-                    {{--                    <i class=" tf-icons ti ti-users"></i>--}}
-                    <i class="menu-icon  fa-regular fa-chart-pie-simple fa-sm"></i>
-                    <div data-i18n="Page 1">بازگشت به پنل</div>
-                </a>
-            </li>
-        @endif
-
-
         <li class="menu-item @if(request()->is('admin')) active @endif">
             <a href="{{route('admin.dashboard')}}" class="menu-link">
                 {{--                    <i class=" tf-icons ti ti-users"></i>--}}
