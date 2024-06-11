@@ -1,4 +1,4 @@
-<div class="support-button">
+<div class="back_to_panel">
     <a href="{{route('admin.admin.back_to_admin_panel')}}">
         <i class="fas fa-sign-out-alt"></i>
         <br>
@@ -26,14 +26,14 @@
         }
     }
 
-    .support-button {
+    .back_to_panel {
         position: fixed; /* Fixed/sticky position */
         bottom: 20px; /* Place the button at the bottom of the page */
         left: 20px; /* Place the button 20px from the right */
         z-index: 9999; /* Ensure it sits on top of everything else */
     }
 
-    .support-button a {
+    .back_to_panel a {
         background-color: #f62e2e; /* Green */
         color: white;
         padding: 15px 32px;
