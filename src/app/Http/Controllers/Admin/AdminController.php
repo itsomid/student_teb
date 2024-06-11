@@ -8,6 +8,7 @@ use App\Models\Admin;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\Rule;
 use Spatie\Permission\Models\Role;
 
@@ -139,5 +140,30 @@ class AdminController extends Controller
         $admin->save();
 
         return redirect()->back();
+    }
+
+    public function login_as_admin($admin)
+    {
+        $user = auth()->user();
+        $admin= Admin::query()->findOrFail($admin);
+
+        session()->put('super_admin', $user->id);
+
+        auth()->login($admin);
+
+        return redirect("/admin");
+    }
+
+    public function back_to_admin_panel()
+    {
+        if (session()->has('super_admin')) {
+            $admin_id = session()->get('super_admin');
+            session()->forget('super_admin');
+
+           auth()->login(Admin::find($admin_id));
+            return redirect("/admin");
+        } else {
+            return abort(404);
+        }
     }
 }
