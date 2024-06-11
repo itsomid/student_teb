@@ -7,11 +7,12 @@ use App\Functions\DateFormatter;
 use App\Functions\FlashMessages\Toast;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CustomPackage\CreateCustomPackageRequest;
+use App\Http\Requests\CustomPackage\EditCustomPackageRequest;
 use App\Models\CustomPackage;
 use App\Models\Product;
 use App\Models\Category;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Throwable;
 
 class CustomPackageController extends Controller
@@ -82,6 +83,12 @@ class CustomPackageController extends Controller
                 $new_product->product_categories()->sync($input['categories']);
             }
 
+            if($request->hasFile('img_filename')){
+                $name = $new_product->id.'_'.$new_product->name . '.'.$request->file('img_filename')->getClientOriginalExtension();
+                $request->file('img_filename')->storeAs('products', $name, ['disk' => 'public']);
+                $new_product->update(['img_filename' => $name]);
+            }
+
             Toast::message('پکیج سفارشی با موفقیت ایجاد شد.')->success()->notify();
             DB::commit();
             return redirect(route('admin.custom-package.index'));
@@ -95,7 +102,7 @@ class CustomPackageController extends Controller
 
     }
 
-    public function update(Product $product, Request $request)
+    public function update(Product $product, EditCustomPackageRequest $request)
     {
         $input = $request->all();
 
@@ -142,6 +149,12 @@ class CustomPackageController extends Controller
                 $product->product_categories()->sync($input['categories']);
             }
 
+            if($request->hasFile('img_filename')){
+                Storage::delete("products/{$product->img_filename}");
+                $name = $product->id.'_'.$product->name . '.'.$request->file('img_filename')->getClientOriginalExtension();
+                $request->file('img_filename')->storeAs('products', $name, ['disk' => 'public']);
+                $product->update(['img_filename' => $name]);
+            }
             Toast::message('پکیج سفارشی با موفقیت ویرایش شد.')->success()->notify();
             DB::commit();
             return redirect(route('admin.custom-package.index'));

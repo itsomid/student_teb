@@ -56,10 +56,11 @@
                     </div>
 
                     <div class="col-md-6 mb-1">
+                        <img src="{{ $product->getImageUrl() }}" alt="" class="img-fluid rounded h-50 w-25"><br>
                         <div class="form-group mt-3">
-                            <label class="form-label" for="key">input_img:</label>
-                            <input class="form-control-file form-control" type="file" id="file" name="input_img" value="{{ old('input_img') }}">
-                            @error('input_img')<small class="text-danger">{{$message}}</small>@enderror
+                            <label class="form-label" for="input_img">تصویر پکیج:</label>
+                            <input class="form-control-file form-control" type="file" id="input_img" name="img_filename">
+                            @error('img_filename')<small class="text-danger">{{$message}}</small>@enderror
                         </div>
                     </div>
                     <div class="col-md-12 mb-1">

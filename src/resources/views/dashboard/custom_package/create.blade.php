@@ -55,9 +55,9 @@
 
                     <div class="col-md-6 mb-1">
                         <div class="form-group mt-3">
-                            <label class="form-label" for="key">input_img:</label>
-                            <input class="form-control-file form-control" type="file" id="file" name="input_img" value="{{ old('input_img') }}">
-                            @error('input_img')<small class="text-danger">{{$message}}</small>@enderror
+                            <label class="form-label" for="key">تصویر پکیج:</label>
+                            <input class="form-control-file form-control" type="file" id="file" name="img_filename" value="{{ old('img_filename') }}">
+                            @error('img_filename')<small class="text-danger">{{$message}}</small>@enderror
                         </div>
                     </div>
                     <div class="col-md-12 mb-1">

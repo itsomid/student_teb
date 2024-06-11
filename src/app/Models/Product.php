@@ -175,4 +175,12 @@ class Product extends Model
     {
         return $this->hasMany(CustomPackage::class);
     }
+
+    /**
+     * @return string
+     */
+    public function getImageUrl(): string
+    {
+        return asset('storage/products/'.$this->img_filename);
+    }
 }

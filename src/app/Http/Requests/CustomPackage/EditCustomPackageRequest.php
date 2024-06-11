@@ -4,7 +4,7 @@ namespace App\Http\Requests\CustomPackage;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateCustomPackageRequest extends FormRequest
+class EditCustomPackageRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,7 +26,7 @@ class CreateCustomPackageRequest extends FormRequest
             'original_price' => ['required'],
             'name' => ['required'],
             'sections' => ['required','array'],
-            'img_filename' => ['required', 'image']
+            'img_filename' => ['nullable', 'image']
         ];
     }
 }
