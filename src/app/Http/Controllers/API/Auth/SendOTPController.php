@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\API\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\KavenegarVerificationSMS;
 use App\Models\User;
+use App\Models\VerificationCode;
 use App\Models\VerifyUser;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -37,7 +39,7 @@ class SendOTPController extends Controller
             : $user->sms_token;
 
         // Save token
-        $verifyUser = VerifyUser::create([
+        $verifyUser = VerificationCode::create([
             'mobile'=> $user_mobile,
             'token' => $token,
             'ip'    => $request->ip(),
@@ -60,7 +62,7 @@ class SendOTPController extends Controller
     public function sendSmsKaveNegar($verifyUser)
     {
         if (env('APP_ENV') !== 'local') {
-            \App\Jobs\KavenegarVerificationSMS::dispatch($verifyUser);
+            KavenegarVerificationSMS::dispatch($verifyUser);
         }
     }
 }

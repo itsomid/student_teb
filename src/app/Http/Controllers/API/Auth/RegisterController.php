@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Resources\UserResource;
+use App\Models\VerificationCode;
 use App\Models\VerifyUser;
 use App\Models\User;
 use App\Rules\RequestValidRule;
@@ -55,11 +56,11 @@ class RegisterController extends Controller
         $user->id   = $body->id;
         $user->save();
 
-        VerifyUser::query()->where('mobile', $user->mobile)->delete();
+        VerificationCode::query()->where('mobile', $user->mobile)->delete();
 
         return response([
             'token' => JWT::new()
-                ->payload(VerifyUser::getPayload($user->id))
+                ->payload(VerificationCode::getPayload($user->id))
                 ->encode(),
             'user' => new UserResource($user)
         ], Response::HTTP_CREATED);

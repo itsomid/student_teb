@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\PasswordLoginRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use App\Models\VerificationCode;
 use App\Models\VerifyUser;
 use App\Services\JWT;
 use Illuminate\Http\Request;
@@ -32,7 +33,7 @@ class PasswordLoginController extends Controller
 
         return response([
             'token' => JWT::new()
-                ->payload(VerifyUser::getPayload($user->id))
+                ->payload(VerificationCode::getPayload($user->id))
                 ->encode(),
             'user' => new UserResource($user)
         ]);
