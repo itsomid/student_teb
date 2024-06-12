@@ -163,6 +163,14 @@
                             </a>
                         </li>
                     @endcan
+                        @can('custom-package.index')
+                            <li class="menu-item @if(request()->is('admin/custom-package*')) active @endif">
+                                <a href="{{route('admin.custom-package.index')}}" class="menu-link">
+                                    <i class="menu-icon fa-light fa-book fa-sm"></i>
+                                    <div data-i18n="Page 1"> مدیریت پکیج سفارشی</div>
+                                </a>
+                            </li>
+                        @endcan
                 </ul>
             </li>
         @endcan

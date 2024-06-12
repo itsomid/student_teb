@@ -4,7 +4,7 @@ namespace App\Http\Requests\CustomPackage;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateCustomPackageRequest extends FormRequest
+class EditCustomPackageRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,7 +13,6 @@ class CreateCustomPackageRequest extends FormRequest
     {
         return true;
     }
-
     protected function prepareForValidation(): void
     {
         $this->merge([
@@ -28,7 +27,6 @@ class CreateCustomPackageRequest extends FormRequest
      */
     public function rules(): array
     {
-
         return [
             'user_id' => ['required', 'exists:admins,id'],
             'original_price' => ['required', 'numeric'],
@@ -53,9 +51,7 @@ class CreateCustomPackageRequest extends FormRequest
             'sections.*.courses.*.id' => ['required', 'integer', 'exists:products,id'],
             'sections.*.courses.*.name' => ['required', 'string'],
             'sections.*.courses.*.image_src' => ['sometimes', 'string'],
-            'img_filename' => ['required', 'image']
+            'img_filename' => ['nullable', 'image']
         ];
     }
-
-
 }

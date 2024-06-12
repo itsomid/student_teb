@@ -3,17 +3,20 @@
 namespace App\Models;
 
 use App\Enums\ProductTypeEnum;
+use App\Filters\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Cache;
 
 class Product extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, Filterable;
 
+    public $filterNameSpace = 'App\Filters\ProductFilters';
     public $fillable = [
         'parent_id',
         'name',
@@ -143,7 +146,7 @@ class Product extends Model
 
     public function categories(): BelongsToMany
     {
-        return $this->belongsToMany(ProductCategory::class);
+        return $this->belongsToMany(Category::class);
     }
 
     public function getImageSrc()
@@ -155,5 +158,29 @@ class Product extends Model
         }else{
             return config('classino.classino_file_base_url').('/images/classino_default.jpg');
         }
+    }
+
+    /**
+     * @return BelongsToMany
+     */
+    public function product_categories(): BelongsToMany
+    {
+        return $this->belongsToMany(Category::class);
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function packages(): HasMany
+    {
+        return $this->hasMany(CustomPackage::class);
+    }
+
+    /**
+     * @return string
+     */
+    public function getImageUrl(): string
+    {
+        return asset('storage/products/'.$this->img_filename);
     }
 }

@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('product_categories', function (Blueprint $table) {
+        Schema::create('categories', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->string('type');
@@ -20,19 +20,19 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('product_product_category', function (Blueprint $table){
+        Schema::create('category_product', function (Blueprint $table){
 
             $table->foreignId('product_id')
                 ->constrained()
                 ->restrictOnDelete()
                 ->cascadeOnUpdate();
 
-            $table->foreignId('product_category_id')
+            $table->foreignId('category_id')
                 ->constrained()
                 ->restrictOnDelete()
                 ->cascadeOnUpdate();
 
-            $table->unique(['product_id', 'product_category_id']);
+            $table->unique(['product_id', 'category_id']);
         });
     }
 

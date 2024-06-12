@@ -7,10 +7,11 @@ use App\Helpers\Filterable\Filterable;
 use App\Helpers\Filterable\FilterEqual;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use PHPUnit\Util\Filter;
 
-class ProductCategory extends Model
+class Category extends Model
 {
     use HasFactory, SoftDeletes;
 
@@ -24,7 +25,10 @@ class ProductCategory extends Model
         'type' => ProductCategoryType::class
     ];
 
-    public function products()
+    /**
+     * @return BelongsToMany
+     */
+    public function products(): BelongsToMany
     {
         return $this->belongsToMany(Product::class);
     }

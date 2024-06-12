@@ -55,7 +55,6 @@ export default {
       this.sections[index] = newData;
     },
     removeSection(data){
-      console.log(data);
       let index = this.sections.findIndex(section => section.id == data.id);
       this.sections.splice(index, 1);
     }

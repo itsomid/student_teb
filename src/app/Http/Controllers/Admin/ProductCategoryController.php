@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Enums\ProductCategoryType;
 use App\Functions\FlashMessages\Toast;
 use App\Http\Controllers\Controller;
-use App\Models\ProductCategory;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -13,7 +13,7 @@ class ProductCategoryController extends Controller
 {
     public function index()
     {
-        $product_categories= ProductCategory::all();
+        $product_categories= Category::all();
         return view('dashboard.product.category.index')->with(['product_categories' => $product_categories]);
     }
 
@@ -29,7 +29,7 @@ class ProductCategoryController extends Controller
             'type' => ['required', Rule::enum(ProductCategoryType::class)]
         ]);
 
-        ProductCategory::store([
+        Category::store([
             'name' => $request->name,
             'type' => $request->type
         ]);
@@ -38,12 +38,12 @@ class ProductCategoryController extends Controller
         return redirect()->route('admin.product_category.index');
     }
 
-    public function edit(ProductCategory $product_category)
+    public function edit(Category $product_category)
     {
         return view('dashboard.product.category.edit')->with(['product_category' => $product_category]);
     }
 
-    public function update(ProductCategory $product_category, Request $request)
+    public function update(Category $product_category, Request $request)
     {
         $this->validate($request, [
             'name'  => ['required'],
@@ -59,7 +59,7 @@ class ProductCategoryController extends Controller
         return redirect()->back();
     }
 
-    public function destroy(ProductCategory $product_category)
+    public function destroy(Category $product_category)
     {
         $product_category->delete();
 
