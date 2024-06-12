@@ -51,7 +51,7 @@ class StudentController extends Controller
             'name' => ['required'],
             'mobile' => ['required', 'regex:/(09)[0-9]{9}/', 'digits:11','unique:users,mobile'],
         ]);
-        User::query()->create([
+        $student= User::query()->create([
             'name'                  => $request->name,
             'name_english'          => $request->name_english,
             'mobile'                => $request->mobile,
@@ -66,6 +66,9 @@ class StudentController extends Controller
             'block'                 => $request->block,
             'gender'                => $request->gender,
         ]);
+
+        $student->block->block = $request->block;
+        $student->block->save();
 
         Toast::message('افزودن دانش آموز با موفقیت انجام شد')->success()->notify();
         return redirect()->route('admin.student.index');
@@ -93,10 +96,12 @@ class StudentController extends Controller
             'sales_description'       => $request->sales_description,
             'password'                => ($request->has('password') && !is_null($request->password)) ? Hash::make($request->password) : $student->password,
             'description'             => $request->description,
-            'block'                   => $request->block,
-            'block_reason_description'=> $request->block_reason_description,
             'gender'                  => $request->gender,
         ]);
+
+        $student->block->block = $request->block;
+        $student->block->block_reason_description = $request->block_reason_description;
+        $student->block->save();
 
         Toast::message('ویرایش دانش آموز با موفقیت انجام شد')->success()->notify();
         return redirect()->route('admin.student.index');

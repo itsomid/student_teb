@@ -34,23 +34,12 @@ return new class extends Migration
             $table->unsignedBigInteger('referral_id')->nullable();
             $table->foreign('referral_id')->references('id')->on('referral_codes');
 
-            $table->unsignedTinyInteger('block')->default(0);
-            $table->string('block_reason_image')->nullable();
-            $table->string('block_reason_description')->nullable();
-
             $table->unsignedBigInteger('sale_support_id')->nullable();
             $table->foreign('sale_support_id')->references('id')->on('admins');
-
-            $table->decimal('sms_token', 5, 0)->nullable();
-            $table->unsignedInteger('sms_this_token_tries')->default(0);
-            $table->unsignedInteger('sms_wrong_sms_tries')->default(0)->comment('Count of SMS sent without successful login');
-            $table->timestamp('sms_lock_until')->nullable();
 
             $table->text('sales_description')->nullable();
             $table->text('description')->nullable();
             $table->longText('products_ids_purchased')->nullable();
-
-            //User Profile
 
             $table->softDeletes();
             $table->timestamps();

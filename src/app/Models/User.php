@@ -40,15 +40,8 @@ class User extends Authenticatable
         'password',
         'verified',
         'verified',
-        'block',
-        'block_reason_description',
-        'block_reason_image',
-        'sms_token',
         'description',
         'sales_description',
-        'sms_lock_until',
-        'sms_wrong_sms_tries',
-        'sms_this_token_tries',
         'created_at',
         'updated_at'
     ];
@@ -73,6 +66,17 @@ class User extends Authenticatable
     {
         return $this->belongsTo(ReferralCode::class,'referral_id');
     }
+
+    public function block()
+    {
+        return $this->hasOne(UserBlock::class);
+    }
+
+    public function sms()
+    {
+        return $this->hasOne(UserSMS::class);
+    }
+
     public function scopeCheckPermissionToGetList(Builder $query, Admin $admin)
     {
         // If User Has This Permission, So He/She Can See List Of All Users
