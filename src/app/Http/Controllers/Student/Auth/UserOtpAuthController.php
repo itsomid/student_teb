@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Jobs\KavenegarVerificationSMS;
 use App\Models\ReferralCode;
 use App\Models\User;
+use App\Models\UserSMS;
 use App\Models\VerificationCode;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -52,25 +53,28 @@ class UserOtpAuthController extends Controller
 
         $lockTimeSec = 60;
 
-        $user = User::firstOrCreate(
+        $user = User::query()->with('sms')->firstOrCreate(
             ['mobile' => $user_mobile],
             ['password' => Hash::make(rand()), 'verified' => 0]
         );
+        UserSMS::query()->where('user_id', $user->id)->delete();
+        $sms= new UserSMS();
+        $sms->user_id= $user->id;
 
         //TODO :: MAYBE THIS NUMBERS SHOULD BE LOADED FROM DYNAMIC CONFIG SETTINGS IN ADMIN PANEL
-        if ($user->sms_wrong_sms_tries > 20) {
+        if ($sms->sms_wrong_sms_tries > 20) {
             $lockTimeSec = 1200;
         }
 
-        if ($user->sms_lock_until && Carbon::now()->lte($user->sms_lock_until)) {
+        if ($sms->sms_lock_until && Carbon::now()->lte($sms->sms_lock_until)) {
             // Don't send sms and generate new token if locked
-            $lockTimeSec = Carbon::now()->diffInSeconds($user->sms_lock_until);
+            $lockTimeSec = Carbon::now()->diffInSeconds($sms->sms_lock_until);
         } else {
             // Generate token
-            if (empty($user->sms_token) || $user->sms_this_token_tries >= self::NEW_TOKEN_INTERVAL) {
+            if (empty($sms->sms_token) || $sms->sms_this_token_tries >= self::NEW_TOKEN_INTERVAL) {
                  $token = generateMemorableVerificationCode();
             } else {
-                $token = $user->sms_token;
+                $token = $sms->sms_token;
             }
             // Save token
             $verifyUser = VerificationCode::create([
@@ -79,12 +83,13 @@ class UserOtpAuthController extends Controller
             ]);
 
             // Update user
-            $user->sms_token = $token;
-            $user->sms_lock_until = Carbon::now()->addSeconds($lockTimeSec);
-            $user->sms_wrong_sms_tries++;
-            $user->sms_this_token_tries = 0;
+            $sms->sms_token = $token;
+            $sms->sms_lock_until = Carbon::now()->addSeconds($lockTimeSec);
+            $sms->sms_wrong_sms_tries++;
+            $sms->sms_this_token_tries = 0;
 
             $user->save();
+            $sms->save();
 
             KavenegarVerificationSMS::dispatch($verifyUser)->onQueue('sms');
         }
@@ -107,33 +112,30 @@ class UserOtpAuthController extends Controller
         $user = User::select([
             'id',
             'mobile',
-            'sms_token',
-            'sms_lock_until',
-            'sms_this_token_tries',
-            'sms_wrong_sms_tries'
         ])->where('mobile', $request->input('mobile'))
+            ->with('sms')
             ->firstOrFail();
 
         // Add tries
-        $user->sms_this_token_tries++;
+        $user->sms->sms_this_token_tries++;
         $user->save();
 
         // Prevent too many tries
-        if ($user->sms_this_token_tries > self::NEW_TOKEN_INTERVAL) {
+        if ($user->sms->sms_this_token_tries > self::NEW_TOKEN_INTERVAL) {
             return redirect()->route('student.auth.otp.verify', ['mobile' => $request->input('mobile')])->with('error', 'پیامک دیگری برایتان ارسال شد');
         }
 
         // Check token
         $token = $request->input('otp');
-        if ($user->sms_token != $token) {
+        if ($user->sms->sms_token != $token) {
             return redirect()->route('student.auth.otp.verify', ['mobile' => $request->input('mobile')])->with('error', 'کد وارد شده صحیح نمیباشد لطفا مجددا وارد کنید');
         }
 
-        $user->sms_this_token_tries = 0;
-        $user->sms_wrong_sms_tries = 0;
-        $user->sms_lock_until = null;
-        $user->sms_token = null;
-        $user->save();
+        $user->sms->sms_this_token_tries = 0;
+        $user->sms->sms_wrong_sms_tries = 0;
+        $user->sms->sms_lock_until = null;
+        $user->sms->sms_token = null;
+        $user->sms->save();
 
         Auth::guard('student')->login($user);
 
