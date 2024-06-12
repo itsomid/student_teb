@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\ProductTypeEnum;
 use App\Models\Product;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Arr;
@@ -86,7 +87,16 @@ class ProductFactory extends Factory
     {
         return $this->state(function(array $attributes){
             return [
-                'product_type_id' => 2
+                'product_type_id' => ProductTypeEnum::CLASSES
+            ];
+        });
+    }
+
+    public function package(): Factory
+    {
+        return $this->state(function(array $attributes){
+            return [
+                'product_type_id' => ProductTypeEnum::CUSTOM_PACKAGE
             ];
         });
     }
