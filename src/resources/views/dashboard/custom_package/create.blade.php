@@ -48,7 +48,7 @@
                     <div class="col-md-6 mb-1">
                         <div class="form-group mt-3">
                             <label class="form-label" for="user_id">استاد:</label>
-                            <x-teacher-selection-component input-name="user_id"></x-teacher-selection-component>
+                            <x-teacher-selection-component input-name="user_id" default-value="{{ (int)old('user_id') }}"></x-teacher-selection-component>
                             @error('user_id')<small class="text-danger">{{$message}}</small>@enderror
                         </div>
                     </div>

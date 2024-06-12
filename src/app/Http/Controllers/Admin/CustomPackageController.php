@@ -68,14 +68,13 @@ class CustomPackageController extends Controller
             $data = [];
 
             foreach($sections as $section) {
-                $section = json_decode($section);
                 $data['product_id'] = $new_product->id;
-                $data['section_name'] = $section->title;
+                $data['section_name'] = $section['title'];
 
                 $package = CustomPackage::query()->create($data);
-                foreach ($section->courses as $course) {
+                foreach ($section['courses'] as $course) {
                     $package->items()->create([
-                        'product_id' => $course->id
+                        'product_id' => $course['id']
                     ]);
                 }
             }
@@ -94,6 +93,7 @@ class CustomPackageController extends Controller
             return redirect(route('admin.custom-package.index'));
         }catch (Throwable $e){
             report($e);
+            dd($e->getMessage());
             DB::rollBack();
             Toast::message('ساخت پکیج سفارشی با شکست مواجه شد.')->danger()->notify();
             return redirect(route('admin.custom-package.index'));
@@ -133,15 +133,14 @@ class CustomPackageController extends Controller
             $data = [];
 
             foreach($sections as $section) {
-                $section = json_decode($section);
                 $data['product_id'] = $product->id;
-                $data['section_name'] = $section->title;
+                $data['section_name'] = $section['title'];
                 $package = $product->packages()->create($data);
 
                 $package->items()->delete();
-                foreach ($section->courses as $course) {
+                foreach ($section['courses'] as $course) {
                     $package->items()->create([
-                        'product_id' => $course->id
+                        'product_id' => $course['id']
                     ]);
                 }
             }
@@ -160,7 +159,6 @@ class CustomPackageController extends Controller
             return redirect(route('admin.custom-package.index'));
         }catch (Throwable $e){
             report($e);
-            dd($e->getMessage());
             DB::rollBack();
             Toast::message('ویرایش پکیج سفارشی با شکست مواجه شد.')->danger()->notify();
             return redirect(route('admin.custom-package.index'));

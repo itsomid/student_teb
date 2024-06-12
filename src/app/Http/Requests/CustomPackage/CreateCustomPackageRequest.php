@@ -14,6 +14,13 @@ class CreateCustomPackageRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'sections' => array_map(fn($sec) => json_decode($sec, true), $this->sections)
+        ]);
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -21,6 +28,7 @@ class CreateCustomPackageRequest extends FormRequest
      */
     public function rules(): array
     {
+
         return [
             'user_id' => ['required', 'exists:admins,id'],
             'original_price' => ['required', 'numeric'],
@@ -31,19 +39,23 @@ class CreateCustomPackageRequest extends FormRequest
             'options.fake_price' => ['nullable', 'numeric'],
             'options.full_price_show' => ['nullable', 'numeric'],
             'name' => ['required', 'max:255'],
-            'is_purchasable' => ['nullable', 'boolean'],
-            'has_installment' => ['nullable', 'boolean'],
-            'show_in_list' => ['nullable', 'boolean'],
+            'is_purchasable' => ['nullable'],
+            'has_installment' => ['nullable'],
+            'show_in_list' => ['nullable'],
             'installment_count' => ['nullable', 'integer'],
             'first_installment_ratio' => ['nullable', 'integer'],
             'first_installment_amount' => ['nullable', 'numeric'],
             'final_installment_date' => ['nullable', 'string'],
-            'sections' => ['required','array'],
-            'sections.*.id' => ['required','integer'],
-            'sections.*.title' => ['required','string'],
-            'sections.*.courses.*.id' => ['required','exists:products,id'],
-            'sections.*.courses.*.name' => ['required','string'],
+            'sections' => ['required', 'array'],
+            'sections.*.id' => ['required', 'integer'],
+            'sections.*.title' => ['required', 'string'],
+            'sections.*.courses' => ['required', 'array'],
+            'sections.*.courses.*.id' => ['required', 'integer', 'exists:products,id'],
+            'sections.*.courses.*.name' => ['required', 'string'],
+            'sections.*.courses.*.image_src' => ['sometimes', 'string'],
             'img_filename' => ['required', 'image']
         ];
     }
+
+
 }
