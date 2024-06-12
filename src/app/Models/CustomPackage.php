@@ -16,7 +16,6 @@ class CustomPackage extends Model
         'courses',
         'product_id',
         'section_name',
-        'holding_date'
     ];
     /**
      * @return HasMany

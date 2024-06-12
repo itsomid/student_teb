@@ -33,9 +33,9 @@
                     </div>
                     <div class="col-md-6  mb-1">
                         <div class="form-group">
-                            <label for="holding_date">زمان برگزاری:</label>
-                            <input name="holding_date" type="text" id="holding_date" class="form-control" data-jdp>
-                            @error('holding_date')<small class="text-danger">{{$message}}</small>@enderror
+                            <label for="subscription_start_at">زمان برگزاری:</label>
+                            <input name="subscription_start_at" type="text" id="subscription_start_at" class="form-control" data-jdp>
+                            @error('subscription_start_at')<small class="text-danger">{{$message}}</small>@enderror
                         </div>
                     </div>
                     <div class="col-md-6  mb-1">

@@ -35,7 +35,8 @@ class Product extends Model
         'show_in_list',
         'archived',
         'expiration_duration',
-        'sort_num'
+        'sort_num',
+        'subscription_start_at'
     ];
 
     protected function casts(): array
