@@ -8,6 +8,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Hash;
 
 class LockTimeController extends Controller
 {
@@ -20,7 +21,8 @@ class LockTimeController extends Controller
         $user_mobile = $request->mobile;
 
         $user = User::firstOrCreate(
-            ['mobile' => $user_mobile]
+            ['mobile' => $user_mobile],
+            ['password' => Hash::make(rand()), 'verified' => 0]
         );
 
         return now()->lte($user->sms_lock_until)

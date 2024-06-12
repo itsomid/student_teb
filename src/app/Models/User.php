@@ -116,7 +116,7 @@ class User extends Authenticatable
     public function generateToken()
     {
         return
-            env('APP_ENV') === 'local'
+            config('app.env') === 'local'
                 ? 11111
                 : mt_rand(10000, 99999);
     }

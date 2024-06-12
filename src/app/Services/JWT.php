@@ -33,7 +33,7 @@ class JWT
 
     private function getPrivateKey()
     {
-        return env('JWT_KEY');
+        return config('services.jwt.key');
     }
 
     public function payload($payload): self

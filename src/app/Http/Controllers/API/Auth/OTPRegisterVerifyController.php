@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
-use App\Models\VerifyUser;
+
 use App\Rules\RequestValidRule;
 use App\Services\JWT;
 use Illuminate\Http\Request;
@@ -39,10 +39,8 @@ class OTPRegisterVerifyController extends Controller
         $user->sms_wrong_sms_tries = 0;
         $user->sms_lock_until = null;
         $user->sms_token = null;
-        $user->ip = request()->getClientIp();
         $user->verified = true;
         $user->save();
-
 
         return response()->json(['verified' => true], Response::HTTP_OK);
     }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\OTPLoginRequest;
 use App\Http\Resources\UserResource;
 use App\Models\VerificationCode;
 use App\Rules\RequestValidRule;
@@ -13,12 +14,8 @@ use App\Models\User;
 
 class OTPLoginVerifyController extends Controller
 {
-    public function __invoke(Request $request)
+    public function __invoke(OTPLoginRequest $request)
     {
-        $this->validate($request,[
-            'mobile' => 'required|digits:11',
-            'token' => ['required', 'digits:5', 'bail', new RequestValidRule($request->mobile)],
-        ]);
 
         $user = User::where('mobile', $request->mobile)->firstOrFail();
 
@@ -39,11 +36,10 @@ class OTPLoginVerifyController extends Controller
         $user->sms_wrong_sms_tries = 0;
         $user->sms_lock_until = null;
         $user->sms_token = null;
-        $user->ip = request()->getClientIp();
         $user->verified = true;
         $user->save();
 
-        VerificationCode::query()->where('mobile', $user->mobile)->delete();
+        VerificationCode::query()->where('receptor', $user->mobile)->delete();
 
         //Give JWT
         return response([

@@ -7,6 +7,7 @@ use App\Http\Requests\Auth\PasswordLoginRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Models\VerificationCode;
+
 use App\Services\JWT;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -21,13 +22,11 @@ class PasswordLoginController extends Controller
         // Check token
         if(!$user || (!Hash::check($request->password,$user->password)))
         {
-            cache()->increment(\request()->ip());
             return response([
                 'message' => 'نام کاربری یا رمز عبور اشتباه است.'
             ], Response::HTTP_FORBIDDEN);
         }
 
-        $user->ip = request()->getClientIp();
         $user->save();
 
         return response([

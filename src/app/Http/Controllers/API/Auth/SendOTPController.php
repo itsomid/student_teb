@@ -6,10 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Jobs\KavenegarVerificationSMS;
 use App\Models\User;
 use App\Models\VerificationCode;
-use App\Models\VerifyUser;
+
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Hash;
 
 class SendOTPController extends Controller
 {
@@ -23,7 +24,10 @@ class SendOTPController extends Controller
 
         $lockTimeSec = 60;
 
-        $user = User::firstOrCreate(['mobile' => $user_mobile]);
+        $user = User::firstOrCreate(
+            ['mobile' => $user_mobile],
+            ['password' => Hash::make('111111'), 'verified' => 0]
+        );
 
         if ($user->sms_wrong_sms_tries > 20)
             $lockTimeSec = 1200;
@@ -34,19 +38,18 @@ class SendOTPController extends Controller
 
 
         // Generate token
-        $token= $user->canGenerateToken()
+        $code= $user->canGenerateToken()
             ? $user->generateToken()
             : $user->sms_token;
 
         // Save token
         $verifyUser = VerificationCode::create([
-            'mobile'=> $user_mobile,
-            'token' => $token,
-            'ip'    => $request->ip(),
+            'receptor' => $request->mobile,
+            'code' => $code,
         ]);
 
         // Update user
-        $user->sms_token = $token;
+        $user->sms_token = $code;
         $user->sms_lock_until = Carbon::now()->addSeconds($lockTimeSec);
         $user->sms_wrong_sms_tries++;
         $user->sms_this_token_tries = 0;
@@ -55,14 +58,14 @@ class SendOTPController extends Controller
 
         $this->sendSmsKaveNegar($verifyUser);
 
-        return response(['opt_result' => true ], Response::HTTP_CREATED);
+        return response(['code'=>$code,'opt_result' => true ], Response::HTTP_CREATED);
     }
 
 
     public function sendSmsKaveNegar($verifyUser)
     {
-        if (env('APP_ENV') !== 'local') {
-            KavenegarVerificationSMS::dispatch($verifyUser);
+        if (config('app.env') !== 'local') {
+            KavenegarVerificationSMS::dispatch($verifyUser)->onQueue('sms');
         }
     }
 }

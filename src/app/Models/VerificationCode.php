@@ -13,7 +13,6 @@ class VerificationCode extends Model
         return [
             'user_id'    => $userId,
             'expired_at' => now()->addMinutes(env('EXPIRATION_PER_MINUTES'))->getTimestamp(),
-            'ip'         => request()->getClientIp()
         ];
     }
 }
