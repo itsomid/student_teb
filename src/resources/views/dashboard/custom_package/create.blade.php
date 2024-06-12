@@ -75,8 +75,7 @@
                             <select id="familiarity_way" class="form-select text-capitalize mb-md-0 " multiple name="categories">
                                 <option value="">انتخاب نشده</option>
                                 @foreach($categories as $category)
-{{--                                    @if(in_array($category->id, old('categories') ?? [])) selected @endif--}}
-                                    <option  value="{{ $category->id }}">{{ $category->name }}</option>
+                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
                                 @endforeach
                             </select>
                             @error('categories')<small class="text-danger">{{$message}}</small>@enderror
