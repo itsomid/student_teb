@@ -17,7 +17,6 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(Product::class)->constrained()->cascadeOnDelete();
             $table->string('section_name');
-            $table->timestamp('holding_date')->nullable();
             $table->timestamps();
         });
 

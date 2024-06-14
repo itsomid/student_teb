@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 use App\Models\Classes;
 use App\Models\Course;
+use App\Models\CustomPackage;
+use App\Models\CustomPackageItem;
 use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Database\Seeder;
@@ -18,7 +20,12 @@ class ProductSeeder extends Seeder
         Category::factory(40)->create();
 
         $products= Product::factory(11)->course()->has(
-            Course::factory()->count(1)
+            Course::factory()->count(1),
+        )->create();
+
+        //create package
+        Product::factory(10)->package()->has(
+            CustomPackage::factory()->count(3)->has(CustomPackageItem::factory()->count(3), 'items'), 'packages'
         )->create();
 
         foreach ($products as $product)
