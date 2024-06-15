@@ -58,14 +58,7 @@
                     <div class="col-md-6 mb-1">
                         <div class="form-group mt-3">
                             <label class="form-label" for="city">استاد:</label>
-                            <dynamic-select
-                                url="{{route('api.user.index', ['role' => 'teacher'])}}"
-                                label="اننتخاب استاد"
-                                input_name="user_id"
-                                default_selected="{{old('user_id')}}"
-                                option_title="name"
-                                option_value="id"
-                            ></dynamic-select>
+                            <x-admin-selection-component input-name="user_id" role="teacher" placeholder-name="لطفا استاد را انتخاب کنید"></x-admin-selection-component>
                         </div>
                     </div>
 
@@ -150,7 +143,7 @@
                                        role="switch"
                                        id="is_purchasable"
                                        name="is_purchasable"
-                                      {{old('is_purchasable') == 1 ? 'checked' : '' }}>
+                                    {{old('is_purchasable') == 1 ? 'checked' : '' }}>
                                 @error('is_purchasable')<small class="text-danger">{{$message}}</small>@enderror
                             </div>
                         </div>
@@ -165,7 +158,7 @@
                                        role="switch"
                                        id="has_installment"
                                        name="has_installment"
-                                       {{old('has_installment') == 1 ? 'checked' : '' }}>
+                                    {{old('has_installment') == 1 ? 'checked' : '' }}>
                                 @error('has_installment')<small class="text-danger">{{$message}}</small>@enderror
                             </div>
                         </div>
@@ -180,7 +173,7 @@
                                        id="show_in_list"
                                        name="show_in_list"
                                        value="1"
-                                       {{old('show_in_list') == 1 ? 'checked' : '' }}>
+                                    {{old('show_in_list') == 1 ? 'checked' : '' }}>
                                 @error('show_in_list')<small class="text-danger">{{$message}}</small>@enderror
                             </div>
                         </div>
@@ -195,7 +188,7 @@
                                        role="switch"
                                        id="qa_status"
                                        name="qa_status"
-                                       {{old('qa_status') == 1 ? 'checked' : '' }}>
+                                    {{old('qa_status') == 1 ? 'checked' : '' }}>
                                 @error('show_in_list')<small class="text-danger">{{$message}}</small>@enderror
                             </div>
                         </div>
@@ -396,6 +389,13 @@
 
 @endsection
 
-@section('scripts')
-    @vite(['resources/assets/js/jalalidatepicker.js'])
+@section('vendor-script')
+    @vite(['resources/assets/vendor/libs/select2/select2.js',
+            'resources/assets/vendor/js/forms-selects.js',
+            'resources/assets/js/jalalidatepicker.js'
+          ])
 @endsection
+@section('vendor-style')
+    @vite(['resources/assets/vendor/libs/select2/select2.scss'])
+@endsection
+
