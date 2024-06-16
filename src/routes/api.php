@@ -33,6 +33,7 @@ Route::post('lock_time',        [LockTimeController::class,                '__in
 Route::post('/cart/{product}/add', [CartController::class, 'add']);
 Route::delete('/cart/{product}/remove', [CartController::class, 'remove']);
 Route::post('/cart/change-installment', [CartController::class, 'changeToInstallmentCart']);
+Route::get('/carts', [CartController::class, 'lists']);
 
 Route::name('api.')->group(callback: function () {
     Route::get('/users', [UserController::class, 'index'])->name('user.index');
