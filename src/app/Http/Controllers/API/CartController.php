@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Enums\ProductTypeEnum;
+use App\Http\Resources\Api\Cart\CartListCollection;
 use App\Models\Product;
 use App\ShoppingCart\CartAdaptor;
 use App\ShoppingCart\Exceptions\ItemDoesNotExistsInShoppingCart;
@@ -11,10 +12,20 @@ use App\ShoppingCart\Exceptions\ItemNotInstallmentableException;
 use App\ShoppingCart\Exceptions\ProductDoesNotExistsException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Throwable;
 
 class CartController
 {
+    public function lists()
+    {
+        CartAdaptor::init(1);
+        $items = CartAdaptor::getItems();
+        dd($items[0]);
+        return response(
+            new CartListCollection($items)
+        );
+    }
     public function add(Product $product)
     {
         CartAdaptor::init(1);
@@ -55,7 +66,7 @@ class CartController
         ]);
         $isInstallment = $request->input('is_installment');
 
-        CartAdaptor::init(1);
+        CartAdaptor::init(Auth::id());
 
         try{
             CartAdaptor::changeInstallment($isInstallment);
@@ -81,7 +92,7 @@ class CartController
 
     public function remove(Product $product)
     {
-        CartAdaptor::init(1);
+        CartAdaptor::init(Auth::id());
 
         try{
             CartAdaptor::remove($product->id);
