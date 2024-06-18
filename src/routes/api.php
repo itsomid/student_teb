@@ -27,11 +27,6 @@ Route::post('registering',      [RegisterController::class,                '__in
 Route::get('captcha_reload',    [ReloadCaptchaController::class,           '__invoke']);
 Route::post('lock_time',        [LockTimeController::class,                '__invoke']);
 
-Route::post('/carts/add', [CartController::class, 'add']);
-Route::delete('/carts/{product}/remove', [CartController::class, 'remove']);
-Route::post('/carts/change-installment', [CartController::class, 'changeToInstallmentCart']);
-Route::get('/carts', [CartController::class, 'lists']);
-
 Route::middleware('checkJWT')->group(callback: function () {
 
     Route::get('/store', [StoreController::class, 'store']);
@@ -40,6 +35,12 @@ Route::middleware('checkJWT')->group(callback: function () {
     Route::post('/cart/{product}/add', [CartController::class, 'add']);
     Route::delete('/cart/{product}/remove', [CartController::class, 'remove']);
     Route::post('/cart/change-installment', [CartController::class, 'changeToInstallmentCart']);
+
+    //Cart
+    Route::post('/carts/add', [CartController::class, 'add']);
+    Route::delete('/carts/{product}/remove', [CartController::class, 'remove']);
+    Route::post('/carts/change-installment', [CartController::class, 'changeToInstallmentCart']);
+    Route::get('/carts', [CartController::class, 'lists']);
 
 });
 
