@@ -3,7 +3,8 @@
 namespace App\Http\Controllers\API\Auth;
 
 use App\Http\Controllers\Controller;
-use app\Http\Requests\Api\Auth\PasswordLoginRequest;
+
+use app\Http\Requests\API\Auth\PasswordLoginRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Models\VerificationCode;

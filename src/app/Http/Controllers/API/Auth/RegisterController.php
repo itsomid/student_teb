@@ -3,12 +3,11 @@
 namespace App\Http\Controllers\API\Auth;
 
 use App\Http\Controllers\Controller;
-use app\Http\Requests\Api\Auth\RegisterRequest;
+use app\Http\Requests\API\Auth\RegisterRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Models\VerificationCode;
 use App\Services\JWT;
-use App\Services\Register;
 use Illuminate\Http\Response;
 
 class RegisterController extends Controller

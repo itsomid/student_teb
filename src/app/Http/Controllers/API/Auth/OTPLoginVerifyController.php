@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\API\Auth;
 
 use App\Http\Controllers\Controller;
-use app\Http\Requests\Api\Auth\OTPLoginRequest;
+use app\Http\Requests\API\Auth\OTPLoginRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Models\VerificationCode;
