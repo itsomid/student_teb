@@ -16,6 +16,11 @@ function generatePassword() : string
             Arr::random([11, 22 , 33 , 44 , 55 , '00']);
 }
 
+function verificationToken() : string
+{
+    return  rand(10000, 99999);
+}
+
 function generateMemorableVerificationCode() : string
 {
     $firstNumber=  rand(1,9);

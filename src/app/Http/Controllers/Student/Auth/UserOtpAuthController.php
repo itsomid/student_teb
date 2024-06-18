@@ -72,7 +72,7 @@ class UserOtpAuthController extends Controller
         } else {
             // Generate token
             if (empty($sms->sms_token) || $sms->sms_this_token_tries >= self::NEW_TOKEN_INTERVAL) {
-                 $token = generateMemorableVerificationCode();
+                 $token = verificationToken();
             } else {
                 $token = $sms->sms_token;
             }

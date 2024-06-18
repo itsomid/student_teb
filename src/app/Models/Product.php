@@ -6,6 +6,7 @@ use App\Enums\ProductTypeEnum;
 use App\Filters\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -55,6 +56,34 @@ class Product extends Model
         }
         return $result;
     }
+
+
+    public function getPrice()
+    {
+        if ($this->is_purchasable) {
+            if ($this->get_product_attr('fake_price')) {
+                return static::formatPrice($this->get_product_attr('fake_price'));
+            }elseif ($this->price>0) {
+                return static::formatPrice($this->price);
+            }else{
+                return "رایگان";
+            }
+        }else{
+            return "قابل خرید مجزا نمی باشد";
+        }
+    }
+
+    public function get_product_attr($attr_name)
+    {
+        if ($this->options) {
+            $options = $this->options;
+            if ($options && is_array($options) && array_key_exists($attr_name, $options) && $options[$attr_name]) {
+                return $options[$attr_name];
+            }
+        }
+        return null;
+    }
+
     public static function getProductsTree()
     {
         //new Algorithm - By M.Majidfar
@@ -148,6 +177,11 @@ class Product extends Model
     public function categories(): BelongsToMany
     {
         return $this->belongsToMany(Category::class);
+    }
+
+    public function teacher(): BelongsTo
+    {
+        return $this->belongsTo(Admin::class, 'user_id');
     }
 
     public function getImageSrc()

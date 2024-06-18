@@ -7,9 +7,7 @@ use App\Http\Requests\Auth\PasswordLoginRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Models\VerificationCode;
-
 use App\Services\JWT;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
 
