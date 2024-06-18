@@ -46,10 +46,10 @@ class PackageItem implements CartItemInterface
      */
     public function __construct(
         public int $product_id,
-        public ?int $coupon_id,
-        public int $user_id,
-        public bool $is_installment,
-        public array $packageItems
+        public ?int $coupon_id = null,
+        public int $user_id = 0,
+        public bool $is_installment = false,
+        public array $packageItems = []
     ) {
         if (!Product::query()->where('id', $this->product_id)->exists()) {
             throw new ProductDoesNotExistsException("Product Does Not Exist, product_id: {$this->product_id}");

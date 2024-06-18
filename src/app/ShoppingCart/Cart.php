@@ -206,7 +206,7 @@ class Cart
      */
     public function applyCoupon(int $coupon_id): void
     {
-        $this->items = $this->items->map(function (CourseItem $item) use($coupon_id){
+        $this->items = $this->items->map(function (CartItemInterface $item) use($coupon_id){
             if ($this->couponValidator->isCouponValid($coupon_id, $this->user, $item->getModel()->product)) {
                 return tap($item)->changeCouponId($coupon_id)->update();
             }
@@ -221,7 +221,7 @@ class Cart
      */
     public function getPayableAmount(): int
     {
-        $sum = $this->items->reduce(fn (?int $carry, CourseItem $item) =>
+        $sum = $this->items->reduce(fn (?int $carry, CartItemInterface $item) =>
         ($carry + $item->getCalcPrice())
             , 0);
 
@@ -235,7 +235,7 @@ class Cart
      */
     public function getTotalTax(): int
     {
-        $sum = $this->items->reduce(fn (?int $carry, CourseItem $item) =>
+        $sum = $this->items->reduce(fn (?int $carry, CartItemInterface $item) =>
         ($carry + $item->getTax())
             , 0);
 
@@ -249,7 +249,7 @@ class Cart
      */
     public function getTotal(): int
     {
-        $sum = $this->items->reduce(fn (?int $carry, CourseItem $item) =>
+        $sum = $this->items->reduce(fn (?int $carry, CartItemInterface $item) =>
         ($carry + $item->getPriceWithDiscount())
             , 0);
 

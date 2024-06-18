@@ -12,6 +12,7 @@ use Exception;
  * Provides a static interface for managing the shopping cart.
  *
  * @package App\ShoppingCart
+ * @method static void getItems()
  */
 class CartAdaptor
 {
@@ -58,17 +59,19 @@ class CartAdaptor
             resolve(CourseItem::class, ['product_id' => $productId])
         );
     }
+
     /**
      * Add a package to the cart by its ID.
      *
      * @param int $productId ID of the product to add
-     * @throws ItemExistsInShoppingCart If the product already exists in the cart
+     * @param array $productSelected
      * @return void
+     * @throws ItemExistsInShoppingCart If the product already exists in the cart
      */
-    public static function addPackage(int $productId): void
+    public static function addPackage(int $productId, array $productSelected): void
     {
         static::$cartInstance->add(
-            resolve(PackageItem::class, ['product_id' => $productId])
+            resolve(PackageItem::class, ['product_id' => $productId, 'packageItems' => $productSelected])
         );
     }
 

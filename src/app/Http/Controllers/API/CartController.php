@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\API;
 
 use App\Enums\ProductTypeEnum;
+use App\Http\Requests\Api\Cart\AddRequest;
+use App\Http\Resources\Api\Cart\CartListCollection;
 use App\Models\Product;
 use App\ShoppingCart\CartAdaptor;
 use App\ShoppingCart\Exceptions\ItemDoesNotExistsInShoppingCart;
@@ -11,18 +13,42 @@ use App\ShoppingCart\Exceptions\ItemNotInstallmentableException;
 use App\ShoppingCart\Exceptions\ProductDoesNotExistsException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Throwable;
 
 class CartController
 {
-    public function add(Product $product)
+
+    /**
+     * Get User ID
+     * @var int
+     */
+    private int $userId;
+    public function __construct()
     {
-        CartAdaptor::init(1);
+        $this->userId = Auth::guard('student')->id();
+    }
+
+    public function lists()
+    {
+        CartAdaptor::init($this->userId);
+        $items = CartAdaptor::getItems();
+        $userCredit = Auth::guard('student')->user()->credit;
+//        dd($items[0]->getModel()->packages[0]-, $items);
+        return response(
+            new CartListCollection($items, $userCredit)
+        );
+    }
+    public function add(AddRequest $request)
+    {
+        $product = Product::query()->find($request->input('product_id'));
+
+        CartAdaptor::init($this->userId);
         try{
             if ($product->product_type_id === ProductTypeEnum::COURSE){
                 CartAdaptor::addCourse($product->id);
             }elseif ($product->product_type_id === ProductTypeEnum::CUSTOM_PACKAGE){
-                CartAdaptor::addPackage($product->id);
+                CartAdaptor::addPackage($product->id, $request->input('package_items'));
             }
         }catch (ProductDoesNotExistsException){
             return response(
@@ -55,7 +81,7 @@ class CartController
         ]);
         $isInstallment = $request->input('is_installment');
 
-        CartAdaptor::init(1);
+        CartAdaptor::init(Auth::guard('student')->id());
 
         try{
             CartAdaptor::changeInstallment($isInstallment);
@@ -81,7 +107,7 @@ class CartController
 
     public function remove(Product $product)
     {
-        CartAdaptor::init(1);
+        CartAdaptor::init($this->userId);
 
         try{
             CartAdaptor::remove($product->id);
