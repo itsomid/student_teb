@@ -2,6 +2,7 @@
 
 namespace App\Rules;
 
+use App\Models\VerificationCode;
 use App\Models\VerifyUser;
 use Illuminate\Contracts\Validation\Rule;
 

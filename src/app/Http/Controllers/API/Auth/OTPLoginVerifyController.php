@@ -3,14 +3,12 @@
 namespace App\Http\Controllers\API\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Auth\OTPLoginRequest;
+use App\Http\Requests\Api\Auth\OTPLoginRequest;
 use App\Http\Resources\UserResource;
-use App\Models\VerificationCode;
-use App\Rules\RequestValidRule;
-use App\Services\JWT;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use App\Models\User;
+use App\Models\VerificationCode;
+use App\Services\JWT;
+use Illuminate\Http\Response;
 
 class OTPLoginVerifyController extends Controller
 {
