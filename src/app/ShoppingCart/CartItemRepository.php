@@ -10,7 +10,7 @@ class CartItemRepository
     public function findByUserId(int $userId): Collection
     {
         return CartItemModel::query()
-            ->with('product:id,original_price,installment_count,first_installment_ratio,final_installment_date,has_installment,off_price', 'coupon:id,coupon,discount_amount,discount_percentage')
+            ->with('product', 'coupon:id,coupon,discount_amount,discount_percentage')
             ->where('user_id', $userId)
             ->get()
             ->map(function($item) {
