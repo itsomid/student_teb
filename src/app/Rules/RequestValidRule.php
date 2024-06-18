@@ -2,7 +2,7 @@
 
 namespace App\Rules;
 
-use App\Models\VerifyUser;
+use App\Models\VerificationCode;
 use Illuminate\Contracts\Validation\Rule;
 
 class RequestValidRule implements Rule
@@ -26,10 +26,9 @@ class RequestValidRule implements Rule
      */
     public function passes($attribute, $value)
     {
-        return VerifyUser::query()
-            ->where('mobile', $this->mobile)
-            ->where('token', $value)
-            ->where('ip', request()->getClientIp())
+        return VerificationCode::query()
+            ->where('receptor', $this->mobile)
+            ->where('code', $value)
             ->where('created_at', '>', now()->subMinutes(10))
             ->exists();
     }
@@ -41,6 +40,6 @@ class RequestValidRule implements Rule
      */
     public function message()
     {
-        return 'Your request is invalid.';
+        return 'کد وارد شده صحیح نمیباشد لطفا مجددا وارد کنید.';
     }
 }

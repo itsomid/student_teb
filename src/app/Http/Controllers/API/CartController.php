@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Enums\ProductTypeEnum;
 use App\Http\Requests\Api\Cart\AddRequest;
-use App\Http\Resources\Api\Cart\CartListCollection;
+use App\Http\Resources\StudentPanel\Cart\CartListCollection;
 use App\Models\Product;
 use App\ShoppingCart\CartAdaptor;
 use App\ShoppingCart\Exceptions\ItemDoesNotExistsInShoppingCart;

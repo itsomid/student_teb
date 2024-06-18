@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources\Api\Cart;
+namespace App\Http\Resources\StudentPanel\Cart;
 
 use App\ShoppingCart\CartAdaptor;
 use App\ShoppingCart\PackageItem;
