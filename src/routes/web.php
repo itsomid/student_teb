@@ -10,6 +10,7 @@ Route::view('/', 'welcome');
 //TODO:: REFACTOR AND REPLACE THIS CODES TO CONTROLLER
 
 Route::view('/bank' , 'bank.bank');
+
 Route::get('/go_to_gateway', function (){
     try {
         $gateway= \App\Services\PaymentGateway\Gateway::initial();
@@ -40,8 +41,9 @@ Route::any('/callback_from_gateway', function (){
 
     try {
         $gateway = \App\Services\PaymentGateway\Gateway::initial();
-
         $gateway = $gateway->verify($transaction);
+
+        //TODO:: CREATE TRANSACTION
     }catch (Exception $exception){
         return view('bank.callback')->with('error_message', $exception->getMessage());
     }

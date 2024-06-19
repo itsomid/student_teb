@@ -107,10 +107,22 @@ class Zarinpal extends PortAbstract implements PortInterface
             'Content-Type' => 'application/json',
         ])->post($this->verificationPath, $data);
 
-        $result = json_decode($response->getBody()->getContents());
+        $result = json_decode($response->getBody()->getContents(), true);
 
-        if($response->status() != 200 || $response->status() != 201);
-            throw new NotPaidException();
+        if(isset($result['errors']) && isset($result['errors']['code']) && $result['errors']['code'] != 100)
+        {
+            $this->setDescription('هنگام تایید تراکنش، بانک پاسخ نداد.');
+            $this->transactionFailed();
+            throw new NotPaidException;
+        }
+
+
+        if($response->status() != 200 || $response->status() != 201)
+        {
+            $this->setDescription('هنگام تایید تراکنش، بانک پاسخ نداد.');
+            $this->transactionFailed();
+            throw new BankException();
+        }
 
         $this->refId =  $result->data->ref_id;
         $this->urlid = $authority;
