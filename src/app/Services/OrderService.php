@@ -48,6 +48,7 @@ class OrderService
                         'product_id' => $course->product_id,
                         'final_price' => $amount_temp,
                         'product_price' => $course->product->original_price,
+                        'discount_price' => 0
                     ]);
                     $this->accessProduct($course->product_id, $itemModel->id);
 
@@ -58,6 +59,7 @@ class OrderService
                 'product_id' => $item->product_id,
                 'final_price' => $item::IS_PACKAGE ? 0 : $item->getCalcPrice(),
                 'product_price' => $item->getModel()->product->original_price,
+                'discount_price' => 0
             ]);
 
             $this->accessProduct($item->product_id, $itemModel->id);
