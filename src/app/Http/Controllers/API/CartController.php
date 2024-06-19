@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Enums\ProductTypeEnum;
-use App\Http\Requests\Api\Cart\AddRequest;
+use App\Http\Requests\API\Cart\AddRequest;
 use App\Http\Resources\StudentPanel\Cart\CartListCollection;
 use App\Models\Product;
 use App\ShoppingCart\CartAdaptor;
