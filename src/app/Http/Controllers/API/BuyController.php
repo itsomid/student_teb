@@ -26,16 +26,21 @@ class BuyController extends Controller
         $payableForBank = CartAdaptor::getPayableAmount() - $auth->user()->credit;
 
         if ($payableForBank > 0){
-//            DB::beginTransaction();
-//            try{
+            DB::beginTransaction();
+            try{
                 $this->orderService->buy($auth->id());
-//                DB::commit();
-//            }catch (Throwable){
-//                DB::rollBack();
-//            }
-            return response([
-                'message' => 'سفارش با موفقیت انجام شد'
-            ], Response::HTTP_CREATED);
+                DB::commit();
+                return response([
+                    'message' => 'سفارش با موفقیت انجام شد'
+                ], Response::HTTP_CREATED);
+            }catch (Throwable $e){
+                report($e);
+                DB::rollBack();
+                return response([
+                    'message' => 'مشکلی پیش آمده است لطفا بعدا تلاش کنید' . $e->getMessage()
+                ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            }
+
         }
 
         return response([
