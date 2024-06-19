@@ -28,10 +28,10 @@ Route::middleware('checkJWT')->group(callback: function () {
     Route::get('/store/product-detail/{product}', [StoreController::class, 'storeItem']);
 
     //Cart
-    Route::post('/cart/add', [CartController::class, 'add']);
-    Route::delete('/cart/{product}/remove', [CartController::class, 'remove']);
-    Route::post('/cart/change-installment', [CartController::class, 'changeToInstallmentCart']);
-    Route::get('/cart', [CartController::class, 'lists']);
+    Route::post('/carts/add', [CartController::class, 'add']);
+    Route::delete('/carts/{product}/remove', [CartController::class, 'remove']);
+    Route::post('/carts/change-installment', [CartController::class, 'changeToInstallmentCart']);
+    Route::get('/carts', [CartController::class, 'lists']);
 });
 
 
