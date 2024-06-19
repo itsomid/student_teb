@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Enums\OrderStatusEnum;
 use App\Enums\ProductAccessType;
+use App\Events\OrderCreated;
 use App\Models\ProductAccess;
 use App\Models\User;
 use App\ShoppingCart\CartAdaptor;
@@ -61,7 +62,7 @@ class OrderService
 
             $this->accessProduct($item->product_id, $itemModel->id);
             CartAdaptor::remove($item->product_id);
-
+            OrderCreated::dispatch($order);
         });
     }
 
