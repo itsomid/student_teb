@@ -23,8 +23,20 @@ class AddRequest extends FormRequest
     {
         return [
             'product_id' => ['required', 'exists:products,id'],
-            'package_items' => ['array'],
-            'package_items.*' => ['exists:products,id']
+            'packages' => ['required','array'],
+            'packages.*.product_id' => ['required','exists:products,id']
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'product_id.required' => 'The product_id field is required.',
+            'product_id.exists' => 'The selected product_id is invalid.',
+            'packages.required' => 'انتخاب دوره در پکیج الزامی است',
+            'packages.array' => 'The packages must be an array.',
+            'packages.*.product_id.required' => 'هر پکیج باید شامل محصول باشد.',
+            'packages.*.product_id.exists' => 'محصول انتخاب شده موجود نیست.',
         ];
     }
 }
