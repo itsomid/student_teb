@@ -20,6 +20,7 @@ use Illuminate\Support\Str;
  */
 class CourseItem implements CartItemInterface
 {
+    public const bool IS_PACKAGE = false;
     /**
      * The Eloquent model representing the cart item.
      *

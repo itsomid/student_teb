@@ -8,6 +8,7 @@ use App\Functions\Jalali;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
@@ -75,6 +76,14 @@ class User extends Authenticatable
     public function sms()
     {
         return $this->hasOne(UserSMS::class);
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
     }
 
     public function scopeCheckPermissionToGetList(Builder $query, Admin $admin)

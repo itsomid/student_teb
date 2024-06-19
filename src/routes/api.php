@@ -32,6 +32,9 @@ Route::middleware('checkJWT')->group(callback: function () {
     Route::delete('/carts/{product}/remove', [CartController::class, 'remove']);
     Route::post('/carts/change-installment', [CartController::class, 'changeToInstallmentCart']);
     Route::get('/carts', [CartController::class, 'lists']);
+
+    // Buy Course
+    Route::post('carts/buy', [\App\Http\Controllers\API\BuyController::class, 'payCart']);
 });
 
 
