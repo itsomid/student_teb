@@ -42,11 +42,7 @@ class CartController
     public function add(AddRequest $request)
     {
         $product = Product::query()->find($request->input('product_id'));
-        $packagesItem = $request->input('packages');
 
-        $package_products_array = array_map(function ($package){
-            return $package['product_id'];
-        },$packagesItem);
 
 
         CartAdaptor::init($this->userId);
@@ -54,6 +50,11 @@ class CartController
             if ($product->product_type_id === ProductTypeEnum::COURSE){
                 CartAdaptor::addCourse($product->id);
             }elseif ($product->product_type_id === ProductTypeEnum::CUSTOM_PACKAGE){
+                $packagesItem = $request->input('packages');
+
+                $package_products_array = array_map(function ($package){
+                    return $package['product_id'];
+                },$packagesItem);
                 CartAdaptor::addPackage($product->id, $package_products_array);
             }
         }catch (ProductDoesNotExistsException){
