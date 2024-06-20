@@ -56,6 +56,26 @@ class Product extends Model
         }
         return $result;
     }
+    public function getPriceAttribute() {
+        $final_price = $this->attributes['original_price'];
+
+        //if this is first class of a course
+        /*if($this->product_type_id==2 && $this->product_live_course_class && $this->product_live_course_class->first_attend_free && !Auth::user()->has_purchased_any_of_this_product_package($this->parent->id)){
+            return 0;
+        }*/
+
+        //check off price
+        if ($this->attributes['off_price']){
+            $final_price = $this->attributes['off_price'];
+        }
+
+        //check coupon
+        if ($this->coupon) {
+            return $this->coupon->calculatePrice($this->attributes['original_price']);
+        }
+
+        return $final_price;
+    }
 
 
     public function getPrice()

@@ -11,6 +11,15 @@ class Order extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'vat_tax',
+        'total_payable_price',
+        'total_discount',
+        'installment_total_discount',
+        'repayment_count',
+        'status'
+    ];
+
     /**
      * Casts attribute
      * @return string[]

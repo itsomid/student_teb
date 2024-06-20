@@ -17,7 +17,8 @@ return new class extends Migration
         Schema::create('product_accesses', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(User::class)
-                ->constrained();
+                ->constrained()
+                ->cascadeOnDelete();
             $table->foreignIdFor(OrderItem::class)
                 ->constrained()
                 ->cascadeOnDelete();
