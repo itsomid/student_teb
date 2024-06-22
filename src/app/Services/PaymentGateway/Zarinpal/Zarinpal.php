@@ -24,7 +24,7 @@ class Zarinpal extends PortAbstract implements PortInterface
     protected $invoiceMaker=        "https://api.zarinpal.com/pg/v4/payment/request.json";
     protected $redirectPath=        "https://www.zarinpal.com/pg/StartPay/";
     protected $verificationPath=    "https://api.zarinpal.com/pg/v4/payment/verify.json";
-
+    protected $gatewayPath;
 
     public function set($amount)
     {
@@ -47,9 +47,9 @@ class Zarinpal extends PortAbstract implements PortInterface
 
     protected function sendPayRequest()
     {
-        $this->user(auth()->id());
+        $this->user(auth()->guard('student')->id());
         $this->trans_id = $this->newTransaction();
-
+        Log::channel('payment')->info("TRANS_ID_initial: ".$this->trans_id);
         $data = [
             "merchant_id" => config('gateway.zarinpal.merchant'),
             "amount" => $this->getPrice(),
@@ -66,8 +66,8 @@ class Zarinpal extends PortAbstract implements PortInterface
             throw new BankAuthenticationException();
 
         $result = json_decode($response->getBody()->getContents());
-
-        $this->gatewayPath= $this->redirectPath.$result->data->authority.'?transaction_id='.$this->trans_id;;
+        Log::channel('payment')->info(" DATA: ".json_encode($result->data));
+        $this->gatewayPath= $this->redirectPath.$result->data->authority.'?transaction_id='.$this->trans_id;
     }
 
     public function setCallback($url)
@@ -93,6 +93,7 @@ class Zarinpal extends PortAbstract implements PortInterface
 
         $user_id= $this->transaction->user_id;
 
+        Log::channel('payment')->info('TRANSACTION_verify: '.json_encode($this->transaction));
         Log::channel('payment')->info('user_id: '.$user_id. ' comes in verify method.' );
 
         $authority = request()->input('Authority');
@@ -109,17 +110,21 @@ class Zarinpal extends PortAbstract implements PortInterface
 
         $result = json_decode($response->getBody()->getContents(), true);
 
+        Log::channel('payment')->info("Response: ".json_encode($response));
+        Log::channel('payment')->info("result: ".json_encode($result));
+        Log::channel('payment')->info("response_status: ".json_encode($response));
+
+
         if(isset($result['errors']) && isset($result['errors']['code']) && $result['errors']['code'] != 100)
         {
-            $this->setDescription('هنگام تایید تراکنش، بانک پاسخ نداد.');
+            $this->setDescription('پرداخت انجام نشده است(دکمه انصراف)');
             $this->transactionFailed();
             throw new NotPaidException;
         }
 
-
         if($response->status() != 200 || $response->status() != 201)
         {
-            $this->setDescription('هنگام تایید تراکنش، بانک پاسخ نداد.');
+            $this->setDescription('هنگام استعلام تراکنش، بانک پاسخ نداد');
             $this->transactionFailed();
             throw new BankException();
         }
@@ -133,7 +138,7 @@ class Zarinpal extends PortAbstract implements PortInterface
         Log::channel('payment')->info('user_id: '.$user_id. ' invoice accomplishment saved');
 
 
-        $this->newLog($status_code, 'SUCCEED');
+//        $this->newLog($status_code, 'SUCCEED');
 
         return $this;
     }
