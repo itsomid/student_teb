@@ -43,7 +43,7 @@ Route::any('/callback_from_gateway', function (){
         $gateway = \App\Services\PaymentGateway\Gateway::initial();
         $gateway = $gateway->verify($transaction);
 
-        //TODO:: CREATE TRANSACTION
+    //TODO:: CREATE TRANSACTION
     }catch (Exception $exception){
         return view('bank.callback')->with('error_message', $exception->getMessage());
     }
