@@ -43,8 +43,6 @@ class CartController
     {
         $product = Product::query()->find($request->input('product_id'));
 
-
-
         CartAdaptor::init($this->userId);
         try{
             if ($product->product_type_id === ProductTypeEnum::COURSE){

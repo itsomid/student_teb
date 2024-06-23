@@ -24,7 +24,7 @@ Route::get('captcha_reload', [ReloadCaptchaController::class, '__invoke']);
 Route::post('lock_time', [LockTimeController::class, '__invoke']);
 
 Route::any('pay/cart/callback', [BuyController::class, 'cartCallback'])->name('bank.cart.callback');
-
+Route::get('cart/buy', [BuyController::class, 'payCart']);
 Route::middleware('checkJWT')->group(callback: function () {
 
     Route::get('/store', [StoreController::class, 'store']);
@@ -37,7 +37,7 @@ Route::middleware('checkJWT')->group(callback: function () {
     Route::delete('/cart/remove/{product}', [CartController::class, 'remove']);
     Route::post('/cart/change-installment', [CartController::class, 'changeToInstallmentCart']);
 
-    Route::get('cart/buy', [BuyController::class, 'payCart']);
+
 });
 
 Route::name('api.')->group(callback: function () {
