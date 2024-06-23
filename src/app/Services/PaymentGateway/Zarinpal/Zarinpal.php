@@ -8,6 +8,7 @@ use App\Services\PaymentGateway\Exception\NotFoundTransactionException;
 use App\Services\PaymentGateway\Exception\NotPaidException;
 use App\Services\PaymentGateway\Exception\RetryException;
 use App\Services\PaymentGateway\Exception\ReverseTransaction;
+use App\Services\PaymentGateway\Exception\ZarinpalException;
 use App\Services\PaymentGateway\PortAbstract;
 use App\Services\PaymentGateway\PortInterface;
 use Carbon\Carbon;
@@ -93,8 +94,6 @@ class Zarinpal extends PortAbstract implements PortInterface
 
         $user_id= $this->transaction->user_id;
 
-        Log::channel('payment')->info('TRANSACTION_verify: '.json_encode($this->transaction));
-        Log::channel('payment')->info('user_id: '.$user_id. ' comes in verify method.' );
 
         $authority = request()->input('Authority');
 
@@ -117,28 +116,30 @@ class Zarinpal extends PortAbstract implements PortInterface
 
         if(isset($result['errors']) && isset($result['errors']['code']) && $result['errors']['code'] != 100)
         {
-            $this->setDescription('پرداخت انجام نشده است(دکمه انصراف)');
+
+            $this->setDescription(ZarinpalException::returnError($result['errors']['code']));
+
             $this->transactionFailed();
-            throw new NotPaidException;
+            throw new \Exception(ZarinpalException::returnError($result['errors']['code']));
         }
 
-        if($response->status() != 200 || $response->status() != 201)
+
+        if(! $response->ok())
+
         {
             $this->setDescription('هنگام استعلام تراکنش، بانک پاسخ نداد');
             $this->transactionFailed();
             throw new BankException();
         }
 
-        $this->refId =  $result->data->ref_id;
+        $this->cardNumber= $result['data']['card_pan'];
+        $this->refId =  $result['data']['ref_id'];
         $this->urlid = $authority;
 
         $this->transactionSetRefId();
         $this->transactionSucceed();
 
-        Log::channel('payment')->info('user_id: '.$user_id. ' invoice accomplishment saved');
 
-
-//        $this->newLog($status_code, 'SUCCEED');
 
         return $this;
     }
