@@ -40,7 +40,7 @@ return new class extends Migration
             $table->unsignedInteger('final_price');
             $table->unsignedInteger('product_price');
             $table->unsignedInteger('discount_price');
-
+            $table->timestamps();
 ;        });
     }
 

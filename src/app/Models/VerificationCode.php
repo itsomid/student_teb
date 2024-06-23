@@ -12,7 +12,7 @@ class VerificationCode extends Model
     {
         return [
             'user_id'    => $userId,
-            'expired_at' => now()->addMinutes(env('EXPIRATION_PER_MINUTES'))->getTimestamp(),
+            'expired_at' => now()->addMinutes((int)config('services.expiration_per_minutes'))->getTimestamp(),
         ];
     }
 }

@@ -8,9 +8,10 @@ use App\Http\Controllers\API\Auth\PasswordLoginController;
 use App\Http\Controllers\API\Auth\RegisterController;
 use App\Http\Controllers\API\Auth\ReloadCaptchaController;
 use App\Http\Controllers\API\Auth\SendOTPController;
-use App\Http\Controllers\API\StoreController;
-
+use App\Http\Controllers\API\StudentController;
 use App\Http\Controllers\API\CartController;
+use App\Http\Controllers\API\StoreController;
+use App\Http\Controllers\API\BuyController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('auth', [CheckRegistrationController::class, '__invoke']);
@@ -22,16 +23,25 @@ Route::post('registering', [RegisterController::class, '__invoke']);
 Route::get('captcha_reload', [ReloadCaptchaController::class, '__invoke']);
 Route::post('lock_time', [LockTimeController::class, '__invoke']);
 
+Route::any('pay/cart/callback', [BuyController::class, 'cartCallback'])->name('bank.cart.callback');
+
 Route::middleware('checkJWT')->group(callback: function () {
 
     Route::get('/store', [StoreController::class, 'store']);
-    Route::get('/store/product-detail/{product}', [StoreController::class, 'storeItem']);
+    Route::get('/store/product-detail/{product}', [StoreController::class, 'storeItemDetails']);
+    Route::get('/store/packages/{product}', [StoreController::class, 'packageShow']);
 
-    //Cart
-    Route::post('/carts/add', [CartController::class, 'add']);
-    Route::delete('/carts/{product}/remove', [CartController::class, 'remove']);
-    Route::post('/carts/change-installment', [CartController::class, 'changeToInstallmentCart']);
-    Route::get('/carts', [CartController::class, 'lists']);
+    Route::get('/cart', [CartController::class, 'lists']);
+    Route::post('/cart/add', [CartController::class, 'add']);
+    Route::patch('cart/package/update', [CartController::class, 'updatePackage']);
+    Route::delete('/cart/remove/{product}', [CartController::class, 'remove']);
+    Route::post('/cart/change-installment', [CartController::class, 'changeToInstallmentCart']);
+
+    Route::get('cart/buy', [BuyController::class, 'payCart']);
 });
 
+Route::name('api.')->group(callback: function () {
+    Route::get('/students/{student}/sales_description', [StudentController::class, 'note'])->name('student.get-note');
+    Route::patch('/students/{student}/update_sales_description', [StudentController::class, 'updateNote'])->name('student.update-note');
+});
 
