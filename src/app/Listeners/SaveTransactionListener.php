@@ -29,5 +29,26 @@ class SaveTransactionListener
             'user_id' => $event->order->user_id,
             'transaction_type' => TransactionTypeEnum::BUY
         ]);
+
+        Transaction::query()->create([
+            'amount' => $event->order->total_payable_price,
+            'user_id' => $event->order->user_id,
+            'transaction_type' => TransactionTypeEnum::DEPOSIT
+        ]);
+
+        Transaction::query()->create([
+            'amount' => $event->order->vat_tax,
+            'user_id' => $event->order->user_id,
+            'transaction_type' => TransactionTypeEnum::VAT_TAX
+        ]);
+
+
+        if ($event->order->toatl_discount > 0){
+            Transaction::query()->create([
+                'amount' => $event->order->vat_tax,
+                'user_id' => $event->order->user_id,
+                'transaction_type' => TransactionTypeEnum::DISCOUNT
+            ]);
+        }
     }
 }

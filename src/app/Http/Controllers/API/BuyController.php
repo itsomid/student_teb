@@ -38,6 +38,7 @@ class BuyController extends Controller
     public function payCart()
     {
         $auth = Auth::guard('student');
+        $auth->loginUsingId(1);
 
         CartAdaptor::init($auth->id());
 
@@ -58,9 +59,16 @@ class BuyController extends Controller
                     'message' => 'مشکلی پیش آمده است لطفا بعدا تلاش کنید' . $e->getMessage()
                 ], Response::HTTP_INTERNAL_SERVER_ERROR);
             }
-
+        }else {
+            try {
+                $gateway= Gateway::initial();
+                $gateway->setCallback('/callback_from_gateway');
+                $gateway->price($payableForBank)->ready();
+                return $gateway->redirect();
+            }catch (Throwable $exception){
+                return  view('bank.bank')->with('error_message' , $exception->getMessage());
+            }
         }
-
     }
 
     public function cartCallback()
