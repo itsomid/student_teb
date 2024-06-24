@@ -2,27 +2,22 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Helpers\Castle\Services\CartCastle;
-use App\Helpers\PaymentGateway\Exception\GatewayException;
-use App\Helpers\PaymentGateway\Exception\InvalidRequestException;
-use App\Helpers\PaymentGateway\Exception\NotFoundTransactionException;
-use App\Helpers\PaymentGateway\Exception\RetryException;
 use App\Http\Controllers\Controller;
-use App\Jobs\Builder\CastlePublishBuilder;
-use App\Jobs\SMSCartPurchased;
-use App\Models\CartReciept;
-use App\Models\Transaction;
-use App\Models\TransactionLogs;
 use App\Services\OrderService;
+use App\Services\PaymentGateway\Exception\InvalidRequestException;
+use App\Services\PaymentGateway\Exception\NotFoundTransactionException;
+use App\Services\PaymentGateway\Exception\RetryException;
 use App\Services\PaymentGateway\Gateway;
 use App\ShoppingCart\CartAdaptor;
-use Illuminate\Http\Request;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\Routing\ResponseFactory;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
+use Illuminate\View\View;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Throwable;
 
 class BuyController extends Controller
@@ -35,7 +30,10 @@ class BuyController extends Controller
         $this->redirectCartPath = config('gateway.redirect_cart_path');
     }
 
-    public function payCart()
+    /**
+     * @return Application|ResponseFactory|Response|View|RedirectResponse
+     */
+    public function payCart(): Application|ResponseFactory|Response|View|RedirectResponse
     {
         $auth = Auth::guard('student');
         $auth->loginUsingId(1);
@@ -62,7 +60,7 @@ class BuyController extends Controller
         }else {
             try {
                 $gateway= Gateway::initial();
-                $gateway->setCallback('/callback_from_gateway');
+                $gateway->setCallback(route('bank.cart.callback'));
                 $gateway->price($payableForBank)->ready();
                 return $gateway->redirect();
             }catch (Throwable $exception){
@@ -71,53 +69,43 @@ class BuyController extends Controller
         }
     }
 
-    public function cartCallback()
+    /**
+     * @return Application|ResponseFactory|Response
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws Throwable
+     */
+    public function cartCallback(): Application|ResponseFactory|Response
     {
+        throw_if(!request()->has('transaction_id'), InvalidRequestException::class);
+
+        $transaction = DB::table('gateway_transactions')->where('id', request()->get('transaction_id'))->first();
+        throw_if(!$transaction, NotFoundTransactionException::class);
+        throw_if(in_array($transaction->status, ['SUCCEED', 'FAILED']), RetryException::class);
+
         try {
-            if (!request()->has('transaction_id'))
-                throw new InvalidRequestException;
-            if (request()->has('transaction_id'))
-                $id = request()->get('transaction_id');
+            $gateway = Gateway::initial();
+            $gateway->verify($transaction);
 
-            $transaction = DB::table('gateway_transactions')->where('id', $id)->first();
+            DB::beginTransaction();
+            try{
 
-            if (!$transaction)
-                throw new NotFoundTransactionException;
-
-
-            if (in_array($transaction->status, ['SUCCEED', 'FAILED']))
-                throw new RetryException;
-
-            $gateway= Gateway::initialZarinpal();
-
-            $gateway = $gateway->verify($transaction);
-
-            $user_id= Cache::get($gateway->transactionId());
-
-            Config::set('session.driver' , 'array');
-
-            Auth::loginUsingId($user_id);
-
-            //save new transaction
-            Transaction::create([
-                'user_id'                => auth()->id(),
-                'amount'                 => $gateway->getPrice(),        // Price Should Be In Rial Format; Not Toman
-                'type'                   => 1,                           // Increasing Credit Type Is 1
-                'product_id'             => 0,                           // Increasing Credit Does Not Have Product
-                'gateway_transaction_id' => $gateway->transactionId()    // invoiceNumber
-            ]);
-
-
-
-            return redirect($this->redirectCartPath.'?status=success&receipt=asdasdasd');
-
-        }  catch (\Exception $e) {
-            if (!$e instanceof \App\Services\PaymentGateway\Exception\GatewayException)
-            {
-                Log::channel('payment')->error('user_id: '. \auth()->id() . ' ------- in controller catch ------ '.PHP_EOL. $e->getMessage() );
-                return redirect($this->$redirectCartPath.'?status=failed&message=خطا در پرداخت');
+                $orderService = resolve(OrderService::class);
+                $orderService->buy($transaction->user_id);
+                DB::commit();
+                return response([
+                    'message' => 'سفارش شما با موفقیت پرداخت شد'
+                ]);
+            }catch (Throwable $e){
+                report($e);
+                DB::rollBack();
+                return response([
+                    'message' => 'مشکلی پیش آمده است لطفا بعدا تلاش کنید' . $e->getMessage()
+                ], Response::HTTP_INTERNAL_SERVER_ERROR);
             }
-            return redirect($this->$redirectCartPath.'?status=failed&message='.$e->getMessage());
+        }catch (Throwable $exception){
+
+            return view('bank.callback')->with('error_message', $exception->getMessage());
         }
     }
 }
