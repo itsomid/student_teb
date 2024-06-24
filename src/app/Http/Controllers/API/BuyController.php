@@ -40,6 +40,9 @@ class BuyController extends Controller
 
         CartAdaptor::init($auth->id());
 
+        if (! CartAdaptor::getItems()->count()){
+            return response(['message' => 'سبد خرید شما خالی می باشد!'], Response::HTTP_NOT_ACCEPTABLE);
+        }
         $payableForBank = CartAdaptor::getPayableAmount() - $auth->user()->credit;
 
         if ($payableForBank <= 0){
