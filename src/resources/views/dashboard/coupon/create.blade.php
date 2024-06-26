@@ -54,7 +54,7 @@
                         <div class="form-group mt-3">
                             <label for="mobile">کاربر مصرف کننده :</label>
                             <dynamic-select
-                                url="{{route('api.student.index')}}"
+                                url="#"
                                 label="اننتخاب دانش آموز"
                                 input_name="consumer_user_id"
                                 default_selected="{{ old('consumer_user_id') }}"
@@ -68,7 +68,7 @@
                         <div class="form-group mt-3">
                             <label for="mobile">مخصوص محصول :</label>
                             <dynamic-select
-                                url="{{route('api.product.search')}}"
+                                url="#"
                                 label="اننتخاب محصول"
                                 input_name="specific_product_id"
                                 default_selected="{{old('specific_product_id')}}"
@@ -192,12 +192,12 @@
                                 </div>
                             </div>
                             <div class="col-md-12">
-                                @foreach($courses as $course)
-                                    <div class="form-check form-check-primary mt-3">
-                                        <input class="form-check-input" name="conditions_products_ids[]" type="checkbox" value="{{$course->product_id}}" id="checkbox{{$course->product_id}}" {{ (old('conditions_products_ids') && in_array($course->product_id, old('conditions_products_ids'))) ? 'checked' : null}}/>
-                                        <label class="form-check-label" for="checkbox{{$course->product_id}}">{{$course->product->name}}</label>
-                                    </div>
-                                @endforeach
+{{--                                @foreach($courses as $course)--}}
+{{--                                    <div class="form-check form-check-primary mt-3">--}}
+{{--                                        <input class="form-check-input" name="conditions_products_ids[]" type="checkbox" value="{{$course->product_id}}" id="checkbox{{$course->product_id}}" {{ (old('conditions_products_ids') && in_array($course->product_id, old('conditions_products_ids'))) ? 'checked' : null}}/>--}}
+{{--                                        <label class="form-check-label" for="checkbox{{$course->product_id}}">{{$course->product->name}}</label>--}}
+{{--                                    </div>--}}
+{{--                                @endforeach--}}
                             </div>
                         </div>
                     </div>
@@ -217,12 +217,12 @@
                                 </div>
                             </div>
                             <div class="col-md-12">
-                                @foreach($courses as $course)
-                                    <div class="form-check form-check-primary mt-3">
-                                        <input class="form-check-input" name="conditions_products_bought_ids[]" type="checkbox" value="{{$course->product_id}}" id="checkbox_conditions_products_bought_ids_{{$course->product_id}}"  {{ (old('conditions_products_bought_ids') && in_array($course->product_id, old('conditions_products_bought_ids'))) ? 'checked' : null}}/>
-                                        <label class="form-check-label" for="checkbox_conditions_products_bought_ids_{{$course->product_id}}">{{$course->product->name}}</label>
-                                    </div>
-                                @endforeach
+{{--                                @foreach($courses as $course)--}}
+{{--                                    <div class="form-check form-check-primary mt-3">--}}
+{{--                                        <input class="form-check-input" name="conditions_products_bought_ids[]" type="checkbox" value="{{$course->product_id}}" id="checkbox_conditions_products_bought_ids_{{$course->product_id}}"  {{ (old('conditions_products_bought_ids') && in_array($course->product_id, old('conditions_products_bought_ids'))) ? 'checked' : null}}/>--}}
+{{--                                        <label class="form-check-label" for="checkbox_conditions_products_bought_ids_{{$course->product_id}}">{{$course->product->name}}</label>--}}
+{{--                                    </div>--}}
+{{--                                @endforeach--}}
                             </div>
                         </div>
                     </div>

@@ -4,30 +4,21 @@ namespace App\Http\Controllers\Admin;
 
 use App\Exports\CouponExport;
 use App\Functions\DateFormatter;
-use App\Functions\Filter;
 use App\Functions\FlashMessages\Toast;
 use App\Http\Controllers\Controller;
-use App\Services\Coupon;
-use App\Services\Course;
+use App\Models\Coupon;
+use App\Models\Course;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use Morilog\Jalali\Jalalian;
+use function React\Promise\all;
 
 class CouponController extends Controller
 {
     public function index()
     {
-        $filters= Filter::filter()
-            ->add('coupon',              request()->input('coupon'))
-            ->add('creator_user_id',     request()->input('creator_user_id'))
-            ->add('user_id',             request()->input('user_id'))
-            ->add('description',         request()->input('description'))
-            ->add('discount_percentage', request()->input('discount_percentage'));
 
-
-        $coupons = (request()->input('action') == 'search' or is_null(request()->input('action')))
-                ? Coupon::index($filters->get())
-                : Coupon::excel($filters->get());
+        $coupons = \App\Models\Coupon::query()->latest()->get();
 
         return (request()->input('action') == 'search' or is_null(request()->input('action')))
                 ? view('dashboard.coupon.index')->with(['coupons' => $coupons])
@@ -36,9 +27,9 @@ class CouponController extends Controller
 
     public function create()
     {
-        $courses = Course::index();
+        $courses= Course::query()->latest()->all();
         return view('dashboard.coupon.create')->with([
-            'courses'  => $courses
+
         ]);
     }
 
@@ -66,7 +57,7 @@ class CouponController extends Controller
             'description'                       => ['nullable']
         ]);
 
-        Coupon::store([
+        Coupon::query()->create([
             'creator_user_id'                   => auth()->id(),
             'consumer_user_id'                  => $request->consumer_user_id,
             'specific_product_id'               => $request->specific_product_id,
@@ -96,10 +87,8 @@ class CouponController extends Controller
 
     public function edit($coupon)
     {
-        $courses = Course::index();
-        $coupon= Coupon::show($coupon);
+        $coupon= Coupon::query()->where('id', $coupon)->first();
         return view('dashboard.coupon.edit')
-            ->with(['courses' => $courses])
             ->with(['coupon' => $coupon]);
     }
 
