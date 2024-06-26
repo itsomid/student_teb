@@ -11,7 +11,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\Cache;
+use Illuminate\Database\Eloquent\Builder;
+
 
 class Product extends Model
 {
@@ -47,61 +48,71 @@ class Product extends Model
             'product_type_id' => ProductTypeEnum::class
         ];
     }
+
+    public function isActiveCourse()
+    {
+        return is_null($this->parent_id) && !$this->archived && $this->show_in_list && $this->is_purchasable;
+    }
+
+    public function scopeActiveCourses($query)
+    {
+        return $query->whereNull('parent_id')->where('archived', 0)->where('show_in_list', 1)->where('is_purchasable', 1);
+    }
+
+    public function scopeRemoveArchived($query)
+    {
+        return $query->where('archived', 0);
+    }
+
+    /**
+     * @return HasOne
+     */
+    public function course(): HasOne
+    {
+        return $this->hasOne(Course::class, 'product_id');
+    }
+
+    public function class(): HasOne
+    {
+        return $this->hasOne(Classes::class, 'product_id');
+    }
+
+    public function categories(): BelongsToMany
+    {
+        return $this->belongsToMany(Category::class);
+    }
+
+    public function scopeCategoriesWithType(Builder $query, $type)
+    {
+        return $query->categories->where('type', $type);
+    }
+
+    public function teacher(): BelongsTo
+    {
+        return $this->belongsTo(Admin::class, 'user_id');
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function packages(): HasMany
+    {
+        return $this->hasMany(CustomPackage::class);
+    }
+
+    public function cartItem()
+    {
+        return $this->hasMany(CartItem::class);
+    }
+
     public static function get_free_products_ids()
     {
-        $products = static::where('original_price',0)->orWhere('off_price',0)->get();
-        $result=[];
+        $products = static::where('original_price', 0)->orWhere('off_price', 0)->get();
+        $result = [];
         foreach ($products as $product) {
-            $result[$product->id]=$product->id;
+            $result[$product->id] = $product->id;
         }
         return $result;
-    }
-    public function getPriceAttribute() {
-        $final_price = $this->attributes['original_price'];
-
-        //if this is first class of a course
-        /*if($this->product_type_id==2 && $this->product_live_course_class && $this->product_live_course_class->first_attend_free && !Auth::user()->has_purchased_any_of_this_product_package($this->parent->id)){
-            return 0;
-        }*/
-
-        //check off price
-        if ($this->attributes['off_price']){
-            $final_price = $this->attributes['off_price'];
-        }
-
-        //check coupon
-        if ($this->coupon) {
-            return $this->coupon->calculatePrice($this->attributes['original_price']);
-        }
-
-        return $final_price;
-    }
-
-
-    public function getPrice()
-    {
-        if ($this->is_purchasable) {
-            if ($this->get_product_attr('fake_price')) {
-                return static::formatPrice($this->get_product_attr('fake_price'));
-            }elseif ($this->price>0) {
-                return static::formatPrice($this->price);
-            }else{
-                return "رایگان";
-            }
-        }else{
-            return "قابل خرید مجزا نمی باشد";
-        }
-    }
-
-    public function get_product_attr($attr_name)
-    {
-        if ($this->options) {
-            $options = $this->options;
-            if ($options && is_array($options) && array_key_exists($attr_name, $options) && $options[$attr_name]) {
-                return $options[$attr_name];
-            }
-        }
-        return null;
     }
 
     public static function getProductsTree()
@@ -167,68 +178,14 @@ class Product extends Model
         return $result;
     }
 
-    public function isActiveCourse()
-    {
-        return is_null($this->parent_id) && ! $this->archived && $this->show_in_list && $this->is_purchasable;
-    }
-    public function scopeActiveCourses($query)
-    {
-        return $query->whereNull('parent_id')->where('archived',0)->where('show_in_list',1)->where('is_purchasable',1);
-    }
-
-    public function scopeRemoveArchived($query)
-    {
-        return $query->where('archived', 0);
-    }
-
-    /**
-     * @return HasOne
-     */
-    public function course(): HasOne
-    {
-        return $this->hasOne(Course::class,'product_id');
-    }
-
-    public function class(): HasOne
-    {
-        return $this->hasOne(Classes::class,'product_id');
-    }
-
-    public function categories(): BelongsToMany
-    {
-        return $this->belongsToMany(Category::class);
-    }
-
-    public function teacher(): BelongsTo
-    {
-        return $this->belongsTo(Admin::class, 'user_id');
-    }
 
     public function getImageSrc()
     {
         if ($this->img_filename) {
             return $this->img_filename;
-        }elseif($this->parent_id) {
-            return $this->parent->getImageSrc();
-        }else{
-            return config('classino.classino_file_base_url').('/images/classino_default.jpg');
+        } else {
+            return "default_product_img.jpg";
         }
-    }
-
-    /**
-     * @return BelongsToMany
-     */
-    public function product_categories(): BelongsToMany
-    {
-        return $this->belongsToMany(Category::class);
-    }
-
-    /**
-     * @return HasMany
-     */
-    public function packages(): HasMany
-    {
-        return $this->hasMany(CustomPackage::class);
     }
 
     /**
@@ -236,6 +193,50 @@ class Product extends Model
      */
     public function getImageUrl(): string
     {
-        return asset('storage/products/'.$this->img_filename);
+        if ($this->img_filename)
+            return asset('storage/products/' . $this->img_filename);
+        else
+            return asset('images/default_product_img.jpg');
+    }
+
+    public function getPriceAttribute()
+    {
+        $final_price = $this->attributes['original_price'];
+
+        //if this is first class of a course
+        /*if($this->product_type_id==2 && $this->product_live_course_class && $this->product_live_course_class->first_attend_free && !Auth::user()->has_purchased_any_of_this_product_package($this->parent->id)){
+            return 0;
+        }*/
+
+        //check off price
+        if ($this->attributes['off_price']) {
+            $final_price = $this->attributes['off_price'];
+        }
+
+        //check coupon
+        if ($this->coupon) {
+            return $this->coupon->calculatePrice($this->attributes['original_price']);
+        }
+
+        return $final_price;
+    }
+
+    public function getPrice()
+    {
+        if ($this->is_purchasable) {
+
+            if ($this->original_price > 0) {
+                return Product::formatPrice($this->original_price);
+            } else {
+                return "رایگان";
+            }
+        } else {
+            return "قابل خرید مجزا نمی باشد";
+        }
+    }
+
+    static public function formatPrice($price)
+    {
+        return number_format($price, 0) . " ریال";
     }
 }
