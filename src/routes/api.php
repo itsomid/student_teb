@@ -13,8 +13,10 @@ use App\Http\Controllers\API\CartController;
 use App\Http\Controllers\API\StoreController;
 use App\Http\Controllers\API\BuyController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\API\ProfileController;
 
 Route::post('auth', [CheckRegistrationController::class, '__invoke']);
+Route::get('referrer', [CheckRegistrationController::class, 'referrer']);
 Route::post('password_login', [PasswordLoginController::class, '__invoke']);
 Route::post('send_otp', [SendOTPController::class, '__invoke']);
 Route::post('otp_login', [OTPLoginVerifyController::class, '__invoke']);
@@ -23,8 +25,8 @@ Route::post('registering', [RegisterController::class, '__invoke']);
 Route::get('captcha_reload', [ReloadCaptchaController::class, '__invoke']);
 Route::post('lock_time', [LockTimeController::class, '__invoke']);
 
-Route::any('pay/cart/callback', [BuyController::class, 'cartCallback'])->name('bank.cart.callback');
-Route::get('cart/buy', [BuyController::class, 'payCart']);
+Route::get('pay/cart/callback', [BuyController::class, 'cartCallback'])->name('bank.cart.callback');
+
 Route::middleware('checkJWT')->group(callback: function () {
 
     Route::get('/store', [StoreController::class, 'store']);
@@ -37,7 +39,10 @@ Route::middleware('checkJWT')->group(callback: function () {
     Route::delete('/cart/remove/{product}', [CartController::class, 'remove']);
     Route::post('/cart/change-installment', [CartController::class, 'changeToInstallmentCart']);
 
+    Route::get('cart/buy', [BuyController::class, 'payCart']);
 
+    Route::get('profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('profile/update', [ProfileController::class, 'update'])->name('profile.update');
 });
 
 Route::name('api.')->group(callback: function () {

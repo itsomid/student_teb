@@ -20,4 +20,8 @@ class CustomPackageItem extends Model
     {
         return $this->belongsTo(Product::class);
     }
+    public function customPackage(): BelongsTo
+    {
+        return $this->belongsTo(CustomPackage::class,'custom_package_id');
+    }
 }

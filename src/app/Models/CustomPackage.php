@@ -45,7 +45,7 @@ class CustomPackage extends Model
                 $courseFetched[] = [
                     'id' => $item->product->id,
                     'name' => $item->product->name,
-                    'image_src' => $item->product->img_filename,
+                    'image_src' => $item->product->getImageUrl(),
                 ];
             }
 
