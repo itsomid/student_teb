@@ -64,8 +64,9 @@ class OrderService
 
             $this->accessProduct($item->product_id, $itemModel->id);
             CartAdaptor::remove($item->product_id);
-            OrderCreated::dispatch($order);
         });
+
+        OrderCreated::dispatch($order);
     }
 
     /**
