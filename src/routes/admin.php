@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\InquiryController;
+use App\Http\Controllers\Admin\SelectsApiController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\CouponController;
 use App\Http\Controllers\Admin\CouponRangeController;
@@ -24,6 +25,9 @@ use App\Http\Controllers\Admin\SaleSupportReportController;
 use App\Http\Controllers\Admin\SupportsAllocationRateController;
 use App\Http\Controllers\Admin\ThemeController;
 use App\Http\Controllers\Admin\ClassController;
+
+Route::get('/students_select' ,[SelectsApiController::class, 'students'])->name('students.select.index');
+Route::get('/admins_select' ,[SelectsApiController::class, 'admins'])->name('admins.select.index');
 
 Route::post('/set-theme', [ThemeController::class, 'setTheme'])->name('set-theme');
 Route::get('/', [HomeController::class, 'index'])->name('dashboard');

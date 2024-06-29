@@ -8,13 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Morilog\Jalali\Jalalian;
 
 class Coupon extends Model
 {
     use HasFactory, SoftDeletes;
 
 
-    const array RANGE_KEY = [
+    const  RANGE_KEY = [
         'start'     =>  'coupons_start_discount_range',
         'end'       =>  'coupons_end_discount_range',
         'ids'       =>  'coupons_conditions_products_ids'
@@ -83,7 +84,7 @@ class Coupon extends Model
 
     public function creator_user(): BelongsTo
     {
-        return $this->belongsTo(User::class,'creator_user_id');
+        return $this->belongsTo(Admin::class,'creator_user_id');
     }
 
     public function consumer_user(): BelongsTo
@@ -96,6 +97,10 @@ class Coupon extends Model
         return $this->belongsTo(Product::class,'specific_product_id');
     }
 
+    public function expired_at()
+    {
+        return Jalalian::forge($this->created_at)->toDateTimeString();
+    }
     public function calculatePrice($price): int
     {
         $result = $price;

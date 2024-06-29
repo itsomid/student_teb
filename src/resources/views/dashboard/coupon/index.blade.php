@@ -46,23 +46,26 @@
                         @error('coupon') <small class="text-danger">{{$message}}</small> @enderror
                     </div>
                     <div class="col-md-4 user_role">
-                        <label class="form-label" for="creator_user_id">:ID سازنده ی کد تخفیف</label>
-                        <input type="text" id="creator_user_id" name="creator_user_id" class="form-control"  placeholder="ID را وارد کنید" value="{{request()->input('creator_user_id')}}">
+                        <label class="form-label" for="selectAdmin">:سازنده ی کد تخفیف</label>
+                        <select name="creator_user_id"
+                                id="selectAdmin"
+                                class="select2 form-control"
+                                src="{{route('admin.admins.select.index')}}">
+                        </select>
                         @error('creator_user_id') <small class="text-danger">{{$message}}</small> @enderror
                     </div>
-                    <div class="col-md-4 user_role">
-                        <label class="form-label" for="UserRole">شماره موبایل کاربر :</label>
-                        <dynamic-select
-                            url="{{route('api.student.index')}}"
-                            label="اننتخاب دانش آموز"
-                            input_name="user_id"
-                            default_selected="{{request()->input('user_id' , null)}}"
-                            option_title="name"
-                            option_value="id"
-                        ></dynamic-select>
-                        @error('user_id') <small class="text-danger">{{$message}}</small> @enderror
+
+                    <div class="col-md-4">
+                        <label class="form-label" for="selectStudent">شماره موبایل کاربر :</label>
+                        <select name="consumer_user_id"
+                                id="selectStudent"
+                                class="select2 form-control"
+                                src="{{route('admin.students.select.index')}}">
+                        </select>
+                        @error('consumer_user_id') <small class="text-danger">{{$message}}</small> @enderror
                     </div>
-                    <div class="col-md-4 user_role">
+
+                    <div class="col-md-4">
                         <label class="form-label" for="discount_percentage">درصد تخفیف :</label>
                         <input type="text" id="discount_percentage" name="discount_percentage" class="form-control"  placeholder="درصد تخفیف را وارد کنید" value="{{request()->input('discount_percentage')}}">
                         @error('discount_percentage') <small class="text-danger">{{$message}}</small> @enderror
@@ -212,4 +215,15 @@
             </div>
         </div>
     </div>
+@endsection
+@section('vendor-script')
+    @vite(['resources/assets/vendor/libs/select2/select2.js',
+            'resources/assets/vendor/js/forms-selects.js',
+            'resources/assets/js/select2/student.js',
+            'resources/assets/js/select2/admin.js'
+          ])
+
+@endsection
+@section('vendor-style')
+    @vite(['resources/assets/vendor/libs/select2/select2.scss'])
 @endsection

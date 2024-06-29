@@ -44,7 +44,7 @@ class CouponFactory extends Factory
             'product' => Product::select('id')->inRandomOrder()->limit($productLimit)->get()->pluck('id')->toArray(),
             'product_atleast_one' => fake()->boolean,
             'product_bought_atleast_count' => $productLimit,
-            'profile' => ['grade' => Arr::random(Grades::getIndex())]
+            'profile' => ['grade' => Arr::random(array_keys(Grades::get()))]
         ];
     }
 }
