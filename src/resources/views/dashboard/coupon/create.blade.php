@@ -53,28 +53,27 @@
                     <div class="col-md-6">
                         <div class="form-group mt-3">
                             <label for="mobile">کاربر مصرف کننده :</label>
-                            <dynamic-select
-                                url="#"
-                                label="اننتخاب دانش آموز"
-                                input_name="consumer_user_id"
-                                default_selected="{{ old('consumer_user_id') }}"
-                                option_title="name"
-                                option_value="id"
-                            ></dynamic-select>
+                            <select name="consumer_user_id"
+                                    id="selectStudent"
+                                    class="select2 form-control"
+                                    src="{{route('admin.students.select.index')}}">
+                            </select>
                             @error('consumer_user_id')<small class="text-danger">{{$message}}</small>@enderror
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group mt-3">
-                            <label for="mobile">مخصوص محصول :</label>
-                            <dynamic-select
-                                url="#"
-                                label="اننتخاب محصول"
-                                input_name="specific_product_id"
-                                default_selected="{{old('specific_product_id')}}"
-                                option_title="title"
-                                option_value="id"
-                            ></dynamic-select>
+                            <label for="specificProductId">مخصوص محصول :</label>
+                            <select name="specific_product_id"
+                                    id="specificProductId"
+                                    class="select2 form-control">
+                                <option value="0">دوره ی مورد نظر خود را انتخاب کنید</option>
+                                @foreach($courses as $course)
+                                    <option value="{{$course->product->id}}">
+                                        {{$course->product->name}}
+                                    </option>
+                                @endforeach
+                            </select>
                             @error('specific_product_id')<small class="text-danger">{{$message}}</small>@enderror
                         </div>
                     </div>
@@ -181,10 +180,10 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group mt-2 text-right">
-                                    <label class="form-label" for="product_atleast_count">حداقل محصولات زیر باید در سبد خرید باشد :</label>
+                                    <label class="form-label" for="product_atleast_count">حداقل تعداد محصولات در سبد خرید باشد :</label>
                                     <input class="form-control"
                                            name="product_atleast_count"
-                                           type="text"
+                                           type="number"
                                            id="product_atleast_count"
                                            placeholder="برای استفاده از این شرط **اجباری** میباشد"
                                            value="{{old('product_atleast_count')}}">
@@ -192,12 +191,12 @@
                                 </div>
                             </div>
                             <div class="col-md-12">
-{{--                                @foreach($courses as $course)--}}
-{{--                                    <div class="form-check form-check-primary mt-3">--}}
-{{--                                        <input class="form-check-input" name="conditions_products_ids[]" type="checkbox" value="{{$course->product_id}}" id="checkbox{{$course->product_id}}" {{ (old('conditions_products_ids') && in_array($course->product_id, old('conditions_products_ids'))) ? 'checked' : null}}/>--}}
-{{--                                        <label class="form-check-label" for="checkbox{{$course->product_id}}">{{$course->product->name}}</label>--}}
-{{--                                    </div>--}}
-{{--                                @endforeach--}}
+                                @foreach($courses as $course)
+                                    <div class="form-check form-check-primary mt-3">
+                                        <input class="form-check-input" name="conditions_products_ids[]" type="checkbox" value="{{$course->product_id}}" id="checkbox{{$course->product_id}}" {{ (old('conditions_products_ids') && in_array($course->product_id, old('conditions_products_ids'))) ? 'checked' : null}}/>
+                                        <label class="form-check-label" for="checkbox{{$course->product_id}}">{{$course->product->name}}</label>
+                                    </div>
+                                @endforeach
                             </div>
                         </div>
                     </div>
@@ -209,7 +208,7 @@
                                     <label class="form-label" for="product_bought_atleast_count">حداقل تعداد انتخابی از محصولات زیر باید در سبد خرید باشد :</label>
                                     <input class="form-control"
                                            name="product_bought_atleast_count"
-                                           type="text"
+                                           type="number"
                                            id="product_bought_atleast_count"
                                            placeholder="برای استفاده از این شرط **اجباری** میباشد"
                                            value="{{old('product_bought_atleast_count')}}">
@@ -217,12 +216,12 @@
                                 </div>
                             </div>
                             <div class="col-md-12">
-{{--                                @foreach($courses as $course)--}}
-{{--                                    <div class="form-check form-check-primary mt-3">--}}
-{{--                                        <input class="form-check-input" name="conditions_products_bought_ids[]" type="checkbox" value="{{$course->product_id}}" id="checkbox_conditions_products_bought_ids_{{$course->product_id}}"  {{ (old('conditions_products_bought_ids') && in_array($course->product_id, old('conditions_products_bought_ids'))) ? 'checked' : null}}/>--}}
-{{--                                        <label class="form-check-label" for="checkbox_conditions_products_bought_ids_{{$course->product_id}}">{{$course->product->name}}</label>--}}
-{{--                                    </div>--}}
-{{--                                @endforeach--}}
+                                @foreach($courses as $course)
+                                    <div class="form-check form-check-primary mt-3">
+                                        <input class="form-check-input" name="conditions_products_bought_ids[]" type="checkbox" value="{{$course->product_id}}" id="checkbox_conditions_products_bought_ids_{{$course->product_id}}"  {{ (old('conditions_products_bought_ids') && in_array($course->product_id, old('conditions_products_bought_ids'))) ? 'checked' : null}}/>
+                                        <label class="form-check-label" for="checkbox_conditions_products_bought_ids_{{$course->product_id}}">{{$course->product->name}}</label>
+                                    </div>
+                                @endforeach
                             </div>
                         </div>
                     </div>
@@ -240,31 +239,15 @@
     </div>
 
 @endsection
-@section('scripts')
-    <script src="{{asset('/vendor/js/jquery.min.js')}}"></script>
-    <script src="{{asset('/vendor/js/jquery-ui.min.js')}}"></script>
-    <script>
-        $( document ).ready(function() {
-            $('#coupon-count-field-group').hide();
-            $('#coupon-code-field-group').hide();
-
-            $('#is_mass_field').on("change", function (e) {
-                if (e.target.value === "-1") {
-                    $('#coupon-count-field-group').hide();
-                    $('#coupon-code-field-group').hide();
-                }
-                if (e.target.value === "0") {
-                    $('#coupon-count-field-group').hide();
-                    $('#coupon-code-field-group').show();
-                }
-                if (e.target.value === "1") {
-                    $('#coupon-count-field-group').show();
-                    $('#coupon-code-field-group').hide();
-                }
-
-            });
-        });
-
-
-    </script>
+@section('vendor-script')
+    @vite(['resources/assets/vendor/libs/select2/select2.js',
+            'resources/assets/vendor/js/forms-selects.js',
+            'resources/assets/js/jalalidatepicker.js',
+            'resources/assets/js/select2/student.js',
+            'resources/assets/js/select2/admin.js',
+            'resources/assets/js/coupon.js'
+          ])
+@endsection
+@section('vendor-style')
+    @vite(['resources/assets/vendor/libs/select2/select2.scss'])
 @endsection

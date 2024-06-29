@@ -35,28 +35,29 @@
                     <div class="col-md-6">
                         <div class="form-group mt-3">
                             <label for="mobile">کاربر مصرف کننده :</label>
-                            <dynamic-select
-                                url="{{route('api.student.index')}}"
-                                label="اننتخاب دانش آموز"
-                                input_name="consumer_user_id"
-                                default_selected="{{ old('consumer_user_id') ?? $coupon->consumer_user_id }}"
-                                option_title="name"
-                                option_value="id"
-                            ></dynamic-select>
+                            <select name="consumer_user_id"
+                                    id="selectStudent"
+                                    class="select2 form-control"
+                                    src="{{route('admin.students.select.index')}}"
+                                    data-selected="{{$coupon->consumer_user_id}}"
+                            >
+                            </select>
                             @error('consumer_user_id')<small class="text-danger">{{$message}}</small>@enderror
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group mt-3">
-                            <label for="mobile">مخصوص محصول :</label>
-                            <dynamic-select
-                                url="{{route('api.product.search')}}"
-                                label="اننتخاب محصول"
-                                input_name="specific_product_id"
-                                default_selected="{{old('specific_product_id') ?? $coupon->specific_product_id}}"
-                                option_title="title"
-                                option_value="id"
-                            ></dynamic-select>
+                            <label for="specificProductId">مخصوص محصول :</label>
+                            <select name="specific_product_id"
+                                    id="specificProductId"
+                                    class="select2 form-control">
+                                <option value="0">دوره ی مورد نظر خود را انتخاب کنید</option>
+                                @foreach($courses as $course)
+                                    <option value="{{$course->product->id}}">
+                                        {{$course->product->name}}
+                                    </option>
+                                @endforeach
+                            </select>
                             @error('specific_product_id')<small class="text-danger">{{$message}}</small>@enderror
                         </div>
                     </div>
@@ -65,7 +66,9 @@
                             <label class="form-label" for="conditions_profile[grade]">پایه تحصیلی :</label>
                             <select class="select2 form-select" id="conditions_profile[grade]" name="conditions_profile[grade]">
                                 @foreach(\App\Data\Grades::get() as $key=> $grade)
-                                    <option value="{{$key}}" {{$coupon->conditions->profile->grade == $key ? 'selected' : null}}>{{$grade}}</option>
+                                    <option value="{{$key}}" {{json_decode($coupon->conditions)->profile->grade == $key ? 'selected' : null}}>
+                                        {{$grade}}
+                                    </option>
                                 @endforeach
                             </select>
                             @error('specific_product_id')<small class="text-danger">{{$message}}</small>@enderror
@@ -155,8 +158,12 @@
                                 <div class="form-group mt-2 text-right">
                                     <label class="form-label" for="product_atleast_one">فقط کسانی که حداقل یک دوره را برداشته اند:</label>
                                     <select class="select2 form-select" id="product_atleast_one" name="product_atleast_one">
-                                        <option value="1" {{$coupon->conditions->product_atleast_one == 1 ? 'selected' : ''}}>بله</option>
-                                        <option value="0" {{$coupon->conditions->product_atleast_one == 0 ? 'selected' : ''}}>خیر</option>
+                                        <option value="1" {{json_decode($coupon->conditions)->product_atleast_one == 1 ? 'selected' : ''}}>
+                                            بله
+                                        </option>
+                                        <option value="0" {{json_decode($coupon->conditions)->product_atleast_one == 0 ? 'selected' : ''}}>
+                                            خیر
+                                        </option>
                                     </select>
                                     @error('product_atleast_one')<small class="text-danger">{{$message}}</small>@enderror
                                 </div>
@@ -169,14 +176,14 @@
                                            type="text"
                                            id="product_atleast_count"
                                            placeholder="برای استفاده از این شرط **اجباری** میباشد"
-                                           value="{{old('product_atleast_count') ?? $coupon->conditions->product_atleast_count}}">
+                                           value="{{old('product_atleast_count') ?? json_decode($coupon->conditions)->product_atleast_count}}">
                                     @error('product_atleast_count')<small class="text-danger">{{$message}}</small>@enderror
                                 </div>
                             </div>
                             <div class="col-md-12">
                                 @foreach($courses as $course)
                                     <div class="form-check form-check-primary mt-3">
-                                        <input class="form-check-input" name="conditions_products_ids[]" type="checkbox" value="{{$course->product_id}}" id="checkbox{{$course->product_id}}"{{in_array($course->id,  $coupon->conditions->product) ? 'checked' : null }} />
+                                        <input class="form-check-input" name="conditions_products_ids[]" type="checkbox" value="{{$course->product_id}}" id="checkbox{{$course->product_id}}" {{in_array($course->id,  json_decode($coupon->conditions)->product ?? []) ? 'checked' : null }} />
                                         <label class="form-check-label" for="checkbox{{$course->product_id}}">{{$course->product->name}}</label>
                                     </div>
                                 @endforeach
@@ -194,14 +201,14 @@
                                            type="text"
                                            id="product_bought_atleast_count"
                                            placeholder="برای استفاده از این شرط **اجباری** میباشد"
-                                           value="{{old('product_bought_atleast_count') ?? $coupon->conditions->product_bought_atleast_count}}">
+                                           value="{{old('product_bought_atleast_count') ?? json_decode($coupon->conditions)->product_bought_atleast_count}}">
                                     @error('product_bought_atleast_count')<small class="text-danger">{{$message}}</small>@enderror
                                 </div>
                             </div>
                             <div class="col-md-12">
                                 @foreach($courses as $course)
                                     <div class="form-check form-check-primary mt-3">
-                                        <input class="form-check-input" name="conditions_products_bought_ids[]" type="checkbox" value="{{$course->product_id}}" id="checkbox_conditions_products_bought_ids_{{$course->product_id}}" {{in_array($course->id,  $coupon->conditions->product_bought) ? 'checked' : null }}/>
+                                        <input class="form-check-input" name="conditions_products_bought_ids[]" type="checkbox" value="{{$course->product_id}}" id="checkbox_conditions_products_bought_ids_{{$course->product_id}}" {{in_array($course->id,  json_decode($coupon->conditions)->product_bought ?? []) ? 'checked' : null }}/>
                                         <label class="form-check-label" for="checkbox_conditions_products_bought_ids_{{$course->product_id}}">{{$course->product->name}}</label>
                                     </div>
                                 @endforeach
@@ -221,4 +228,16 @@
         </div>
     </div>
 
+@endsection
+@section('vendor-script')
+    @vite(['resources/assets/vendor/libs/select2/select2.js',
+            'resources/assets/js/jalalidatepicker.js',
+            'resources/assets/vendor/js/forms-selects.js',
+            'resources/assets/js/select2/student.js',
+            'resources/assets/js/select2/admin.js',
+            'resources/assets/js/coupon.js',
+          ])
+@endsection
+@section('vendor-style')
+    @vite(['resources/assets/vendor/libs/select2/select2.scss'])
 @endsection
