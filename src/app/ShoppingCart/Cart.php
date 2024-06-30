@@ -6,6 +6,7 @@ use App\ShoppingCart\Contract\CartItemInterface;
 use App\ShoppingCart\Events\CartAdded;
 use App\ShoppingCart\Events\CartDeleted;
 use App\ShoppingCart\Events\CartUpdated;
+use App\ShoppingCart\Exceptions\CouponNotUsableException;
 use App\ShoppingCart\Exceptions\ItemDoesNotExistsInShoppingCart;
 use App\ShoppingCart\Exceptions\ItemExistsInShoppingCart;
 use App\Models\User;
