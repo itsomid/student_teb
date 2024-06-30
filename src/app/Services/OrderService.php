@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Enums\OrderStatusEnum;
 use App\Enums\ProductAccessType;
 use App\Events\OrderCreated;
+use App\Models\InstallmentRepayment;
 use App\Models\ProductAccess;
 use App\Models\User;
 use App\ShoppingCart\CartAdaptor;
@@ -30,6 +31,17 @@ class OrderService
                 'repayment_count' => 1,
                 'status' => OrderStatusEnum::PAID
             ]);
+
+        if (CartAdaptor::isInstallment()) {
+            foreach (CartAdaptor::getInstallments() as $installment) {
+                InstallmentRepayment::query()->create([
+                    'amount' => $installment['amount'],
+                    'expired_at' => $installment['date'],
+                    'user_id' => $userId,
+                    'order_id' => $order->id
+                ]);
+            }
+        }
 
         //Loop
         CartAdaptor::getItems()->each(function (CartItemInterface $item) use($order){
