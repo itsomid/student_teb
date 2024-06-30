@@ -34,6 +34,10 @@ class CourseItem implements CartItemInterface
      * @var Installment|null
      */
     public ?Installment $installment = null;
+    /**
+     * @var bool
+     */
+    public bool $hasInstallmentMethod;
 
     /**
      * CourseItem constructor.

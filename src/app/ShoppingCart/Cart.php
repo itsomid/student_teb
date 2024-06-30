@@ -189,7 +189,7 @@ class Cart
      */
     public function changeInstallment(bool $is_installment = true): void
     {
-        if (! is_null($hasntInstallment = $this->items->where('is_installment', false)->first())) {
+        if (! is_null($hasntInstallment = $this->items->where('hasInstallmentMethod', false)->first())) {
             throw new ItemNotInstallmentableException('This product cannot be purchased on installment: ' . $hasntInstallment->product_id);
         }
         CartItemModel::query()->where('user_id', $this->userId)->update([

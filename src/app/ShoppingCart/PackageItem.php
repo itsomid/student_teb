@@ -34,6 +34,10 @@ class PackageItem implements CartItemInterface
      * @var Installment|null
      */
     public ?Installment $installment = null;
+    /**
+     * @var bool
+     */
+    public bool $hasInstallmentMethod;
 
     /**
      * PackageItem constructor.

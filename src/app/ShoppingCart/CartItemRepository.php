@@ -21,14 +21,16 @@ class CartItemRepository
                         'user_id'=> $item->user_id,
                         'is_installment'=> $item->is_installment
                     ]);
+                    $model->hasInstallmentMethod = $item->product->has_installment;
                 }elseif($item->product_type_id === ProductTypeEnum::CUSTOM_PACKAGE) {
                     $model = resolve(PackageItem::class, [
                         'product_id'=> $item->product_id,
                         'coupon_id'=> $item->coupon_id,
                         'user_id'=> $item->user_id,
                         'is_installment'=> $item->is_installment,
-                        'packageItems' => $item->packages->pluck('product_id')->toArray()
+                        'packageItems' => $item->packages->pluck('product_id')->toArray(),
                     ]);
+                    $model->hasInstallmentMethod = $item->product->has_installment;
                 }
 
                 $model->addModel($item);
