@@ -292,4 +292,12 @@ class Cart
 
         return $result;
     }
+
+    /**
+     * @return bool
+     */
+    public function isInstallment(): bool
+    {
+        return $this->isInstallment;
+    }
 }
