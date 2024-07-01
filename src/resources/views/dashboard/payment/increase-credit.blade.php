@@ -24,7 +24,7 @@
                                         class="select2 form-control"
                                         src="{{route('admin.students.select.index')}}">
                                 </select>
-                                @error('consumer_user_id')<small class="text-danger">{{$message}}</small>@enderror
+                                @error('user_id')<small class="text-danger">{{$message}}</small>@enderror
                             </div>
                         </div>
                         <div class="col">
