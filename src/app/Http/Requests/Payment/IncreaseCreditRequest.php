@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Payment;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class IncreaseCreditRequest extends FormRequest
 {
@@ -29,7 +30,8 @@ class IncreaseCreditRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'amount' => ['required', 'integer', 'min:1000']
+            'amount' => ['required', 'integer', 'min:1000'],
+            'user_id' => ['required', Rule::exists('users', 'id')->whereNull('deleted_at')]
         ];
     }
 }

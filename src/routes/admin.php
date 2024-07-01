@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\InquiryController;
-use App\Http\Controllers\Admin\PaymentController;
+use App\Http\Controllers\Admin\TransactionController;
 use App\Http\Controllers\Admin\SelectsApiController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\CouponController;
@@ -151,5 +151,5 @@ Route::get('/report/registered_users', [SaleSupportReportController::class, 'reg
 
 Route::get('/report/registered_users/{student}/verificationLogs', [SaleSupportReportController::class, 'verificationHistory'])->name('registered-users.verificationLogs')->can('report.registered_users');;
 
-Route::get('/transaction/increase-credit', [PaymentController::class, 'increaseCreditForm'])->name('increase-credit-form');
-Route::post('/transaction/increase-credit', [PaymentController::class, 'increaseCredit'])->name('increase-credit');
+Route::get('/transaction/increase-credit', [TransactionController::class, 'increaseCreditForm'])->name('increase-credit-form');
+Route::post('/transaction/increase-credit', [TransactionController::class, 'increaseCredit'])->name('increase-credit');

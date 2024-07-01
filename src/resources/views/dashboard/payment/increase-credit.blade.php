@@ -18,13 +18,23 @@
                             </label>
                         </div>
                         <div class="col">
+                            <div class="form-group">
+                                <select name="user_id"
+                                        id="selectStudent"
+                                        class="select2 form-control"
+                                        src="{{route('admin.students.select.index')}}">
+                                </select>
+                                @error('consumer_user_id')<small class="text-danger">{{$message}}</small>@enderror
+                            </div>
+                        </div>
+                        <div class="col">
                             <input type="text" id="creditAmount" name="amount" class="form-control" placeholder="مبلغ به ریال وارد شود" onkeyup="amountSplitter()">
                             @error('amount')<small class="text-danger">{{$message}}</small>@enderror
                         </div>
                         <div class="col-auto">
                             <button type="submit" id="submitButton" class="btn btn-primary text-white">
                                 <span class="fa fa-money-check-dollar ml-1"></span>
-                                پرداخت از طریق درگاه
+                                افزایش اعتبار
                             </button>
                         </div>
                     </div>
@@ -46,4 +56,13 @@
             creditAmountElement.value = formatNumberWithCommas(value);
         }
     </script>
+@endsection
+@section('vendor-style')
+    @vite(['resources/assets/vendor/libs/select2/select2.scss'])
+@endsection
+@section('vendor-script')
+    @vite(['resources/assets/vendor/libs/select2/select2.js',
+            'resources/assets/vendor/js/forms-selects.js',
+            'resources/assets/js/student.js',
+          ])
 @endsection
