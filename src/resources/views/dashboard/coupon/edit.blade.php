@@ -66,7 +66,7 @@
                             <label class="form-label" for="conditions_profile[grade]">پایه تحصیلی :</label>
                             <select class="select2 form-select" id="conditions_profile[grade]" name="conditions_profile[grade]">
                                 @foreach(\App\Data\Grades::get() as $key=> $grade)
-                                    <option value="{{$key}}" {{json_decode($coupon->conditions)->profile->grade == $key ? 'selected' : null}}>
+                                    <option value="{{$key}}" {{$coupon->conditions->profile->grade == $key ? 'selected' : null}}>
                                         {{$grade}}
                                     </option>
                                 @endforeach
@@ -158,10 +158,10 @@
                                 <div class="form-group mt-2 text-right">
                                     <label class="form-label" for="product_atleast_one">فقط کسانی که حداقل یک دوره را برداشته اند:</label>
                                     <select class="select2 form-select" id="product_atleast_one" name="product_atleast_one">
-                                        <option value="1" {{json_decode($coupon->conditions)->product_atleast_one == 1 ? 'selected' : ''}}>
+                                        <option value="1" {{$coupon->conditions->product_atleast_one == 1 ? 'selected' : ''}}>
                                             بله
                                         </option>
-                                        <option value="0" {{json_decode($coupon->conditions)->product_atleast_one == 0 ? 'selected' : ''}}>
+                                        <option value="0" {{$coupon->conditions->product_atleast_one == 0 ? 'selected' : ''}}>
                                             خیر
                                         </option>
                                     </select>
@@ -176,14 +176,14 @@
                                            type="text"
                                            id="product_atleast_count"
                                            placeholder="برای استفاده از این شرط **اجباری** میباشد"
-                                           value="{{old('product_atleast_count') ?? json_decode($coupon->conditions)->product_atleast_count}}">
+                                           value="{{old('product_atleast_count') ?? $coupon->conditions->product_atleast_count}}">
                                     @error('product_atleast_count')<small class="text-danger">{{$message}}</small>@enderror
                                 </div>
                             </div>
                             <div class="col-md-12">
                                 @foreach($courses as $course)
                                     <div class="form-check form-check-primary mt-3">
-                                        <input class="form-check-input" name="conditions_products_ids[]" type="checkbox" value="{{$course->product_id}}" id="checkbox{{$course->product_id}}" {{in_array($course->id,  json_decode($coupon->conditions)->product ?? []) ? 'checked' : null }} />
+                                        <input class="form-check-input" name="conditions_products_ids[]" type="checkbox" value="{{$course->product_id}}" id="checkbox{{$course->product_id}}" {{in_array($course->id,  $coupon->conditions->product ?? []) ? 'checked' : null }} />
                                         <label class="form-check-label" for="checkbox{{$course->product_id}}">{{$course->product->name}}</label>
                                     </div>
                                 @endforeach
@@ -201,14 +201,14 @@
                                            type="text"
                                            id="product_bought_atleast_count"
                                            placeholder="برای استفاده از این شرط **اجباری** میباشد"
-                                           value="{{old('product_bought_atleast_count') ?? json_decode($coupon->conditions)->product_bought_atleast_count}}">
+                                           value="{{old('product_bought_atleast_count') ?? $coupon->conditions?->product_bought_atleast_count}}">
                                     @error('product_bought_atleast_count')<small class="text-danger">{{$message}}</small>@enderror
                                 </div>
                             </div>
                             <div class="col-md-12">
                                 @foreach($courses as $course)
                                     <div class="form-check form-check-primary mt-3">
-                                        <input class="form-check-input" name="conditions_products_bought_ids[]" type="checkbox" value="{{$course->product_id}}" id="checkbox_conditions_products_bought_ids_{{$course->product_id}}" {{in_array($course->id,  json_decode($coupon->conditions)->product_bought ?? []) ? 'checked' : null }}/>
+                                        <input class="form-check-input" name="conditions_products_bought_ids[]" type="checkbox" value="{{$course->product_id}}" id="checkbox_conditions_products_bought_ids_{{$course->product_id}}" {{in_array($course->id,  $coupon->conditions->product_bought ?? [] ) ? 'checked' : null }}/>
                                         <label class="form-check-label" for="checkbox_conditions_products_bought_ids_{{$course->product_id}}">{{$course->product->name}}</label>
                                     </div>
                                 @endforeach

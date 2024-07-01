@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\Json;
 use App\Helpers\PanelConditions;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -45,18 +46,22 @@ class Coupon extends Model
     ];
 
     /**
-     * The attributes that should be casted to native types.
+     * Get the attributes that should be cast.
      *
-     * @var array
+     * @return array<string, string>
      */
-    protected $casts = [
-        'creator_user_id' => 'integer',
-        'consumer_user_id' => 'integer',
-        'specific_product_id' => 'integer',
-        'discount_percentage' => 'float',
-        'discount_amount' => 'integer',
-        'conditions' => 'json'
-    ];
+    protected function casts(): array
+    {
+        return [
+            'creator_user_id'     => 'integer',
+            'consumer_user_id'    => 'integer',
+            'specific_product_id' => 'integer',
+            'discount_percentage' => 'float',
+            'discount_amount'     => 'integer',
+            'conditions'          =>  Json::class
+        ];
+    }
+
 
     /**
      * Validation rules
@@ -300,5 +305,14 @@ class Coupon extends Model
         $this->number_of_use = $this->number_of_use + 1 ;
         $this->save();
     }
+
+    public static function getDiscountRange()
+    {
+        return json_decode(json_encode([
+           'min' => 2,
+           'max' => 20
+        ]));
+    }
+
 
 }
