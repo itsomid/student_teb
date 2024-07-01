@@ -8,6 +8,7 @@ use App\Functions\FlashMessages\Toast;
 use App\Helpers\PanelConditions;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Coupon\CreateRequest;
+use App\Models\Admin;
 use App\Models\Coupon;
 use App\Models\Course;
 use Illuminate\Http\Request;
@@ -22,11 +23,13 @@ class CouponController extends Controller
     public function index()
     {
 
-        $coupons = \App\Models\Coupon::query()->latest()->get();
+        $coupons = Coupon::query()->latest()->get();
 
+        $admins = Admin::select('id', 'first_name', 'last_name', 'mobile')
+            ->get();
         return (request()->input('action') == 'search' or is_null(request()->input('action')))
-                ? view('dashboard.coupon.index')->with(['coupons' => $coupons])
-                : Excel::download(new CouponExport($coupons), Jalalian::now()->format('%A_ %d %B %Y').'__'.'coupons.xlsx');
+            ? view('dashboard.coupon.index')->with(['coupons' => $coupons,'admins'=>$admins])
+            : Excel::download(new CouponExport($coupons), Jalalian::now()->format('%A_ %d %B %Y').'__'.'coupons.xlsx');
     }
 
     public function create()
@@ -39,12 +42,6 @@ class CouponController extends Controller
 
     public function store(CreateRequest $request)
     {
-        if (!$request->filled('discount_percentage') && !$request->filled('discount_amount')) {
-            return redirect()->back();
-        }
-        if ($request->filled('discount_percentage') && $request->filled('discount_amount')) {
-            return redirect()->back();
-        }
 
 
         if (!auth('admin')->user()->can('coupons_all_data')) {
@@ -104,7 +101,7 @@ class CouponController extends Controller
             }
         }
 
-        Toast::message('کد تخفیف ویرایش شد')->success()->notify();
+        Toast::message('کد تخفیف با موفقیت ایجاد شد')->success()->notify();
         return redirect()->route('admin.coupons.index');
     }
 
