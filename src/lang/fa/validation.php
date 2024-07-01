@@ -119,6 +119,7 @@ return array(
         "sales_support_id"                    =>       "ID پشتیبان",
         "sales_support_expire_days"           =>       "تاریخ انقضا",
         "start_date"                          =>       "زمان شروع دوره",
+        "amount"                              =>       "قیمت",
         "original_price"                      =>       "قیمت",
         "off_price"                           =>       "قیمت حراجی",
         "about_course"                        =>       "درباره دوره",

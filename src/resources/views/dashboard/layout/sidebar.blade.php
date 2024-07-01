@@ -34,6 +34,21 @@
                 </a>
             </li>
         @endcan
+        <li class="menu-item @if(request()->is(['transaction*'])) active open @endif">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon fa-light fa-money-check-dollar-pen fa-sm"></i>
+                <div>مدیریت تراکنش ها</div>
+            </a>
+            <ul class="menu-sub">
+                <li class="menu-item @if(request()->is('transaction/increase-credit-form*')) active @endif">
+                    <a href="{{route('admin.increase-credit-form')}}" class="menu-link">
+                        <i class="menu-icon fa-light fa-user-group fa-sm"></i>
+                        <div data-i18n="Page 1">افزایش اعتبار</div>
+                    </a>
+                </li>
+            </ul>
+        </li>
+
         @can('student.index')
             <li class="menu-item @if(request()->is('admin/students*')) active @endif">
                 <a href="{{route('admin.student.index')}}" class="menu-link">

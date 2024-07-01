@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\InquiryController;
+use App\Http\Controllers\Admin\PaymentController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\CouponController;
 use App\Http\Controllers\Admin\CouponRangeController;
@@ -145,3 +146,6 @@ Route::post('/external-settings/update-ref-address', [ExternalSettingController:
 Route::get('/report/registered_users', [SaleSupportReportController::class, 'registeredUsers'])->name('report.registered_users')->can('report.registered_users');
 
 Route::get('/report/registered_users/{student}/verificationLogs', [SaleSupportReportController::class, 'verificationHistory'])->name('registered-users.verificationLogs')->can('report.registered_users');;
+
+Route::get('/transaction/increase-credit', [PaymentController::class, 'increaseCreditForm'])->name('increase-credit-form');
+Route::post('/transaction/increase-credit', [PaymentController::class, 'increaseCredit'])->name('increase-credit');
