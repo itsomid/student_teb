@@ -35,9 +35,10 @@ class CartListCollection extends ResourceCollection
                 'is_package' => $item instanceof PackageItem,
                 'package_items' => $item->getModel()->packages->map(fn($item)=>[
                     'id' => $item->id,
+                    'product_id' => $item->product->id,
                     'name' => $item->product->name,
                 ])
-            ]),
+            ])->toArray(),
             'invoice' => [
                 "vat" => CartAdaptor::getTotalTax(),
                 "vat_percentage" => config('shoppingcart.vat') * 100,
@@ -46,7 +47,7 @@ class CartListCollection extends ResourceCollection
                 "sum_price" => CartAdaptor::getTotal(),
                 "final_price" => CartAdaptor::getTotal() * (config('shoppingcart.vat')+1),
                 "payable_price" => CartAdaptor::getPayableAmount(),
-                "payable_for_bank" => CartAdaptor::getPayableAmount() - $this->userCredit // sub-track with user balance
+                "payable_for_bank" => (CartAdaptor::getPayableAmount() - $this->userCredit) > 0 ? CartAdaptor::getPayableAmount() - $this->userCredit : 0 // sub-track with user balance
             ]
 
         ];

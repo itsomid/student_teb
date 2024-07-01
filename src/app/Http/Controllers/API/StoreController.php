@@ -3,17 +3,22 @@
 namespace App\Http\Controllers\API;
 
 use App\Enums\ProductCategoryType;
+use App\Enums\ProductTypeEnum;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\V1\StoreCollection;
+use App\Http\Resources\StudentPanel\CourseResource;
+use App\Http\Resources\StudentPanel\CustomPackageResource;
+use App\Http\Resources\StudentPanel\StoreCollection;
 use App\Models\Product;
-
+use App\ShoppingCart\CartAdaptor;
+use App\ShoppingCart\Exceptions\ItemDoesNotExistsInShoppingCart;
 use Illuminate\Http\Response;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class StoreController extends Controller
 {
     public function store()
     {
+
         $products = Product::activeCourses()->with([
             'categories' => function ($query) {
                 $query->select('id', 'type');
@@ -26,15 +31,30 @@ class StoreController extends Controller
         ]);
     }
 
-    public function storeItem(Product $product)
+    public function storeItemDetails(Product $product)
     {
 
-        if (!$product) {
-            return response()->json(Response::HTTP_NOT_FOUND);
-        }
-        if ($product->product_type_id === ProductCategoryType::COURSE){
+        if ($product->product_type_id === ProductTypeEnum::COURSE) {
 
+            return response()->json([
+                'data' => new CourseResource($product)
+            ]);
         }
-        return $product;
+
+
+        if ($product->product_type_id === ProductTypeEnum::CUSTOM_PACKAGE) {
+            return response()->json([
+                'data' => new CustomPackageResource($product)
+            ]);
+        }
     }
+
+    public function packageShow(Product $product)
+    {
+        return response()->json([
+            'data' => new CustomPackageResource($product)
+        ]);
+    }
+
+
 }
