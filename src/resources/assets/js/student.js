@@ -1,5 +1,5 @@
-$(document).ready(function() {
-    let apiUrl     = $('#selectStudent').attr('src');
+$(document).ready(function () {
+    let apiUrl = $('#selectStudent').attr('src');
     let selectedId = $('#selectStudent').data('selected');
 
     $('#selectStudent').select2({
@@ -9,19 +9,29 @@ $(document).ready(function() {
             delay: 250,
             processResults: function (data) {
                 return {
-                    results: data.map(function(user) {
+                    results: data.map(function (user) {
                         return {
                             id: user.id,
-                            text: user.name +' | '+ user.mobile
+                            text: user.name + ' | ' + user.mobile
                         };
                     })
                 };
             },
             cache: true
         },
-        minimumInputLength: 1,
+        minimumInputLength: 2,
         placeholder: 'جهت انتخاب دانش آموز کلیک کنید',
-        allowClear: true
+        allowClear: true,
+        language: {
+            inputTooShort: function (args) {
+                // args.minimum is the minimum required length
+                // args.input is the user-typed text
+                return "لطفا ۲ یا بیشتر کاراکتر وارد کن";
+            },
+            noResults: function() {
+                return "نتیجه ای نداشت.";
+            },
+        }
     });
 
     if (selectedId) {
@@ -38,5 +48,7 @@ $(document).ready(function() {
             $('#selectStudent').append(option).trigger('change');
         });
     }
+
 });
+
 
