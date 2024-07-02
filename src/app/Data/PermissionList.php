@@ -79,6 +79,8 @@ class PermissionList {
             ['coupons.edit'                         ,'ویرایش کدهای تخفیف'],
             ['coupons.destroy'                      ,'حذف کد تخفیف'],
             ['coupons.range.edit'                   ,'ویرایش بازه ی ایجاد کد تخفیف'],
+            ['coupons.coupons.all.data'             ,'ویرایش بازه ی ایجاد کد تخفیف'],
+            ['coupon.product.section'               ,'ویرایش بازه ی ایجاد کد تخفیف'],
 
             ['setting.int.index'                    ,'مشاهده تنظیمات داخلی'],
             ['setting.ext.index'                    ,'مشاهده تنظیمات خارجی'],

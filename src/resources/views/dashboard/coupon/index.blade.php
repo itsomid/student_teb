@@ -139,7 +139,7 @@
                                         {{$coupon->creator_user->mobile}}
                                     </td>
                                     <td>
-                                        {{$coupon->creator_user->name}}
+                                        {{$coupon->creator_user->fullname()}}
                                     </td>
                                     <td>
                                        {{$coupon->number_of_use}}
@@ -155,7 +155,7 @@
                                         0 ریال
                                     </td>
                                     <td class="text-center">
-                                        {{$coupon->expired_at}}
+                                        {{$coupon->expired_at()}}
                                     </td>
                                     <td class="text-center">
                                         ۱۲۰۰۰۰
