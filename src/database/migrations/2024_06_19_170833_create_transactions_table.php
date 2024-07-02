@@ -17,6 +17,8 @@ return new class extends Migration
             $table->foreignIdFor(User::class)->constrained();
             $table->unsignedInteger('amount');
             $table->string('transaction_type');//deposit withdraw vat_tax discount buy
+            $table->text('user_description')->nullable();
+            $table->text('system_description')->nullable();
             $table->timestamps();
         });
     }
