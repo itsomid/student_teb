@@ -15,12 +15,6 @@ class Coupon extends Model
 {
     use HasFactory, SoftDeletes;
 
-
-    const  RANGE_KEY = [
-        'start'     =>  'coupons_start_discount_range',
-        'end'       =>  'coupons_end_discount_range',
-        'ids'       =>  'coupons_conditions_products_ids'
-    ];
     protected array $dates = [
         'expired_at',
         'deleted_at'
@@ -28,21 +22,21 @@ class Coupon extends Model
 
 
     public $fillable = [
-        'creator_user_id',
+        'type',
         'coupon',
-        'consumer_user_id',
-        'specific_product_id',
+        'description',
+
+        'creator_id',
+
+        'consumer_ids',
+        'product_ids',
+
         'discount_percentage',
         'discount_amount',
-        'conditions',
-        'is_disposable',
-        'is_multiuser',
-        'has_purchased',
+
+        'is_one_time',
         'expired_at',
-        'description',
-        'for_old_users',
-        'for_old_users_min_pay',
-        'is_mass'
+        'conditions',
     ];
 
     /**
@@ -53,12 +47,12 @@ class Coupon extends Model
     protected function casts(): array
     {
         return [
-            'creator_user_id'     => 'integer',
-            'consumer_user_id'    => 'integer',
-            'specific_product_id' => 'integer',
             'discount_percentage' => 'float',
             'discount_amount'     => 'integer',
-            'conditions'          =>  Json::class
+
+            'consumer_ids'        =>  Json::class,
+            'product_ids'         =>  Json::class,
+            'conditions'          =>  Json::class,
         ];
     }
 
@@ -74,7 +68,7 @@ class Coupon extends Model
 
     public function scopeOwns($query, $userId)
     {
-        return $query->where('creator_user_id', $userId);
+        return $query->where('creator_id', $userId);
     }
 
     public function canDoAction($userId): bool
@@ -82,30 +76,21 @@ class Coupon extends Model
         return $this->creator_user_id === $userId;
     }
 
-    public function getConditionAttribute()
+    public function creator(): BelongsTo
     {
-        return json_decode($this->attributes['conditions']);
-    }
-
-    public function creator_user(): BelongsTo
-    {
-        return $this->belongsTo(Admin::class,'creator_user_id');
+        return $this->belongsTo(Admin::class,'creator_id');
     }
 
     public function consumer_user(): BelongsTo
     {
-        return $this->belongsTo(User::class,'consumer_user_id');
-    }
-
-    public function specific_product(): BelongsTo
-    {
-        return $this->belongsTo(Product::class,'specific_product_id');
+        return $this->belongsTo(User::class,'consumer_id');
     }
 
     public function expired_at()
     {
         return Jalalian::forge($this->created_at)->toDateTimeString();
     }
+
     public function calculatePrice($price): int
     {
         $result = $price;

@@ -102,10 +102,20 @@
                     <h5 class="m-0 me-2">لیست کد تخفیف</h5>
                     <div class="card-title-elements ms-auto">
                         @can('coupons.create')
-                            <a href="{{route('admin.coupons.create')}}" class="btn btn-primary">
-                                <i class="fa fa-plus mx-2"></i>
-                                افزودن کد تخفیف
-                            </a>
+                            <!-- Dropdown with Icon -->
+                            <div class="btn-group">
+                                <button class="btn btn-primary text-white dropdown-toggle" type="button" id="dropdownMenuButtonIcon" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="ti ti-menu-2 ti-xs mx-2 "></i>
+                                    <span class="mx-2">
+                                        افزودن کد تخفیف
+                                    </span>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButtonIcon">
+                                    <li><a class="dropdown-item d-flex align-items-center" href="{{route('admin.coupons.create_specified_students_coupon')}}"><i class="ti ti-chevron-right scaleX-n1-rtl"></i> کد تخفیف معمولی</a></li>
+                                    <li><a class="dropdown-item d-flex align-items-center" href="{{route('admin.coupons.create-mass-creation')}}"><i class="ti ti-chevron-right scaleX-n1-rtl"></i>کد تخفیف عمده</a></li>
+                                    <li><a class="dropdown-item d-flex align-items-center" href="{{route('admin.coupons.create-conditional-student-discount')}}"><i class="ti ti-chevron-right scaleX-n1-rtl"></i>کد تخفیف شرطی</a></li>
+                                </ul>
+                            </div>
                         @endcan
                     </div>
                 </div>
@@ -136,10 +146,10 @@
                                         {{$coupon->coupon}}
                                     </td>
                                     <td>
-                                        {{$coupon->creator_user->mobile}}
+                                        {{$coupon->creator->mobile}}
                                     </td>
                                     <td>
-                                        {{$coupon->creator_user->fullname()}}
+                                        {{$coupon->creator->fullname()}}
                                     </td>
                                     <td>
                                        {{$coupon->number_of_use}}
@@ -158,7 +168,7 @@
                                         {{$coupon->expired_at()}}
                                     </td>
                                     <td class="text-center">
-                                        ۱۲۰۰۰۰
+                                        N/A
                                     </td>
                                     <td class="d-flex align-items-center">
                                         <div class="dropdown mx-3">
@@ -208,7 +218,7 @@
                                         </div>
                                     </td>
                                 </tr>
-                            @endforeach($i = 0; $i <= 10; $i++)
+                            @endforeach
                         </tbody>
                     </table>
                 </div>

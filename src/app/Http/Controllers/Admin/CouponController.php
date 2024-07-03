@@ -2,12 +2,17 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\DTO\CouponCondition\CouponConditionDTO;
+use App\Enums\CouponTypesEnum;
 use App\Exports\CouponExport;
 use App\Functions\DateFormatter;
 use App\Functions\FlashMessages\Toast;
 use App\Helpers\PanelConditions;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Coupon\CreateRequest;
+use App\Http\Requests\Coupon\SpecifiedStudentsCouponRequest;
+use App\Http\Requests\Coupon\storeConditionalStudentDiscountRequest;
+use App\Http\Requests\Coupon\storeMassCreationRequest;
 use App\Http\Requests\Coupon\UpdateRequest;
 use App\Models\Coupon;
 use App\Models\Course;
@@ -22,146 +27,234 @@ class CouponController extends Controller
 {
     public function index()
     {
-        $coupons = \App\Models\Coupon::query()->with('creator_user')->latest()->get();
-
-        return (request()->input('action') == 'search' or is_null(request()->input('action')))
-                ? view('dashboard.coupon.index')->with(['coupons' => $coupons])
-                : Excel::download(new CouponExport($coupons), Jalalian::now()->format('%A_ %d %B %Y').'__'.'coupons.xlsx');
+        $coupons = \App\Models\Coupon::query()->latest()->get();
+        //TODO :: Export Excel
+        return view('dashboard.coupon.index')->with(['coupons' => $coupons]);
     }
 
-    public function create()
+    public function createSpecifiedStudentsCoupon()
+    {
+        //TODO :: Should Be Product
+        $courses= Course::query()->select(['id','product_id'])->latest()->with('product')->get();
+        return view('dashboard.coupon.create_specified_students_coupon')->with(['courses' => $courses]);
+    }
+    public function storeSpecifiedStudentsCoupon(SpecifiedStudentsCouponRequest $request)
+    {
+        $product_ids= is_array($request->product_ids) && count($request->product_ids) > 0
+            ? $request->product_ids
+            : null;
+
+        Coupon::query()->create([
+            'type'                  => CouponTypesEnum::SPECIFIED_STUDENTS_COUPON,
+            'creator_id'            => auth('admin')->id(),
+            'consumer_ids'          => array_map('intval', array_keys($request->consumer_ids)),
+            'coupon'                => strtolower($request->coupon),
+            'description'           => $request->description,
+            'discount_percentage'   => $request->discount_percentage,
+            'discount_amount'       => $request->discount_amount,
+            'expired_at'            => DateFormatter::format($request->expired_at),
+            'product_ids'           => array_map('intval', array_keys($product_ids)),
+            'is_one_time'           => (boolean)$request->is_one_time
+        ]);
+
+        Toast::message('کد تخفیف با موفقیت ایجاد شد')->success()->notify();
+        return redirect()->route('admin.coupons.index');
+    }
+
+
+    public function createMassCreation()
     {
         $courses= Course::query()->select(['id','product_id'])->latest()->with('product')->get();
-        return view('dashboard.coupon.create')->with(['courses' => $courses]);
+        return view('dashboard.coupon.create_mass_creation')->with(['courses' => $courses]);
     }
-
-    public function store(CreateRequest $request)
+    public function storeMassCreation(storeMassCreationRequest $request)
     {
-        $input = $request->all();
+        $product_ids= is_array($request->product_ids) && count($request->product_ids) > 0
+            ? $request->product_ids
+            : null;
 
-        $input['creator_user_id'] = auth('admin')->id();
+        $postfix= ' #'.Str::upper(Str::random(6));
 
-        if ($request->discount_amount) {
-            $input['discount_amount'] = str_replace(",", "", $input['discount_amount']);
-        }
+        for ($i = 0; $i<= $request->count; $i++){
 
-        $input['expired_at']= DateFormatter::format($request->expired_at);
-
-        if (auth('admin')->user()->cannot('coupons.coupons.all.data') && auth('admin')->user()->cannot('coupon.product.section')) {
-            $conditions_array["product_atleast_count"] = "1";
-            // $conditions_array["product"] = $discount_range['conditions_products_ids'];
-            $conditions_array["product_atleast_one"] = null;
-            $conditions_array["product_bought_atleast_count"] = null;
-            $conditions_array["profile"]["grade"] = null;
-            $input['conditions'] = json_encode($conditions_array);
-
-        } else {
-            $input['conditions'] = PanelConditions::createConditionsJSON($request);
-        }
-
-
-        //It is specified whether one coupon or several are to be created.
-        $codeCount = (array_key_exists('coupon-count', $input) && $input['coupon-count']) ? intval($input['coupon-count']) : 1;
-
-        if ($codeCount === 1) {
-            $request->validate(['coupon' => ['required',    Rule::unique('coupons', 'coupon')->whereNull('deleted_at')]]);
-            $input['coupon'] = strtolower($input['coupon']);
-            $input['is_mass'] = false;
-
-            //This condition executes when we intend to create one coupon for a group of students
-            if (request()->input('is_multiple') == 1 && request()->has('ids')) {
-                foreach (json_decode(request()->input('ids')) as $user_id) {
-                    $input['consumer_user_id'] = $user_id;
-                    Coupon::query()->create($input);
-                }
-                Toast::message('کد تخفیف با موفقیت ایجاد شد')->success()->notify();
-                return redirect()->route('admin.coupons.index');
-            }
-
-            Coupon::query()->create($input);
-            Toast::message('کد تخفیف با موفقیت ایجاد شد')->success()->notify();
-            return redirect()->route('admin.coupons.index');
-        }
-
-        for ($i = 0; $i < $codeCount; $i++) {
-            /*
-             * If the coupon code already exists (isCodeExist returns true), the loop repeats, generating a new
-             * coupon code and checking again. This process continues until a unique coupon code is generated
-             * (one that does not exist in the database).
-             */
             do {
-                $input['coupon'] = strtolower(Str::random(8));
-                $input['is_mass'] = true;
-            } while ( Coupon::query()->isCodeExist($input['coupon']));
+                $code = strtolower(Str::random(8));
+            } while ( Coupon::query()->where('coupon', $code)->exists());
 
-            Coupon::query()->create($input);
+            Coupon::query()->create([
+                'type'                  => CouponTypesEnum::MASS_CREATION,
+                'creator_id'            => auth('admin')->id(),
+                'coupon'                => $code,
+                'description'           => $request->description . $postfix,   //we add postfix for emergency situations.
+                'discount_percentage'   => $request->discount_percentage,
+                'discount_amount'       => $request->discount_amount,
+                'expired_at'            => DateFormatter::format($request->expired_at),
+                'product_ids'           => array_map('intval', array_keys($product_ids)),
+                'is_one_time'           => true
+            ]);
         }
 
-        Toast::message('کد تخفیف ویرایش شد')->success()->notify();
+        Toast::message('کد تخفیف با موفقیت ایجاد شد')->success()->notify();
         return redirect()->route('admin.coupons.index');
     }
 
-    public function edit($coupon)
+
+
+    public function createConditionalStudentDiscount()
     {
-        $courses= Course::query()->latest()->with('product')->get();
-        $coupon= Coupon::query()->where('id', $coupon)->first();
-        return view('dashboard.coupon.edit')
-            ->with(['coupon' => $coupon])
-            ->with(['courses' => $courses]);
+        $courses= Course::query()->select(['id','product_id'])->latest()->with('product')->get();
+        return view('dashboard.coupon.create_conditional_student_discount')->with(['courses' => $courses]);
     }
-
-    public function update($coupon, UpdateRequest $request)
+    public function storeConditionalStudentDiscount(Request $request)
     {
-        $coupons= Coupon::query()->where('id', $coupon)->first();
+        $product_ids= is_array($request->product_ids) && count($request->product_ids) > 0
+            ? $request->product_ids
+            : null;
 
-        $input = $request->all();
+        $conditions= (new CouponConditionDTO())
+            ->setForLastYearStudents($request->for_last_year_students)
+            ->setLastYearMinimumPurchase($request->last_year_minimum_purchase)
+            ->setPurchasesStatus($request->purchases_status)
+            ->setPurchasedItems($request->purchased_items ?? [])
+            ->setCartItemsCount($request->cart_items_count)
+            ->setSpecifiedCartItems($request->specified_cart_items ?? [])
+            ->setGrade($request->grade)
+            ->setFieldOfStudy($request->field_of_study);
 
-        if ($request->discount_amount) {
-            $input['discount_amount'] = str_replace(",", "", $input['discount_amount']);
-        }
+        Coupon::query()->create([
+            'type'                  => CouponTypesEnum::CONDITIONAL_STUDENT_DISCOUNT,
+            'creator_id'            => auth('admin')->id(),
+            'coupon'                => strtolower($request->coupon),
+            'description'           => $request->description,   //we add postfix for emergency situations.
+            'discount_percentage'   => $request->discount_percentage,
+            'discount_amount'       => $request->discount_amount,
+            'expired_at'            => DateFormatter::format($request->expired_at),
+            'product_ids'           => array_map('intval', array_keys($product_ids)),
+            'is_one_time'           => (boolean)$request->is_one_time,
+            'conditions'            => $conditions->getObject()
+        ]);
 
-        if (! auth('admin')->user()->can('coupons.coupons.all.data') && ! auth('admin')->user()->can('coupon.product.section')) {
-            $conditions_array["product_atleast_count"] = $request->product_atleast_count;
-            //$conditions_array["product"] = $discount_range['conditions_products_ids'];
-            $conditions_array["product_atleast_one"] = $request->product_atleast_one ;
-            $conditions_array["product_bought_atleast_count"] = $request->product_bought_atleast_count ;
-            $conditions_array["profile"]["grade"] = $request->conditions_profile['grade'];
-            $input['conditions'] = $conditions_array;
-
-        } else {
-            $input['conditions'] = PanelConditions::createConditionsJSON($request);
-        }
-
-        $coupons->coupon              = $input['coupon'];
-        $coupons->conditions          = $input['conditions'];
-        $coupons->description         = $input['description'];
-        $coupons->consumer_user_id    = $input['consumer_user_id'];
-        $coupons->discount_percentage = $input['discount_percentage'];
-        $coupons->creator_user_id     = auth('admin')->user()->id;
-        $coupons->expired_at          = DateFormatter::format($input['expired_at']);
-
-        if (isset($request->specific_product_id)) {
-            $coupons->specific_product_id = $input['specific_product_id'];
-        }
-        if (isset($request->has_purchased)) {
-            $coupons->has_purchased = $input['has_purchased'];
-        }
-        if (isset($request->is_disposable)) {
-            $coupons->is_disposable = $input['is_disposable'];
-        }
-        if (isset($request->is_multiuser)) {
-            $coupons->is_multiuser = $input['is_multiuser'];
-        }
-        if (isset($request->for_old_users)) {
-            $coupons->for_old_users         = $input['for_old_users'];
-            $coupons->for_old_users_min_pay = $input['for_old_users_min_pay'];
-        }
-
-        $coupons->save();
-
-        Toast::message('کد تخفیف ویرایش شد')->success()->notify();
+        Toast::message('کد تخفیف با موفقیت ایجاد شد')->success()->notify();
         return redirect()->route('admin.coupons.index');
     }
+
+
+
+
+
+
+    public function editSpecifiedStudentsCoupon()
+    {
+        //TODO :: Should Be Product
+        $courses= Course::query()->select(['id','product_id'])->latest()->with('product')->get();
+        return view('dashboard.coupon.create_specified_students_coupon')->with(['courses' => $courses]);
+    }
+    public function updateSpecifiedStudentsCoupon(SpecifiedStudentsCouponRequest $request)
+    {
+        $product_ids= is_array($request->product_ids) && count($request->product_ids) > 0
+            ? $request->product_ids
+            : null;
+
+        Coupon::query()->create([
+            'type'                  => CouponTypesEnum::SPECIFIED_STUDENTS_COUPON,
+            'creator_id'            => auth('admin')->id(),
+            'consumer_ids'          => array_map('intval', array_keys($request->consumer_ids)),
+            'coupon'                => strtolower($request->coupon),
+            'description'           => $request->description,
+            'discount_percentage'   => $request->discount_percentage,
+            'discount_amount'       => $request->discount_amount,
+            'expired_at'            => DateFormatter::format($request->expired_at),
+            'product_ids'           => array_map('intval', array_keys($product_ids)),
+            'is_one_time'           => (boolean)$request->is_one_time
+        ]);
+
+        Toast::message('کد تخفیف با موفقیت ایجاد شد')->success()->notify();
+        return redirect()->route('admin.coupons.index');
+    }
+
+
+    public function updateMassCreation(storeMassCreationRequest $request)
+    {
+        $product_ids= is_array($request->product_ids) && count($request->product_ids) > 0
+            ? $request->product_ids
+            : null;
+
+        $postfix= ' #'.Str::upper(Str::random(6));
+
+        for ($i = 0; $i<= $request->count; $i++){
+
+            do {
+                $code = strtolower(Str::random(8));
+            } while ( Coupon::query()->where('coupon', $code)->exists());
+
+            Coupon::query()->create([
+                'type'                  => CouponTypesEnum::MASS_CREATION,
+                'creator_id'            => auth('admin')->id(),
+                'coupon'                => $code,
+                'description'           => $request->description . $postfix,   //we add postfix for emergency situations.
+                'discount_percentage'   => $request->discount_percentage,
+                'discount_amount'       => $request->discount_amount,
+                'expired_at'            => DateFormatter::format($request->expired_at),
+                'product_ids'           => array_map('intval', array_keys($product_ids)),
+                'is_one_time'           => true
+            ]);
+        }
+
+        Toast::message('کد تخفیف با موفقیت ایجاد شد')->success()->notify();
+        return redirect()->route('admin.coupons.index');
+    }
+
+
+
+    public function updateConditionalStudentDiscount(Request $request)
+    {
+        $product_ids= is_array($request->product_ids) && count($request->product_ids) > 0
+            ? $request->product_ids
+            : null;
+
+        $conditions= (new CouponConditionDTO())
+            ->setForLastYearStudents($request->for_last_year_students)
+            ->setLastYearMinimumPurchase($request->last_year_minimum_purchase)
+            ->setPurchasesStatus($request->purchases_status)
+            ->setPurchasedItems($request->purchased_items ?? [])
+            ->setCartItemsCount($request->cart_items_count)
+            ->setSpecifiedCartItems($request->specified_cart_items ?? [])
+            ->setGrade($request->grade)
+            ->setFieldOfStudy($request->field_of_study);
+
+        Coupon::query()->create([
+            'type'                  => CouponTypesEnum::CONDITIONAL_STUDENT_DISCOUNT,
+            'creator_id'            => auth('admin')->id(),
+            'coupon'                => strtolower($request->coupon),
+            'description'           => $request->description,   //we add postfix for emergency situations.
+            'discount_percentage'   => $request->discount_percentage,
+            'discount_amount'       => $request->discount_amount,
+            'expired_at'            => DateFormatter::format($request->expired_at),
+            'product_ids'           => array_map('intval', array_keys($product_ids)),
+            'is_one_time'           => (boolean)$request->is_one_time,
+            'conditions'            => $conditions->getObject()
+        ]);
+
+        Toast::message('کد تخفیف با موفقیت ایجاد شد')->success()->notify();
+        return redirect()->route('admin.coupons.index');
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     public function destroy(Coupon $coupon)
     {

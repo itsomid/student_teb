@@ -99,7 +99,15 @@ Route::patch('/product_types/{product_type}', [ProductTypeController::class, 'up
 
 Route::get('/coupons', [CouponController::class, 'index'])->name('coupons.index')->can('coupons.index');
 Route::get('/coupons/excel', [CouponController::class, 'excel'])->name('coupons.excel')->can('coupons.excel');
-Route::get('/coupons/create', [CouponController::class, 'create'])->name('coupons.create')->can('coupons.create');
+
+Route::get('/coupons/create_specified_students_coupon',    [CouponController::class, 'createSpecifiedStudentsCoupon'])    ->name('coupons.create_specified_students_coupon')           ->can('coupons.create');
+Route::get('/coupons/create_mass_creation',                [CouponController::class, 'createMassCreation'])               ->name('coupons.create-mass-creation')                       ->can('coupons.create');
+Route::get('/coupons/create_conditional_student_discount', [CouponController::class, 'createConditionalStudentDiscount']) ->name('coupons.create-conditional-student-discount')        ->can('coupons.create');
+
+Route::post('/coupons/store_specified_students_coupon',    [CouponController::class, 'storeSpecifiedStudentsCoupon'])     ->name('coupons.store-specified-students-coupon')           ->can('coupons.create');
+Route::post('/coupons/store_mass_creation',                [CouponController::class, 'storeMassCreation'])                ->name('coupons.store-mass-creation')                       ->can('coupons.create');
+Route::post('/coupons/store_conditional_student_discount', [CouponController::class, 'storeConditionalStudentDiscount'])   ->name('coupons.store-conditional-student-discount')       ->can('coupons.create');
+
 Route::post('/coupons', [CouponController::class, 'store'])->name('coupons.store')->can('coupons.create');
 Route::get('/coupons/{coupon}/edit', [CouponController::class, 'edit'])->name('coupons.edit')->can('coupons.edit');
 Route::patch('/coupons/{coupon}', [CouponController::class, 'update'])->name('coupons.update')->can('coupons.edit');
