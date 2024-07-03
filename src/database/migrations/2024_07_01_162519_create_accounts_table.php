@@ -20,7 +20,7 @@ return new class extends Migration
                 ->restrictOnDelete();
             $table->unsignedInteger('balance');
             $table->unsignedInteger('gift_amount')->default(0);
-            $table->unsignedInteger('withdrawable_amount'); // withdrawable_amount = balance - gift_amount
+            $table->unsignedInteger('withdrawal_amount'); // withdrawal_amount = balance - gift_amount
             $table->timestamps();
         });
     }

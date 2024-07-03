@@ -10,7 +10,7 @@ class Account extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 'balance', 'gift_amount', 'withdrawable_amount'
+        'user_id', 'balance', 'gift_amount', 'withdrawal_amount'
     ];
 
     /**
@@ -25,11 +25,11 @@ class Account extends Model
             ->firstOrCreate(['user_id' => $userId], [
                 'balance' => 0,
                 'gift_amount' => 0,
-                'withdrawable_amount' => 0
+                'withdrawal_amount' => 0
             ]);
 
         $account->balance += $amount;
-        $account->withdrawable_amount = $account->balance - $account->gift_amount;
+        $account->withdrawal_amount = $account->balance - $account->gift_amount;
         $account->save();
     }
 
@@ -46,12 +46,12 @@ class Account extends Model
             ->firstOrCreate(['user_id' => $userId], [
                 'balance' => 0,
                 'gift_amount' => 0,
-                'withdrawable_amount' => 0
+                'withdrawal_amount' => 0
             ]);
 
         $account->balance += $amount;
         $account->gift_amount = $amount;
-        $account->withdrawable_amount = $account->balance - $account->gift_amount;
+        $account->withdrawal_amount = $account->balance - $account->gift_amount;
         $account->save();
     }
 }
