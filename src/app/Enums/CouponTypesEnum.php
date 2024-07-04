@@ -1,0 +1,10 @@
+<?php
+
+namespace App\Enums;
+
+enum CouponTypesEnum: string
+{
+    case SPECIFIED_STUDENTS_COUPON = 'SPECIFIED_STUDENTS_COUPON';
+    case MASS_CREATION = 'MASS_CREATION';
+    case CONDITIONAL_STUDENT_DISCOUNT= 'CONDITIONAL_STUDENT_DISCOUNT';
+}
