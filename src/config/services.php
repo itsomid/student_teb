@@ -31,7 +31,7 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
     'jwt' => [
-        'key' => env('JWT_KEY', 'EHADAFCOM'),
+        'key' => env('JWT_KEY', 'CLASSINOCOM'),
     ],
 
     'expiration_per_minutes'=>env('EXPIRATION_PER_MINUTES',10)

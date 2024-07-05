@@ -1,23 +1,18 @@
 <?php
 
+
 use App\Services\OrderService;
-use App\ShoppingCart\CartAdaptor;
-use App\ShoppingCart\PackageItem;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
+use App\Services\PaymentGateway\Gateway;
+use App\Models\GatewayTransaction;
+use App\Services\PaymentGateway\Exception\RetryException;
+use Illuminate\Http\Response;
 
+use App\Services\PaymentGateway\Exception\InvalidRequestException;
+use App\Services\PaymentGateway\Exception\NotFoundTransactionException;
 Route::view('/', 'welcome');
-
-
-Route::get('testm', function () {
-    CartAdaptor::init(1);
-//   \App\ShoppingCart\CartAdaptor::addPackage(14, [9, 6, 2]);
-
-    $items = CartAdaptor::getItems();
-    dd($items[0]->packageItems, $items[0] instanceof PackageItem);
-
-});
 
 
 //TODO:: REFACTOR AND REPLACE THIS CODES TO CONTROLLER
@@ -36,48 +31,52 @@ Route::get('/go_to_gateway', function (){
 });
 
 
-Route::any('/callback_from_gateway', function (){
-    $userId = 1;
-    if (!request()->has('transaction_id'))
-        throw new \App\Services\PaymentGateway\Exception\InvalidRequestException();
 
-    if (request()->has('transaction_id'))
-        $id = request()->get('transaction_id');
+Route::any('/callback_from_gateway', function () {
 
-    $transaction = \Illuminate\Support\Facades\DB::table('gateway_transactions')->where('id', $id)->first();
-
-    if (!$transaction)
-        throw new \App\Services\PaymentGateway\Exception\NotFoundTransactionException();
-
-
-    if (in_array($transaction->status, ['SUCCEED', 'FAILED']))
-        throw new \App\Services\PaymentGateway\Exception\RetryException();
 
     try {
-        $gateway = \App\Services\PaymentGateway\Gateway::initial();
+        if (request()->has('transaction_id')) {
+            $id = request()->get('transaction_id');
+            $transaction = GatewayTransaction::find($id);
+        } else {
+            throw new InvalidRequestException();
+        }
+
+        if (!$transaction) {
+            throw new NotFoundTransactionException();
+        }
+
+        if (in_array($transaction->status, ['SUCCEED', 'FAILED'])) {
+            throw new RetryException();
+        }
+
+        $gateway = Gateway::initial();
         $gateway->verify($transaction);
 
+        // Refresh the transaction instance
+        $transaction->refresh();
 
         DB::beginTransaction();
-        try{
-
+        try {
             $orderService = resolve(OrderService::class);
-            $orderService->buy($userId);
+            $order = $orderService->buy($transaction->user_id);
+
             DB::commit();
-            return response([
-                'message' => 'سفارش شما با موفقیت پرداخت شد'
-            ]);
-        }catch (Throwable $e){
-
-            report($e);
+            return view('bank.callback', ['transaction' => $transaction, 'order_id' => $order->id]);
+        } catch (Throwable $e) {
+            Log::channel('payment')->info('Error in inner try block:', ['exception' => $e]);
             DB::rollBack();
-            return response([
-                'message' => 'مشکلی پیش آمده است لطفا بعدا تلاش کنید' . $e->getMessage()
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return view('bank.callback')->with('error_message', 'مشکلی در فرآیند خرید شما پیش آمده است. لطفا با پشتیبانی تماس بگیرید.');
         }
-    }catch (Throwable $exception){
-
+    } catch (RetryException $exception) {
+        Log::channel('payment')->error('RetryException caught:', ['exception' => $exception]);
         return view('bank.callback')->with('error_message', $exception->getMessage());
+    } catch (InvalidRequestException | NotFoundTransactionException $exception) {
+        Log::channel('payment')->error('Request or Transaction Exception caught:', ['exception' => $exception]);
+        return view('bank.callback')->with('error_message', $exception->getMessage());
+    } catch (Throwable $exception) {
+        Log::channel('payment')->error('Error in outer try block:', ['exception' => $exception]);
+        return view('bank.callback')->with('error_message', 'An unexpected error occurred. Please contact support.');
     }
-
 });

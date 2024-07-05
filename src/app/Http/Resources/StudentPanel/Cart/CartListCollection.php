@@ -30,7 +30,8 @@ class CartListCollection extends ResourceCollection
                 'product_image' => $item->getModel()->product->getImageUrl(),
                 'has_installment' => $item->getModel()->product->has_installment,
                 'options' => $item->getModel()->product->options,
-                'product_price' => $item->getModel()->product->original_price,
+                "original_price" => $item->getModel()->product->getPrice(),
+                "off_price" => $item->getModel()->product->off_price,
                 'product_calculated_price' => $item->getCalcPrice(),
                 'is_package' => $item instanceof PackageItem,
                 'package_items' => $item->getModel()->packages->map(fn($item)=>[
@@ -44,6 +45,7 @@ class CartListCollection extends ResourceCollection
                 "vat_percentage" => config('shoppingcart.vat') * 100,
                 "gift_credit_usage" => 'NOT IMPLEMENT',
                 "gift_amount" => 'NOT IMPLEMENT',
+                "user_credit" => $this->userCredit,
                 "sum_price" => CartAdaptor::getTotal(),
                 "final_price" => CartAdaptor::getTotal() * (config('shoppingcart.vat')+1),
                 "payable_price" => CartAdaptor::getPayableAmount(),

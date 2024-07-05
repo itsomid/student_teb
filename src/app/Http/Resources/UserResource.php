@@ -17,7 +17,22 @@ class UserResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'mobile' => $this->mobile
+            'mobile' => $this->mobile,
+            'credit' => $this->balance,
+            'support' => $this->getSupportData(),
+        ];
+    }
+
+    private function getSupportData(): array
+    {
+        return [
+            'name' => optional($this->saleSupport)->fullname(),
+            'mobile' => optional($this->saleSupport)->mobile,
+            'avatar' => optional($this->saleSupport)->avatar,
+            'instagram' => optional($this->saleSupport)->instagram,
+            'telegram' => optional($this->saleSupport)->telegram,
+            'whatsapp' => optional($this->saleSupport)->whatsapp,
+            'gender'=> optional($this->saleSupport)->gender
         ];
     }
 }

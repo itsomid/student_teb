@@ -33,3 +33,16 @@ function generateMemorableVerificationCode() : string
             Arr::random([$firstNumber,$secondNumber,$thirdNumber]).
             Arr::random([$firstNumber,$secondNumber,$thirdNumber]);
 }
+if (!function_exists('formatNumberWithSlashes')) {
+    /**
+     * Format the number with slashes.
+     *
+     * @param float $number
+     * @return string
+     */
+    function formatNumberWithSlashes($number)
+    {
+        $number = number_format($number, 0, '', ','); // Format the number with commas
+        return str_replace(',', '/', $number); // Replace commas with slashes
+    }
+}

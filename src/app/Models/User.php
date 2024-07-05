@@ -20,7 +20,7 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    const NEW_TOKEN_INTERVAL = 30;
+    const NEW_TOKEN_INTERVAL = 20;
 
     use HasFactory, Filterable;
 
@@ -41,8 +41,16 @@ class User extends Authenticatable
         'password',
         'verified',
         'verified',
+        'block',
+        'block_reason_description',
+        'block_reason_image',
+        'sms_token',
         'description',
         'sales_description',
+        'sms_lock_until',
+        'sms_wrong_sms_tries',
+        'sms_this_token_tries',
+        'profile_img',
         'created_at',
         'updated_at'
     ];
@@ -63,27 +71,33 @@ class User extends Authenticatable
         return $this->belongsTo(Admin::class, 'sale_support_id');
     }
 
-    public function referrer()
+    public function referrer() : BelongsTo
     {
         return $this->belongsTo(ReferralCode::class,'referral_id');
     }
 
-    public function block()
+    public function productAccess(): HasMany
     {
-        return $this->hasOne(UserBlock::class);
+        return $this->hasMany(ProductAccess::class);
     }
-
-    public function sms()
-    {
-        return $this->hasOne(UserSMS::class);
-    }
-
-    /**
-     * @return HasMany
-     */
     public function orders(): HasMany
     {
         return $this->hasMany(Order::class);
+    }
+
+    public function account()
+    {
+        return $this->hasOne(Account::class);
+    }
+
+    public function getBalanceAttribute()
+    {
+        return $this->account ? $this->account->balance : 0;
+    }
+
+    public function getGiftAmountAttribute()
+    {
+        return $this->account ? $this->account->gift_amount : 0;
     }
 
     public function scopeCheckPermissionToGetList(Builder $query, Admin $admin)
@@ -111,27 +125,27 @@ class User extends Authenticatable
 //            ? $query
 //            : User::where('referral_id', $referral_code);
     }
-
-    public function created_at()
+    public function created_at(): string
     {
         return Jalalian::forge($this->created_at)->format('%A, %d %B %Y');
     }
-    public function isLocked()
+    public function isLockedToSendSms(): bool
     {
         return $this->sms_lock_until && now()->lte($this->sms_lock_until) && !app()->environment('local');
     }
 
-    public function canGenerateToken()
+    public function canGenerateToken(): bool
     {
         return empty($this->sms_token) || $this->sms_this_token_tries >= self::NEW_TOKEN_INTERVAL;
     }
 
-    public function generateToken()
+    public function generateToken(): string
     {
         return
             config('app.env') === 'local'
                 ? "11111"
                 : str_pad(random_int(10000, 99999), 5, '0', STR_PAD_LEFT);
     }
+
 
 }

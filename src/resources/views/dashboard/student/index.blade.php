@@ -143,6 +143,12 @@
             <div class="card-title header-elements">
                 <h5 class="m-0 me-2">لیست دانش آموزان</h5>
                 <div class="card-title-elements ms-auto">
+                    @can('student-account.charge')
+                        <a href="{{route('admin.student-account.charge-form')}}" class="btn btn-warning">
+                            <i class="fa-light fa-coins mx-2"></i>
+                            افزایش اعتبار
+                        </a>
+                    @endcan
                     <a href="{{route('admin.student.create')}}" class="btn btn-primary">
                         <i class="fa fa-plus mx-2"></i>
                         افزودن دانش آموز جدید

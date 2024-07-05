@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Events\OrderCreated;
+use App\Listeners\CalculateUserBalanceListener;
 use App\Listeners\SaveTransactionListener;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -21,7 +22,8 @@ class EventServiceProvider extends ServiceProvider
             SendEmailVerificationNotification::class,
         ],
         OrderCreated::class => [
-            SaveTransactionListener::class
+            SaveTransactionListener::class,
+//            CalculateUserBalanceListener::class
         ]
     ];
 

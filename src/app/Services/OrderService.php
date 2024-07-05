@@ -13,87 +13,112 @@ use App\ShoppingCart\Contract\CartItemInterface;
 
 class OrderService
 {
-
     private int $userId;
-    public function buy(int $userId): void
+
+    public function buy(int $userId)
     {
         CartAdaptor::init($userId);
-
         $this->userId = $userId;
 
         $user = User::find($userId);
-        $order = $user->orders()
-            ->create([
-                'vat_tax' => CartAdaptor::getTotalTax(),
-                'total_payable_price' => CartAdaptor::getPayableAmount(),
-                'total_discount' => 0,
-                'installment_total_amount' => 1,
-                'repayment_count' => 1,
-                'status' => OrderStatusEnum::PAID
-            ]);
+        $order = $this->createOrder($user);
 
-        if (CartAdaptor::isInstallment()) {
-            foreach (CartAdaptor::getInstallments() as $installment) {
-                InstallmentRepayment::query()->create([
-                    'amount' => $installment['amount'],
-                    'expired_at' => $installment['date'],
-                    'user_id' => $userId,
-                    'order_id' => $order->id
-                ]);
-            }
-        }
-
-        //Loop
-        CartAdaptor::getItems()->each(function (CartItemInterface $item) use($order){
-
-            if ($item::IS_PACKAGE){
-                $amount = $item->getCalcPrice();
-                $sum = 0;
-                $item->getModel()->packages->each(function ($pkg) use(&$sum) {
-                    $sum += $pkg->getModel()->product->price;
-                });
-
-                $item->getModel()->packages->map(function ($course) use($order, $amount, $sum) {
-                    $amount_temp = (int) (($course->product->price*$amount)/$sum);
-
-                    $itemModel = $order->items()->create([
-                        'product_id' => $course->product_id,
-                        'final_price' => $amount_temp,
-                        'product_price' => $course->product->original_price,
-                        'discount_price' => 0
-                    ]);
-                    $this->accessProduct($course->product_id, $itemModel->id);
-
-                });
-            }
-
-            $itemModel = $order->items()->create([
-                'product_id' => $item->product_id,
-                'final_price' => $item::IS_PACKAGE ? 0 : $item->getCalcPrice(),
-                'product_price' => $item->getModel()->product->original_price,
-                'discount_price' => 0
-            ]);
-
-            $this->accessProduct($item->product_id, $itemModel->id);
-            CartAdaptor::remove($item->product_id);
+        $this->processItems($order, function (CartItemInterface $item) use ($order) {
+            $this->processCartItem($order, $item);
         });
 
-        OrderCreated::dispatch($order);
+        $user->account->balance = 0; // This line might need to be revisited
+        $user->account->save();
+
+        return $order;
     }
 
-    /**
-     * @param int $productId
-     * @param int $orderItemId
-     * @return void
-     */
-    public function accessProduct(int $productId, int $orderItemId): void
+    public function buyWithCredit(int $userId)
     {
-        ProductAccess::query()
-            ->create([
-                'product_id' => $productId,
-                'user_id' => $this->userId,
-                'access_reason_type' => ProductAccessType::BOUGHT,
-                'order_item_id' => $orderItemId
-            ]);
+        CartAdaptor::init($userId);
+        $this->userId = $userId;
+
+        $user = User::find($userId);
+        $order = $this->createOrder($user);
+
+        $this->processItems($order, function (CartItemInterface $item) use ($order) {
+            $this->processCartItem($order, $item);
+        });
+
+        $user->account->balance -= $order->total_payable_price;
+        $user->account->save();
+
+        return $order;
     }
+
+    private function createOrder(User $user)
+    {
+        return $user->orders()->create([
+            'vat_tax' => CartAdaptor::getTotalTax(),
+            'total_payable_price' => CartAdaptor::getPayableAmount(),
+            'total_discount' => 0,
+            'installment_total_amount' => 1,
+            'repayment_count' => 1,
+            'status' => OrderStatusEnum::PAID
+        ]);
+    }
+
+    private function processItems($order, $callback)
+    {
+        CartAdaptor::getItems()->each(function (CartItemInterface $item) use ($order, $callback) {
+            $callback($item);
+            CartAdaptor::remove($item->product_id);
+            OrderCreated::dispatch($order);
+        });
+    }
+
+    private function processCartItem($order, $item)
+    {
+        if ($item::IS_PACKAGE) {
+            $this->processPackageItem($order, $item);
+        } else {
+            $this->processRegularItem($order, $item);
+        }
+    }
+
+    private function processPackageItem($order, $item)
+    {
+        $amount = $item->getCalcPrice();
+        $sum = $item->getModel()->packages->sum(function ($pkg) {
+            return $pkg->getModel()->product->price;
+        });
+
+        $item->getModel()->packages->each(function ($pkg) use ($order, $amount, $sum) {
+            $amount_temp = (int)(($pkg->getModel()->product->price * $amount) / $sum);
+            $itemModel = $order->items()->create([
+                'product_id' => $pkg->product_id,
+                'final_price' => $amount_temp,
+                'product_price' => $pkg->getModel()->product->original_price,
+                'discount_price' => 0
+            ]);
+            $this->accessProduct($pkg->product_id, $itemModel->id);
+        });
+    }
+
+    private function processRegularItem($order, $item)
+    {
+        $itemModel = $order->items()->create([
+            'product_id' => $item->product_id,
+            'final_price' => $item->getCalcPrice(),
+            'product_price' => $item->getModel()->product->original_price,
+            'discount_price' => 0
+        ]);
+        $this->accessProduct($item->product_id, $itemModel->id);
+    }
+
+    private function accessProduct(int $productId, int $orderItemId): void
+    {
+        ProductAccess::query()->create([
+            'product_id' => $productId,
+            'user_id' => $this->userId,
+            'access_reason_type' => ProductAccessType::BOUGHT,
+            'order_item_id' => $orderItemId
+        ]);
+    }
+
 }

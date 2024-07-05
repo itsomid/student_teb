@@ -1,5 +1,5 @@
 @extends('dashboard.layout.master')
-@section('title', 'مدیریت کدهای معرف')
+@section('title', 'استعلام دانش آموز')
 @section('content')
     <div class="row">
         <div class="col-md-12">
@@ -13,7 +13,7 @@
                             <input type="number" name="mobile" class="form-control" placeholder="شماره موبایل یا ایدی دانش آموز">
                         </div>
                         <div class="col-md-2 mt-2">
-                            <button type="submit" class="btn btn-primary mt-2">
+                            <button type="submit" class="btn btn-primary mt-2 text-white">
                                 <span class="mx-2">جستجو</span>
                                 <i class="fa-regular fa-search"></i>
                             </button>
@@ -45,7 +45,7 @@
                             <ul class="list-unstyled">
                                 <p class="mt-4 small text-uppercase text-muted">وضعیت کلی پنل دانش آموز:</p>
                                 <li class="mb-2 d-flex  text-center">
-                                    <h6 class="bg-success rounded p-1 text-white">
+                                    <h6 class="bg-success text-right rounded p-1 text-white">
                                         دسترسی باز است (حالات بدهکاری مالی یا بلاکی از جلسات کلاس در نظر گرفته نشده است)
                                     </h6>
                                 </li>
@@ -53,7 +53,7 @@
                                 <p class="mt-4 small text-uppercase text-muted">جزئیات</p>
                                 <li class="mb-2 d-flex justify-content-between">
                                     <span class="fw-semibold me-1">ایدی کاربر:</span>
-                                    <span>{{$student->id}}</span>
+                                    <span>#{{$student->id}}</span>
                                 </li>
                                 <li class="mb-2 d-flex justify-content-between">
                                     <span class="fw-semibold me-1">ایمیل:</span>
@@ -65,7 +65,7 @@
                                 </li>
                                 <li class="mb-2 pt-1  d-flex justify-content-between">
                                     <span class="fw-semibold me-1">اعتبار:</span>
-                                    <span>۱۲۶,۰۰۰ تومان</span>
+                                    <span>{{number_format($student->balance, 0) . " ریال";}}</span>
                                 </li>
                                 <li class="mb-2 pt-1  d-flex justify-content-between">
                                     <span class="fw-semibold me-1">تاریخ ایجاد حساب:</span>
@@ -84,23 +84,28 @@
                                 <p class="mt-4 small text-uppercase text-muted">اطلاعات پشتیبان</p>
                                 <li class="mb-2 pt-1  d-flex justify-content-between">
                                     <span class="fw-semibold me-1">پشتیبان:</span>
-                                    <span> رمضان علی</span>
+                                    <span>{{isset($student->sale_support_id)?$student->saleSupport->fullname(): 'بدون پشتیبان'}}</span>
                                 </li>
                                 <li class="mb-2 pt-1  d-flex justify-content-between">
                                     <span class="fw-semibold me-1">شماره تماس پشتیبان:</span>
-                                    <span>09056723950</span>
+                                    <span>{{isset($student->sale_support_id)?$student->saleSupport->mobile: 'بدون پشتیبان'}}</span>
                                 </li>
                                 <hr>
                                 <p class="mt-4 small text-uppercase text-muted">عملیات</p>
-                                <li class="mb-2 pt-1 d-flex justify-content-center">
-                                    <button type="button" class="btn btn-success mx-1">
-                                        <span class="mx-1">ورود به castle</span>
+                                <li class="mb-2 pt-1 d-flex justify-content-center text-white">
+                                    <a href="{{route('admin.student.edit',$student->id)}}" type="button" class="btn btn-primary mx-1">
+                                        <span class="mx-1">ویرایش دانش آموز</span>
+                                        <i class="fa-regular fa-user-pen"></i>
+                                    </a>
+                                    <button type="button" class="btn btn-success mx-1" disabled>
+                                        <span class="mx-1">ورود به پنل دانش آموز</span>
                                         <i class="fa-sharp fa-solid fa-castle"></i>
                                     </button>
-                                    <button type="button" class="btn btn-warning mx-1">
-                                        <span class="mx-1">همگام سازی</span>
-                                        <i class="fa-solid fa-arrows-rotate"></i>
-                                    </button>
+                                    {{--                                    <button type="button" class="btn btn-warning mx-1">--}}
+                                    {{--                                        <span class="mx-1">همگام سازی</span>--}}
+                                    {{--                                        <i class="fa-solid fa-arrows-rotate"></i>--}}
+                                    {{--                                    </button>--}}
+
                                 </li>
                             </ul>
                         </div>
@@ -114,7 +119,7 @@
                         <div class="card-title">
                             <h6>درس های خریداری شده دانش آموز</h6>
                             <p class="small text-uppercase text-muted">
-                                تعداد درس های خریداری شده: <strong class="text-dark">2</strong>
+                                تعداد درس های خریداری شده: <strong class="text-dark">{{$student->productAccess}}</strong>
                             </p>
                         </div>
                         <div class="user-products-inquiry-section">

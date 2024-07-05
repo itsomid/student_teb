@@ -34,20 +34,6 @@
                 </a>
             </li>
         @endcan
-        <li class="menu-item @if(request()->is(['student-account*'])) active open @endif">
-            <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon fa-light fa-money-check-dollar-pen fa-sm"></i>
-                <div>مدیریت تراکنش ها</div>
-            </a>
-            <ul class="menu-sub">
-                <li class="menu-item @if(request()->is('student-account/charge*')) active @endif">
-                    <a href="{{route('admin.student-account.charge-form')}}" class="menu-link">
-                        <i class="menu-icon fa-light fa-user-group fa-sm"></i>
-                        <div data-i18n="Page 1">افزایش اعتبار</div>
-                    </a>
-                </li>
-            </ul>
-        </li>
 
         @can('student.index')
             <li class="menu-item @if(request()->is('admin/students*')) active @endif">
@@ -128,6 +114,22 @@
         <li class="menu-header small text-uppercase">
             <span class="menu-header-text"> مالی و خرید ها</span>
         </li>
+        @can('student-account.charge')
+            <li class="menu-item @if(request()->is(['student-account*'])) active open @endif">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon fa-light fa-money-check-dollar-pen fa-sm"></i>
+                    <div>مدیریت تراکنش ها</div>
+                </a>
+                <ul class="menu-sub">
+                    <li class="menu-item @if(request()->is('student-account/charge*')) active @endif">
+                        <a href="{{route('admin.student-account.charge-form')}}" class="menu-link">
+                            <i class="menu-icon fa-light fa-user-group fa-sm"></i>
+                            <div data-i18n="Page 1">افزایش اعتبار</div>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        @endcan
         @can('debit-card.index')
             <li class="menu-item @if(request()->is('admin/debit-cards*')) active @endif">
                 <a href="{{route('admin.debit-card.index')}}" class="menu-link">
