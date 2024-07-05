@@ -50,9 +50,9 @@ class ChargeAccountDTO
      * @param string $userDescription
      * @return $this
      */
-    public function setUserDescription(string $userDescription): self
+    public function setUserDescription(?string $userDescription): self
     {
-        $this->userDescription = $userDescription;
+        $this->userDescription = $userDescription ?? ''; // Use empty string if null is passed
         return $this;
     }
 
