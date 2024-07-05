@@ -39,6 +39,8 @@ class PermissionList {
             ['student.edit-support'                 ,'ویرایش پشتیبان دانش آموز'],
             ['student.verify'                       ,'تایید شماره دانش آموز'],
             ['student.support.history'              ,'مشاهده تاریخچه ی تغییر پشتیبان دانش آموزان'],
+            ['student.excel'                        ,'دانلود خروجی اکسل از لیست دانش آموزان'],
+            ['student.group-register'               ,'ثبت نام گروهی دانش آموز'],
 
             ['referral_code.index'                  ,'مشاهده کد های معرف'],
             ['referral_code.create'                 ,'افزودن کد معرف'],
@@ -74,17 +76,20 @@ class PermissionList {
 
             ['coupons.index'                        ,'مشاهده لیست کدهای تخفیف'],
             ['coupons.excel'                        ,'دانلود خروجی اکسل از کدهای تخفیف'],
-            ['coupons.unlimited_access'             ,'دسترسی نامحدود در تعیین کد تخفیف'],
             ['coupons.create'                       ,'افزودن کدهای تخفیف'],
             ['coupons.set.condition'                ,'دسترسی به شرایط کد تخفیف'],
             ['coupons.edit'                         ,'ویرایش کدهای تخفیف'],
             ['coupons.destroy'                      ,'حذف کد تخفیف'],
-            ['coupon.product.section'               ,'ویرایش بازه ی ایجاد کد تخفیف'],
+            ['coupons.range.edit'                   ,'ویرایش بازه ی ایجاد کد تخفیف'],
+            ['coupons.all-data'                     ,'مشاهده تمام اطلاعات کد تخفیف'],
 
             ['setting.int.index'                    ,'مشاهده تنظیمات داخلی'],
+            ['setting.int.view-logs'                ,'مشاهده لاگ ها و خطاهای سیستم'],
             ['setting.ext.index'                    ,'مشاهده تنظیمات خارجی'],
 
             ['report.registered_users'              ,'آمار ثبت نام نماینده های فروش'],
+
+            ['student-account.charge'               ,'افزایش اعتبار دانش آموز'],
 
         ];
 
