@@ -12,6 +12,8 @@ use App\Models\Product;
 use App\Models\Category;
 use App\Models\Course;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Throwable;
 
 
@@ -26,8 +28,8 @@ class CourseController extends Controller
 
     public function create()
     {
-        $types= ProductTypeEnum::TYPE_LABEL;
-        $categories= Category::query()->get();
+        $types = ProductTypeEnum::TYPE_LABEL;
+        $categories = Category::query()->get();
         return view('dashboard.course.create')
             ->with(['categories' => $categories])
             ->with(['types' => $types]);
@@ -35,44 +37,50 @@ class CourseController extends Controller
 
     public function store(CreateRequest $request)
     {
-        $imageName = time().'.'.$request->img_filename->extension();
-        $request->img_filename->move(public_path('images/Courses'), $imageName);
 
+        $imageName = "";
         DB::beginTransaction();
         try {
             $product = Product::query()->create([
-                'product_type_id'           => $request->product_type_id,
-                'user_id'                   => $request->user_id,
-                'name'                      => $request->name,
-                'description'               => $request->description,
-                'original_price'            => $request->original_price,
-                'off_price'                 => $request->off_price,
-                'options'                   => $request->options,
-                'sort_num'                  => $request->sort_num,
-                'img_filename'              => $imageName,
-                'subscription_start_at'     => DateFormatter::format($request->subscription_start_at),
-                'installment_count'         => $request->installment_count,
-                'first_installment_ratio'   => $request->first_installment_ratio,
-                'final_installment_date'    => DateFormatter::format($request->final_installment_date),
-                'expiration_duration'       => $request->expiration_duration,
-                'is_purchasable'            => $request->has('is_purchasable'),
-                'has_installment'           => $request->has('has_installment'),
-                'show_in_list'              => $request->has('show_in_list'),
+                'product_type_id' => $request->product_type_id,
+                'user_id' => $request->user_id,
+                'name' => $request->name,
+                'description' => $request->description,
+                'original_price' => $request->original_price,
+                'off_price' => $request->off_price,
+                'options' => $request->options,
+                'sort_num' => $request->sort_num,
+                'img_filename' => $imageName,
+                'subscription_start_at' => isset($request->subscription_start_at) ? DateFormatter::format($request->subscription_start_at) : null,
+                'installment_count' => $request->installment_count,
+                'first_installment_ratio' => $request->first_installment_ratio,
+                'first_installment_amount' => $request->first_installment_amount,
+                'final_installment_date' => isset($request->final_installment_date) ? DateFormatter::format($request->final_installment_date) : null,
+                'expiration_duration' => $request->expiration_duration,
+                'is_purchasable' => $request->has('is_purchasable'),
+                'has_installment' => $request->has('has_installment'),
+                'show_in_list' => $request->has('show_in_list'),
             ]);
 
             $product->categories()->attach($request->categories);
-
+            if ($request->hasFile('img_filename')) {
+                $timestamp = now()->timestamp;
+                $imageName = $product->id . '_' . Str::random(5) . '_' . $timestamp . '.' . $request->file('img_filename')->getClientOriginalExtension();
+                $request->file('img_filename')->storeAs('products', $imageName, ['disk' => 'public']);
+                $product->update(['img_filename' => $imageName]);
+            }
             $product->course()->create([
-                'qa_status'                 => $request->has('qa_status'),
-                'about_course'              => $request->about_course,
-                'start_date'                => $request->start_date,
+                'qa_status' => $request->has('qa_status'),
+                'about_course' => $request->about_course,
+                'start_date' => $request->start_date,
             ]);
             DB::commit();
             Toast::message('دوره با موفقیت ایجاد شد')->success()->notify();
-        }catch (Throwable $e){
+        } catch (Throwable $e) {
             report($e);
             DB::rollBack();
             Toast::message('ساخت دوره با شکست مواجه شد لطفا مجددا تلاش کنید')->danger()->notify();
+            return redirect()->back()->with('error-message', $e->getMessage());
         }
 
         return redirect()->route('admin.course.index');
@@ -80,65 +88,73 @@ class CourseController extends Controller
 
     public function edit(Course $course)
     {
-         $types= ProductTypeEnum::TYPE_LABEL;
-        $categories= Category::query()->get();
+        $types = ProductTypeEnum::TYPE_LABEL;
+        $categories = Category::query()->get();
 
         return view('dashboard.course.edit')
-            ->with(['types'      => $types])
+            ->with(['types' => $types])
             ->with(['categories' => $categories])
-            ->with(['course'     => $course]);
+            ->with(['course' => $course]);
     }
 
     public function update(Course $course, UpdateRequest $request)
     {
-        $imageName= $course->product->img_filename;
-        $oldImage = null;
-        if ($request->hasFile('img_filename'))
-        {
-            $oldImage = $imageName;
-            $imageName = time().'.'.$request->img_filename->extension();
-            $request->img_filename->move(public_path('images/Courses'), $imageName);
+
+        $oldImage = $course->product->img_filename;
+        $imageName = $oldImage;
+        if ($request->hasFile('img_filename')) {
+            $timestamp = now()->timestamp;
+            $imageName = $course->product->id . '_' . Str::random(5) . '_' . $timestamp . '.' . $request->file('img_filename')->getClientOriginalExtension();
+            $request->file('img_filename')->storeAs('products', $imageName, ['disk' => 'public']);
+            $course->product->update(['img_filename' => $imageName]);
         }
 
         DB::beginTransaction();
-        try{
+        try {
             $course->update([
-                'start_date'                => $request->start_date,
-                'about_course'              => $request->about_course,
-                'qa_status'                 => $request->has('qa_status'),
+                'start_date' => $request->start_date,
+                'about_course' => $request->about_course,
+                'qa_status' => $request->has('qa_status'),
             ]);
             $course->product->categories()->sync($request->categories);
             $course->product()->update([
-                'product_type_id'           => $request->product_type_id,
-                'user_id'                   => $request->user_id,
-                'name'                      => $request->name,
-                'description'               => $request->description,
-                'original_price'            => $request->original_price,
-                'off_price'                 => $request->off_price,
-                'options'                   => $request->options,
-                'sort_num'                  => $request->sort_num,
-                'img_filename'              => $imageName,
-                'subscription_start_at'     => DateFormatter::format($request->subscription_start_at),
-                'installment_count'         => $request->installment_count,
-                'first_installment_ratio'   => $request->first_installment_ratio,
-                'final_installment_date'    => DateFormatter::format($request->final_installment_date),
-                'expiration_duration'       => $request->expiration_duration,
-                'is_purchasable'            => $request->has('is_purchasable'),
-                'has_installment'           => $request->has('has_installment'),
-                'show_in_list'              => $request->has('show_in_list'),
+                'product_type_id' => $request->product_type_id,
+                'user_id' => $request->user_id,
+                'name' => $request->name,
+                'description' => $request->description,
+                'original_price' => $request->original_price,
+                'off_price' => $request->off_price,
+                'options' => $request->options,
+//                'sort_num' => $request->sort_num,
+                'img_filename' => $imageName,
+                'subscription_start_at' => isset($request->subscription_start_at) ? DateFormatter::format($request->subscription_start_at) : null,
+                'installment_count' => $request->installment_count,
+                'first_installment_ratio' => $request->first_installment_ratio,
+                'first_installment_amount' => $request->first_installment_amount,
+                'final_installment_date' => isset($request->final_installment_date) ? DateFormatter::format($request->final_installment_date) : null,
+                'expiration_duration' => $request->expiration_duration,
+                'is_purchasable' => $request->has('is_purchasable'),
+                'has_installment' => $request->has('has_installment'),
+                'show_in_list' => $request->has('show_in_list'),
             ]);
             DB::commit();
-            Toast::message('دوره با موفقیت ویرایش شد')->success()->notify();
 
-        }catch (Throwable $e){
+
+        } catch (Throwable $e) {
             report($e);
             DB::rollBack();
             Toast::message('ویراش دوره شکست خورد')->danger()->notify();
+            return redirect()->back()->with('error-message', $e->getMessage());
         }
 
-        if ($oldImage){
-            unlink(public_path('images/Courses') . '/' .$oldImage);
+        // Check if the old image exists and delete it
+        if ($request->hasFile('img_filename')) {
+            $oldImagePath = 'products/' . $oldImage;
+            if ($oldImage && Storage::disk('public')->exists($oldImagePath)) {
+                Storage::disk('public')->delete($oldImagePath);
+            }
         }
-        return redirect()->back();
+        Toast::message('دوره با موفقیت ویرایش شد')->success()->notify();
+        return redirect()->route('admin.course.index');
     }
 }

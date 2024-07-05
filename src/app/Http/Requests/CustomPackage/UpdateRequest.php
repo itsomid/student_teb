@@ -4,7 +4,7 @@ namespace App\Http\Requests\CustomPackage;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateCustomPackageRequest extends FormRequest
+class UpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,14 +13,14 @@ class CreateCustomPackageRequest extends FormRequest
     {
         return true;
     }
-
     protected function prepareForValidation(): void
     {
         $this->merge([
+            'original_price' => $this->original_price ? str_replace(',', '', $this->original_price) : null,
+            'off_price' => $this->off_price ? str_replace(',', '', $this->off_price) : null,
             'sections' => array_map(fn($sec) => json_decode($sec, true), $this->sections)
         ]);
     }
-
     /**
      * Get the validation rules that apply to the request.
      *
@@ -28,16 +28,13 @@ class CreateCustomPackageRequest extends FormRequest
      */
     public function rules(): array
     {
-
         return [
             'user_id' => ['required', 'exists:admins,id'],
             'original_price' => ['required', 'numeric'],
-            'subscription_start_at' => ['nullable', 'string'],
+            'holding_date' => ['nullable', 'string'],
             'off_price' => ['nullable', 'numeric'],
             'description' => ['required', 'string'],
             'options' => ['array'],
-            'options.fake_price' => ['nullable', 'numeric'],
-            'options.full_price_show' => ['nullable', 'numeric'],
             'name' => ['required', 'max:255'],
             'is_purchasable' => ['nullable'],
             'has_installment' => ['nullable'],
@@ -53,9 +50,25 @@ class CreateCustomPackageRequest extends FormRequest
             'sections.*.courses.*.id' => ['required', 'integer', 'exists:products,id'],
             'sections.*.courses.*.name' => ['required', 'string'],
             'sections.*.courses.*.image_src' => ['sometimes', 'string'],
-            'img_filename' => ['required', 'image']
+            'img_filename' => ['nullable', 'image']
         ];
     }
 
+    public function withValidator($validator): void
+    {
+        $validator->after(function ($validator) {
+            if ($this->input('has_installment') == 1) {
+                $firstInstallmentRatio = $this->input('first_installment_ratio');
+                $firstInstallmentAmount = $this->input('first_installment_amount');
 
+                if (empty($firstInstallmentRatio) && empty($firstInstallmentAmount)) {
+                    $validator->errors()->add('first_installment_ratio', 'برای دوره اقساطی پر کردن میزان پرداختی اولیه به صورت قسط یا نقدی الزامی است.');
+//                    $validator->errors()->add('first_installment_amount', 'برای دوره اقساطی پر کردن میزان پرداختی اولیه به صورت قسط یا نقدی الزامی است.');
+                } elseif (!empty($firstInstallmentRatio) && !empty($firstInstallmentAmount)) {
+                    $validator->errors()->add('first_installment_ratio', 'انتخاب همزمان پرداخت اولیه به صورت نقدی و اقساطی مجاز نیست');
+//                    $validator->errors()->add('first_installment_amount', 'انتخاب همزمان پرداخت اولیه به صورت نقدی و اقساطی مجاز نیست');
+                }
+            }
+        });
+    }
 }

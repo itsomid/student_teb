@@ -6,13 +6,14 @@ use App\Enums\ProductTypeEnum;
 use App\Functions\DateFormatter;
 use App\Functions\FlashMessages\Toast;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\CustomPackage\CreateCustomPackageRequest;
-use App\Http\Requests\CustomPackage\EditCustomPackageRequest;
+use App\Http\Requests\CustomPackage\CreateRequest;
+use App\Http\Requests\CustomPackage\UpdateRequest;
 use App\Models\CustomPackage;
 use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Throwable;
 
 class CustomPackageController extends Controller
@@ -28,18 +29,18 @@ class CustomPackageController extends Controller
         return view('dashboard.custom_package.index', compact('packages'));
     }
 
-    public function edit(Product $product)
-    {
-        $categories = Category::query()->get();
-        return view('dashboard.custom_package.edit', compact('categories', 'product'));
-    }
+
     public function create()
     {
+        $courses = Product::query()
+            ->where('product_type_id', ProductTypeEnum::COURSE)
+            ->select('id', 'name', 'img_filename')
+            ->get();
         $categories = Category::query()->get();
-        return view('dashboard.custom_package.create', compact('categories'));
+        return view('dashboard.custom_package.create', compact('categories','courses'));
     }
 
-    public function store(CreateCustomPackageRequest $request)
+    public function store(CreateRequest $request)
     {
         $input = $request->validated();
 
@@ -53,7 +54,6 @@ class CustomPackageController extends Controller
                 'off_price' => $input['off_price'],
                 'user_id' => $input['user_id'],
                 'description' => $input['description'],
-                'options' => ['fake_price' => $input['options']['fake_price'], 'full_price_show' =>  $input['options']['full_price_show']],
                 'is_purchasable' => array_key_exists('is_purchasable', $input),
                 'has_installment' => array_key_exists('has_installment', $input),
                 'show_in_list' => array_key_exists('show_in_list', $input),
@@ -83,9 +83,10 @@ class CustomPackageController extends Controller
             }
 
             if($request->hasFile('img_filename')){
-                $name = $new_product->id.'_'.$new_product->name . '.'.$request->file('img_filename')->getClientOriginalExtension();
-                $request->file('img_filename')->storeAs('products', $name, ['disk' => 'public']);
-                $new_product->update(['img_filename' => $name]);
+                $timestamp = now()->timestamp;
+                $imageName = $new_product->id . '_' . Str::random(5) . '_' . $timestamp . '.' . $request->file('img_filename')->getClientOriginalExtension();
+                $request->file('img_filename')->storeAs('products', $imageName, ['disk' => 'public']);
+                $new_product->update(['img_filename' => $imageName]);
             }
 
             Toast::message('پکیج سفارشی با موفقیت ایجاد شد.')->success()->notify();
@@ -93,19 +94,33 @@ class CustomPackageController extends Controller
             return redirect(route('admin.custom-package.index'));
         }catch (Throwable $e){
             report($e);
-            dd($e->getMessage());
             DB::rollBack();
             Toast::message('ساخت پکیج سفارشی با شکست مواجه شد.')->danger()->notify();
-            return redirect(route('admin.custom-package.index'));
+            return redirect()->back()->with('error-message', $e->getMessage());
 
         }
 
     }
-
-    public function update(Product $product, EditCustomPackageRequest $request)
+    public function edit(Product $product)
+    {
+        $courses = Product::query()
+            ->where('product_type_id', ProductTypeEnum::COURSE)
+            ->select('id', 'name', 'img_filename')
+            ->get();
+        $categories = Category::query()->get();
+        return view('dashboard.custom_package.edit', compact('categories', 'product','courses'));
+    }
+    public function update(Product $product, UpdateRequest $request)
     {
         $input = $request->all();
+        $oldImage = $product->img_filename;
 
+        if($request->hasFile('img_filename')){
+            $timestamp = now()->timestamp;
+            $imageName = $product->id . '_' . Str::random(5) . '_' . $timestamp . '.' . $request->file('img_filename')->getClientOriginalExtension();
+            $request->file('img_filename')->storeAs('products', $imageName, ['disk' => 'public']);
+            $product->update(['img_filename' => $imageName]);
+        }
         DB::beginTransaction();
         try{
             //create product
@@ -116,7 +131,7 @@ class CustomPackageController extends Controller
                 'off_price' => $input['off_price'],
                 'user_id' => $input['user_id'],
                 'description' => $input['description'],
-                'options' => ['fake_price' => $input['options']['fake_price'], 'full_price_show' =>  $input['options']['full_price_show']],
+                'options' => '',
                 'is_purchasable' => array_key_exists('is_purchasable', $input),
                 'has_installment' => array_key_exists('has_installment', $input),
                 'show_in_list' => array_key_exists('show_in_list', $input),
@@ -145,15 +160,16 @@ class CustomPackageController extends Controller
                 }
             }
             if (isset($input['categories']) && $input['categories']) {
-                $product->product_categories()->sync($input['categories']);
+                $product->categories()->sync($input['categories']);
+            }
+            //TODO create save file function
+            if ($request->hasFile('img_filename')) {
+                $oldImagePath = 'products/' . $oldImage;
+                if ($oldImage && Storage::disk('public')->exists($oldImagePath)) {
+                    Storage::disk('public')->delete($oldImagePath);
+                }
             }
 
-            if($request->hasFile('img_filename')){
-                Storage::delete("products/{$product->img_filename}");
-                $name = $product->id.'_'.$product->name . '.'.$request->file('img_filename')->getClientOriginalExtension();
-                $request->file('img_filename')->storeAs('products', $name, ['disk' => 'public']);
-                $product->update(['img_filename' => $name]);
-            }
             Toast::message('پکیج سفارشی با موفقیت ویرایش شد.')->success()->notify();
             DB::commit();
             return redirect(route('admin.custom-package.index'));
@@ -161,8 +177,7 @@ class CustomPackageController extends Controller
             report($e);
             DB::rollBack();
             Toast::message('ویرایش پکیج سفارشی با شکست مواجه شد.')->danger()->notify();
-            return redirect(route('admin.custom-package.index'));
-
+            return redirect()->back()->with('error-message', $e->getMessage());
         }
     }
 }

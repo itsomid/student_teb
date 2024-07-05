@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Course;
+namespace App\Http\Requests\CustomPackage;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateRequest extends FormRequest
+class CreateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,7 +13,6 @@ class UpdateRequest extends FormRequest
     {
         return true;
     }
-
     /**
      * Get the validation rules that apply to the request.
      *
@@ -21,37 +20,38 @@ class UpdateRequest extends FormRequest
      */
     public function rules(): array
     {
+
         return [
-            'product_type_id'           => ['required'],
-            'user_id'                   => ['required'],
-            'name'                      => ['required'],
-            'description'               => ['required'],
-            'original_price'            => ['nullable', 'numeric'],
-            'off_price'                 => ['nullable', 'numeric'],
-            'options'                   => ['nullable'],
-            'sort_num'                  => ['nullable', 'numeric'],
-            'img_filename'              => ['nullable'],
-            'subscription_start_at'     => ['nullable'],
-            'installment_count'         => ['required_if:has_installment,1', 'nullable', 'numeric'],
-            'first_installment_ratio' => ['nullable'],
-            'first_installment_amount' => ['nullable'],
-            'final_installment_date'    => ['required_if:has_installment,1'],
-            'expiration_duration'       => ['nullable'],
-            'start_date'                => ['required'],
-            'about_course'              => ['required'],
-            'is_purchasable'            => ['nullable', 'boolean'],
-            'has_installment'           => ['nullable', 'boolean'],
-            'show_in_list'              => ['nullable', 'boolean'],
-            'qa_status'                 => ['nullable', 'boolean'],
-            'categories'                => ['array'],
+            'user_id' => ['required', 'exists:admins,id'],
+            'original_price' => ['required', 'numeric'],
+            'subscription_start_at' => ['nullable', 'string'],
+            'off_price' => ['nullable', 'numeric'],
+            'description' => ['required', 'string'],
+            'options' => ['array'],
+            'name' => ['required', 'max:255'],
+            'is_purchasable' => ['nullable'],
+            'has_installment' => ['nullable'],
+            'show_in_list' => ['nullable'],
+            'installment_count' => ['nullable', 'integer'],
+            'first_installment_ratio' => ['nullable', 'integer'],
+            'first_installment_amount' => ['nullable', 'numeric'],
+            'final_installment_date' => ['nullable', 'string'],
+            'sections' => ['required', 'array'],
+            'sections.*.id' => ['required', 'integer'],
+            'sections.*.title' => ['required', 'string'],
+            'sections.*.courses' => ['required', 'array'],
+            'sections.*.courses.*.id' => ['required', 'integer', 'exists:products,id'],
+            'sections.*.courses.*.name' => ['required', 'string'],
+            'sections.*.courses.*.image_src' => ['sometimes', 'string'],
+            'img_filename' => [ 'image']
         ];
     }
-
     protected function prepareForValidation(): void
     {
         $this->merge([
-            'original_price' => $this->original_price ? str_replace(',', '', $this->original_price) : null,
-            'off_price' => $this->off_price ? str_replace(',', '', $this->off_price) : null,
+            'original_price' => str_replace(',', '', $this->original_price),
+            'off_price' => str_replace(',', '', $this->off_price),
+            'sections' => array_map(fn($sec) => json_decode($sec, true), $this->sections)
         ]);
     }
     public function withValidator($validator): void
@@ -70,5 +70,12 @@ class UpdateRequest extends FormRequest
                 }
             }
         });
+    }
+
+    public function messages()
+    {
+        return [
+            'user_id.required' => 'انتخاب استاد الزامی است.'
+        ];
     }
 }
