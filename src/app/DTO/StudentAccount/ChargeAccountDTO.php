@@ -2,13 +2,15 @@
 
 namespace App\DTO\StudentAccount;
 
+use App\Enums\DepositTypeEnum;
+
 class ChargeAccountDTO
 {
     private int $amount;
     private int $userId;
-    private string $userDescription;
-    private int $adminId;
-    private bool $isGift;
+    private ?string $userDescription;
+    private ?int $adminId;
+    private DepositTypeEnum $depositType;
 
     /**
      * @param int $amount
@@ -47,12 +49,12 @@ class ChargeAccountDTO
     }
 
     /**
-     * @param string $userDescription
+     * @param string|null $userDescription
      * @return $this
      */
     public function setUserDescription(?string $userDescription): self
     {
-        $this->userDescription = $userDescription ?? ''; // Use empty string if null is passed
+        $this->userDescription = $userDescription ?? null; // Use empty string if null is passed
         return $this;
     }
 
@@ -65,39 +67,38 @@ class ChargeAccountDTO
     }
 
     /**
-     * @param int $adminId
+     * @param int|null $adminId
      * @return $this
      */
-    public function setAdminId(int $adminId): self
+    public function setAdminId(?int $adminId): self
     {
         $this->adminId = $adminId;
         return $this;
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getAdminId(): int
+    public function getAdminId(): ?int
     {
         return $this->adminId;
     }
-
     /**
-     * @param bool $isGift
-     * @return $this
+     * @return DepositTypeEnum
      */
-    public function setIsGift(bool $isGift): self
+    public function getDepositType(): DepositTypeEnum
     {
-        $this->isGift = $isGift;
-        return $this;
+        return $this->depositType;
     }
 
     /**
-     * @return bool
+     * @param DepositTypeEnum $depositType
+     * @return $this
      */
-    public function getIsGift(): bool
+    public function setDepositType(DepositTypeEnum $depositType): self
     {
-        return $this->isGift;
+        $this->depositType = $depositType;
+        return $this;
     }
 
 }

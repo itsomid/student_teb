@@ -10,7 +10,7 @@ use App\Models\User;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
-class SaveTransactionListener
+class OrderTransactionListener
 {
     /**
      * Create the event listener.
@@ -32,17 +32,6 @@ class SaveTransactionListener
             'user_id' => $user->id,
             'transaction_type' => TransactionTypeEnum::BUY
         ]);
-        if ($user->account->balance < $event->order->total_payable_price){
-            $transaction = Transaction::query()->create([
-                'amount' => $event->order->total_payable_price - $user->account->balance,
-                'user_id' => $user->id,
-                'transaction_type' => TransactionTypeEnum::DEPOSIT
-            ]);
-            $transaction->deposit()->create([
-                'deposit_type' => DepositTypeEnum::BUY ,
-                'user_id' => $user->id,
-            ]);
-        }
 
         Transaction::query()->create([
             'amount' => $event->order->vat_tax,

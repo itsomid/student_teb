@@ -1,7 +1,11 @@
 <?php
 
 
+use App\DTO\StudentAccount\ChargeAccountDTO;
+use App\Enums\DepositTypeEnum;
+use App\Services\ChargeAccountService;
 use App\Services\OrderService;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
@@ -53,6 +57,14 @@ Route::any('/callback_from_gateway', function () {
 
         $gateway = Gateway::initial();
         $gateway->verify($transaction);
+
+        $chargeAccountService = resolve(ChargeAccountService::class);
+        $chargeAccountService->charge(
+            (new ChargeAccountDTO())
+            ->setDepositType(DepositTypeEnum::BUY)
+            ->setUserId($transaction->user_id)
+            ->setAmount($transaction->price)
+        );
 
         // Refresh the transaction instance
         $transaction->refresh();
