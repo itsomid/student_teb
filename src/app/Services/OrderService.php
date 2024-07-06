@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Enums\OrderStatusEnum;
 use App\Enums\ProductAccessType;
 use App\Events\OrderCreated;
-use App\Models\InstallmentRepayment;
+use App\Models\Order;
 use App\Models\ProductAccess;
 use App\Models\User;
 use App\ShoppingCart\CartAdaptor;
@@ -15,7 +15,7 @@ class OrderService
 {
     private int $userId;
 
-    public function buy(int $userId)
+    public function buy(int $userId): Order
     {
         CartAdaptor::init($userId);
         $this->userId = $userId;
@@ -33,7 +33,7 @@ class OrderService
         return $order;
     }
 
-    public function buyWithCredit(int $userId)
+    public function buyWithCredit(int $userId): Order
     {
         CartAdaptor::init($userId);
         $this->userId = $userId;
@@ -51,7 +51,7 @@ class OrderService
         return $order;
     }
 
-    private function createOrder(User $user)
+    private function createOrder(User $user): Order
     {
         return $user->orders()->create([
             'vat_tax' => CartAdaptor::getTotalTax(),
@@ -63,7 +63,7 @@ class OrderService
         ]);
     }
 
-    private function processItems($order, $callback)
+    private function processItems(Order $order, callable $callback): void
     {
         CartAdaptor::getItems()->each(function (CartItemInterface $item) use ($order, $callback) {
             $callback($item);
@@ -81,7 +81,7 @@ class OrderService
         }
     }
 
-    private function processPackageItem($order, $item)
+    private function processPackageItem($order, $item): void
     {
         $amount = $item->getCalcPrice();
         $sum = $item->getModel()->packages->sum(function ($pkg) {
@@ -100,7 +100,7 @@ class OrderService
         });
     }
 
-    private function processRegularItem($order, $item)
+    private function processRegularItem($order, $item): void
     {
         $itemModel = $order->items()->create([
             'product_id' => $item->product_id,
