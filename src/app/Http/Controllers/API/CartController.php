@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Enums\ProductTypeEnum;
-use App\Http\Requests\API\Cart\AddRequest;
+use App\Http\Requests\API\Cart\AddToCartRequest;
 use App\Http\Resources\StudentPanel\Cart\CartListCollection;
 use App\Models\Product;
 use App\ShoppingCart\CartAdaptor;
@@ -29,22 +29,20 @@ class CartController
 
     public function __construct()
     {
-        $this->userId = Auth::guard('student')->id();
+        $this->userId = 1;
     }
 
     public function lists()
     {
-
         CartAdaptor::init($this->userId);
         $items = CartAdaptor::getItems();
         $userCredit = Auth::guard('student')->user()->balance;
-//        dd($items[0]->getModel()->packages[0]-, $items);
         return response(
             new CartListCollection($items, $userCredit)
         );
     }
 
-    public function add(AddRequest $request)
+    public function add(AddToCartRequest $request)
     {
         $product = Product::query()->find($request->input('product_id'));
 
@@ -84,7 +82,7 @@ class CartController
         );
     }
 
-    public function updatePackage(AddRequest $request)
+    public function updatePackage(AddToCartRequest $request)
     {
         $product = Product::query()->find($request->input('product_id'));
         CartAdaptor::init($this->userId);
@@ -136,7 +134,7 @@ class CartController
         ]);
         $isInstallment = $request->input('is_installment');
 
-        CartAdaptor::init(Auth::guard('student')->id());
+        CartAdaptor::init($this->userId);
 
         try {
             CartAdaptor::changeInstallment($isInstallment);

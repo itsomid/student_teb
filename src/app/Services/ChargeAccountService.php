@@ -21,7 +21,7 @@ class ChargeAccountService
         ]);
 
         $transaction->deposit()->create([
-            'deposit_type' => $DTO->getIsGift() ? DepositTypeEnum::Gift : DepositTypeEnum::Admin,
+            'deposit_type' => $DTO->getDepositType(),
             'user_id' => $DTO->getUserId(),
             'admin_id' => $DTO->getAdminId()
         ]);

@@ -4,7 +4,9 @@ namespace App\Providers;
 
 use App\Events\OrderCreated;
 use App\Listeners\CalculateUserBalanceListener;
-use App\Listeners\SaveTransactionListener;
+use App\Listeners\ChargeStudentAccountOnPaymentSuccessListener;
+use App\Listeners\OrderTransactionListener;
+use App\Services\PaymentGateway\Event\PaymentTransactionSuccessEvent;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -22,8 +24,11 @@ class EventServiceProvider extends ServiceProvider
             SendEmailVerificationNotification::class,
         ],
         OrderCreated::class => [
-            SaveTransactionListener::class,
+            OrderTransactionListener::class,
 //            CalculateUserBalanceListener::class
+        ],
+        PaymentTransactionSuccessEvent::class => [
+            ChargeStudentAccountOnPaymentSuccessListener::class
         ]
     ];
 
