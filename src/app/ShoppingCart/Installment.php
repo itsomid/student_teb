@@ -46,7 +46,7 @@ class Installment
         ); // 15 esfand
 
 
-        //include VAT amount - 9% maaliat arzesh afzoode
+        //include VAT amount - n% maaliat arzesh afzoode
         $product_price = (int) ($this->getInstallmentPrice()*(1+config('shoppingcart.vat')));
 
         $installment_array = [];
