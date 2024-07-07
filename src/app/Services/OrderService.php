@@ -2,9 +2,11 @@
 
 namespace App\Services;
 
+use App\Enums\InstallmentStatusEnum;
 use App\Enums\OrderStatusEnum;
 use App\Enums\ProductAccessType;
 use App\Events\OrderCreated;
+use App\Models\InstallmentRepayment;
 use App\Models\Order;
 use App\Models\ProductAccess;
 use App\Models\User;
@@ -14,6 +16,7 @@ use App\ShoppingCart\Contract\CartItemInterface;
 class OrderService
 {
     private int $userId;
+    private array $installments = [];
 
     public function buy(int $userId): Order
     {
@@ -22,6 +25,9 @@ class OrderService
 
         $user = User::find($userId);
         $order = $this->createOrder($user);
+        if (CartAdaptor::isInstallment()) {
+            $this->installments = CartAdaptor::getInstallments();
+        }
 
         $this->processItems($order, function (CartItemInterface $item) use ($order) {
             $this->processCartItem($order, $item);
@@ -40,6 +46,9 @@ class OrderService
 
         $user = User::find($userId);
         $order = $this->createOrder($user);
+        if (CartAdaptor::isInstallment()) {
+            $this->installments = CartAdaptor::getInstallments();
+        }
 
         $this->processItems($order, function (CartItemInterface $item) use ($order) {
             $this->processCartItem($order, $item);
@@ -88,6 +97,17 @@ class OrderService
             return $pkg->getModel()->product->price;
         });
 
+        $itemModel = $order->items()->create([
+            'product_id' => $item->product_id,
+            'final_price' => $amount,
+            'product_price' => $amount->getModel()->product->original_price,
+            'discount_price' => 0
+        ]);
+
+        if (array_key_exists($item->product_id, $this->installments)) {
+            $this->generateInstallments($item->product_id, $itemModel->id);
+        }
+
         $item->getModel()->packages->each(function ($pkg) use ($order, $amount, $sum) {
             $amount_temp = (int)(($pkg->getModel()->product->price * $amount) / $sum);
             $itemModel = $order->items()->create([
@@ -108,6 +128,10 @@ class OrderService
             'product_price' => $item->getModel()->product->original_price,
             'discount_price' => 0
         ]);
+
+        if (array_key_exists($item->product_id, $this->installments)) {
+            $this->generateInstallments($item->product_id, $itemModel->id);
+        }
         $this->accessProduct($item->product_id, $itemModel->id);
     }
 
@@ -119,6 +143,24 @@ class OrderService
             'access_reason_type' => ProductAccessType::BOUGHT,
             'order_item_id' => $orderItemId
         ]);
+    }
+
+    /**
+     * @param int $productId
+     * @param int $orderItemId
+     * @return void
+     */
+    public function generateInstallments(int $productId, int $orderItemId): void
+    {
+        foreach ($this->installments[$productId] as $index => $installment) {
+            InstallmentRepayment::query()->create([
+                'amount' => $installment['amount'],
+                'expired_at' => $installment['date'],
+                'user_id' => $this->userId,
+                'order_item_id' => $orderItemId,
+                'status' => $index === 0 ? InstallmentStatusEnum::Paid : InstallmentStatusEnum::Pending
+            ]);
+        }
     }
 
 }

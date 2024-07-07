@@ -213,7 +213,6 @@ class Cart
             }else{
                 throw new CouponNotUsableException;
             }
-            return $item;
         });
     }
 
@@ -274,26 +273,12 @@ class Cart
 
         foreach($this->items as $item)
         {
-            $product_installments = $item->installment->generateInstallments();
-            foreach ($product_installments as $temp) {
-                if (array_key_exists($temp['date']->format('Y-m-d'), $installments)) {
-                    $installments[$temp['date']->format('Y-m-d')] += $temp['amount'];
-                }else{
-                    $installments[$temp['date']->format('Y-m-d')] = $temp['amount'];
-                }
-            }
+            if (count($generatedInstallment = $item->installment->generateInstallments()))
+            $installments[$item->product_id] = $generatedInstallment;
         }
 
-        $result = [];
-        foreach ($installments as $key => $value) {
-            $temp['date'] = Carbon::createFromFormat('Y-m-d', $key);
-            $temp['amount'] = $value;
-            $result[] = $temp;
-        }
-
-        return $result;
+        return $installments;
     }
-
     /**
      * @return bool
      */

@@ -8,8 +8,8 @@ class ChargeAccountDTO
 {
     private int $amount;
     private int $userId;
-    private ?string $userDescription;
-    private ?int $adminId;
+    private ?string $userDescription = null;
+    private ?int $adminId = null;
     private DepositTypeEnum $depositType;
 
     /**
@@ -61,7 +61,7 @@ class ChargeAccountDTO
     /**
      * @return string
      */
-    public function getUserDescription(): string
+    public function getUserDescription(): ?string
     {
         return $this->userDescription;
     }
