@@ -48,7 +48,7 @@ class Zarinpal extends PortAbstract implements PortInterface
 
     protected function sendPayRequest()
     {
-        $this->user(auth()->id());
+        $this->user(auth('student')->id());
         $this->trans_id = $this->newTransaction();
 
         $data = [
