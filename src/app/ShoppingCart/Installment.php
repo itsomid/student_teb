@@ -27,10 +27,14 @@ class Installment
 
     public function generateInstallments(): array
     {
+
         if (count($this->installment_array)) {
             return $this->installment_array;
         }
         $product = $this->cartItem->getModel()->product;
+        if (!$product->has_installment) {
+            return [];
+        }
 
         //config generation of Installments
         $installment_count          = $product->installment_count ?: 4; //include first installment
@@ -43,16 +47,12 @@ class Installment
 
 
         //include VAT amount - 9% maaliat arzesh afzoode
-        $product_price = (int) ($this->getInstallmentPrice()*(1+.09));
+        $product_price = (int) ($this->getInstallmentPrice()*(1+config('shoppingcart.vat')));
 
         $installment_array = [];
 
         //check if this product can have installments
         $installment_array[0]['date'] = Carbon::now();
-        if (!$product->has_installment) {
-            $installment_array[0]['amount'] = (int) ($product_price);
-            return $installment_array;
-        }
 
         //first Installment
         $installment_array[0]['amount'] = (int) ($product_price * $first_installment_ratio);
