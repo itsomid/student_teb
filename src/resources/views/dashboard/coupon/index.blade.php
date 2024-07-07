@@ -45,36 +45,20 @@
                         <input type="text" name="coupon" class="form-control" placeholder="کد تخفیف را وارد کنید" value="{{request()->input('coupon')}}">
                         @error('coupon') <small class="text-danger">{{$message}}</small> @enderror
                     </div>
-                    <div class="col-md-4 user_role">
-                        <label class="form-label" for="selectAdmin">:سازنده ی کد تخفیف</label>
-                        <select name="creator_user_id"
-                                id="selectAdmin"
-                                class="select2 form-control"
-                                src="{{route('admin.admins.select.index')}}">
-                        </select>
-                        @error('creator_user_id') <small class="text-danger">{{$message}}</small> @enderror
-                    </div>
-
                     <div class="col-md-4">
-                        <label class="form-label" for="selectStudent">شماره موبایل کاربر :</label>
-                        <select name="consumer_user_id"
+                        <label class="form-label" for="selectStudent">نوع کد تخفیف :</label>
+                        <select name="coupon_type"
                                 id="selectStudent"
-                                class="select2 form-control"
-                                src="{{route('admin.students.select.index')}}">
+                                class="select2 form-control">
+
+                            <option value=" ">همه</option>
+                            @foreach(\App\Models\Coupon::types()  as $key => $type)
+                                <option @selected(request()->has('coupon_type') && request()->input('coupon_type') == $key)  value="{{$key}}">{{$type}}</option>
+                            @endforeach
                         </select>
                         @error('consumer_user_id') <small class="text-danger">{{$message}}</small> @enderror
                     </div>
 
-                    <div class="col-md-4">
-                        <label class="form-label" for="discount_percentage">درصد تخفیف :</label>
-                        <input type="text" id="discount_percentage" name="discount_percentage" class="form-control"  placeholder="درصد تخفیف را وارد کنید" value="{{request()->input('discount_percentage')}}">
-                        @error('discount_percentage') <small class="text-danger">{{$message}}</small> @enderror
-                    </div>
-                    <div class="col-md-4 user_role">
-                        <label class="form-label" for="description">توضیحات :</label>
-                        <input type="text" name="description" id="description" class="form-control"  placeholder="توضیحات را وارد کنید" value="{{request()->input('description')}}">
-                        @error('description') <small class="text-danger">{{$message}}</small> @enderror
-                    </div>
                     <div class="col-md-12">
                         <button type="submit" name="action" value="search" class="btn btn-primary mt-2 text-white">
                             <span class="mx-2">جستجو</span>
@@ -124,14 +108,13 @@
                         <thead>
                         <tr>
                             <th>ID</th>
+                            <th>نوع</th>
                             <th>کد تخفیف</th>
-                            <th>موبایل کاربر</th>
                             <th>سازنده کد</th>
                             <th>تعداد استفاده</th>
-                            <th class="text-center">توضیحات</th>
                             <th>درصد تخفیف/مبلغ تخفیف</th>
                             <th>زمان انقضا</th>
-                            <th>مبلغ استفاده شده کد تخفیف:</th>
+                            <th>مبلغ استفاده شده:</th>
                             <th>عملیات</th>
                         </tr>
                         </thead>
@@ -141,21 +124,21 @@
                                     <td>
                                         {{$coupon->id}}
                                     </td>
-
                                     <td>
-                                        {{$coupon->coupon}}
+                                        <span class="text-{{$coupon->type(true)}}">
+                                            {{$coupon->type()}}
+                                        </span>
                                     </td>
                                     <td>
-                                        {{$coupon->creator->mobile}}
+                                        <span title="{{$coupon->description}}">
+                                            {{$coupon->coupon}}
+                                        </span>
                                     </td>
                                     <td>
                                         {{$coupon->creator->fullname()}}
                                     </td>
                                     <td>
                                        {{$coupon->number_of_use}}
-                                    </td>
-                                    <td class="text-center">
-                                        {{$coupon->description}}
                                     </td>
                                     <td class="text-center">
                                         {{$coupon->discount_percentage}}
@@ -177,12 +160,13 @@
                                                 <i class="fa-solid fa-ellipsis-vertical"></i>
                                             </button>
                                             <div class="dropdown-menu">
-                                                <a class="dropdown-item"
-                                                   href="{{route('admin.coupons.edit' , ['coupon' => $coupon->id])}}">
-                                                    <i class="fa-solid fa-pen-to-square"></i>
-                                                    ویرایش کد تخفیف
-                                                </a>
-
+                                                @if($coupon->type != \App\Enums\CouponTypesEnum::MASS_CREATION->value)
+                                                    <a class="dropdown-item"
+                                                       href="{{route('admin.coupons.edit' , ['coupon' => $coupon->id])}}">
+                                                        <i class="fa-solid fa-pen-to-square"></i>
+                                                        ویرایش کد تخفیف
+                                                    </a>
+                                                @endif
                                                 @can('coupons.destroy')
                                                     <form action="{{route('admin.coupons.destroy', ['coupon' => $coupon->id])}}" method="post">
                                                         @csrf

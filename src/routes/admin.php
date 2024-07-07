@@ -108,9 +108,11 @@ Route::post('/coupons/store_specified_students_coupon',    [CouponController::cl
 Route::post('/coupons/store_mass_creation',                [CouponController::class, 'storeMassCreation'])                ->name('coupons.store-mass-creation')                       ->can('coupons.create');
 Route::post('/coupons/store_conditional_student_discount', [CouponController::class, 'storeConditionalStudentDiscount'])   ->name('coupons.store-conditional-student-discount')       ->can('coupons.create');
 
-Route::post('/coupons', [CouponController::class, 'store'])->name('coupons.store')->can('coupons.create');
 Route::get('/coupons/{coupon}/edit', [CouponController::class, 'edit'])->name('coupons.edit')->can('coupons.edit');
-Route::patch('/coupons/{coupon}', [CouponController::class, 'update'])->name('coupons.update')->can('coupons.edit');
+
+Route::patch('/coupons/{coupon}/update_specified_students_coupon',    [CouponController::class, 'updateSpecifiedStudentsCoupon'])     ->name('coupons.update-specified-students-coupon')           ->can('coupons.edit');
+Route::patch('/coupons/{coupon}/update_conditional_student_discount', [CouponController::class, 'updateConditionalStudentDiscount'])  ->name('coupons.update-conditional-student-discount')       ->can('coupons.edit');
+
 Route::delete('/coupons/{coupon}', [CouponController::class, 'destroy'])->name('coupons.destroy')->can('coupons.destroy');
 
 Route::get('/coupons-range', [CouponRangeController::class, 'edit'])->name('coupons.range.edit')->can('coupons.range.edit');
@@ -159,5 +161,5 @@ Route::get('/report/registered_users', [SaleSupportReportController::class, 'reg
 
 Route::get('/report/registered_users/{student}/verificationLogs', [SaleSupportReportController::class, 'verificationHistory'])->name('registered-users.verificationLogs')->can('report.registered_users');;
 
-Route::get('/student-account/charge', [StudentAccountController::class, 'chargeForm'])->name('student-account.charge-form');
+Route::get('/student-account/charge' , [StudentAccountController::class, 'chargeForm'])->name('student-account.charge-form');
 Route::post('/student-account/charge', [StudentAccountController::class, 'chargeAccount'])->name('student-account.charge');

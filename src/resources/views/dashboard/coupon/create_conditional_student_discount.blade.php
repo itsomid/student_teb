@@ -38,7 +38,6 @@
                                     multiple
                                     id="specificProductId"
                                     class="select2 form-control">
-                                <option value="0">دوره ی مورد نظر خود را انتخاب کنید</option>
                                 @foreach($courses as $course)
                                     <option value="{{$course->product->id}}">
                                         {{$course->product->name}}
@@ -137,7 +136,6 @@
                             <select name="purchased_items[]"
                                     multiple
                                     class="select2 form-control">
-                                <option value="0">همه دوره ها</option>
                                 @foreach($courses as $course)
                                     <option value="{{$course->product->id}}">
                                         {{$course->product->name}}
@@ -166,10 +164,9 @@
                     <div class="col-md-8">
                         <div class="form-group">
                             <label>دروس داخل سبد خرید:</label>
-                            <select name="specified_cart_item[]"
+                            <select name="specified_cart_items[]"
                                     multiple
                                     class="select2 form-control">
-                                <option value="0">دوره ی مورد نظر خود را انتخاب کنید</option>
                                 @foreach($courses as $course)
                                     <option value="{{$course->product->id}}">
                                         {{$course->product->name}}
@@ -193,7 +190,6 @@
                             <select name="grade"
                                     multiple
                                     class="select2 form-control">
-                                <option value="0">همه</option>
                                 <optgroup class="divider"></optgroup>
                                 @foreach(\App\Data\Grades::get() as $key=>$grade)
                                     <option value="{{$key}}">
@@ -211,7 +207,6 @@
                             <select name="field_of_study"
                                     multiple
                                     class="select2 form-control">
-                                <option value="0">همه</option>
                                 @foreach(\App\Data\FieldOfStudy::get() as $key=>$field)
                                     <option value="{{$key}}">
                                         {{$field}}
@@ -234,35 +229,6 @@
 
     </form>
 @endsection
-@section('scripts')
-    <script>
-        document.addEventListener('DOMContentLoaded', (event) => {
-            const inputsWithSeparator = document.querySelectorAll('[number-separator]');
-
-            inputsWithSeparator.forEach(input => {
-                // Format the initial value if there's a default value
-                input.value = formatNumber(input.value.replace(/,/g, ''));
-
-                // Add input event listener to handle ongoing input
-                input.addEventListener('input', (event) => {
-                    const value = event.target.value.replace(/,/g, ''); // Remove existing commas
-
-                    if (!/^\d*$/.test(value)) { // Ensure only digits
-                        event.target.value = value.slice(0, -1);
-                        return;
-                    }
-
-                    event.target.value = formatNumber(value);
-                });
-            });
-
-            function formatNumber(value) {
-                return value.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-            }
-        });
-    </script>
-@endsection
-
 @section('vendor-script')
     @vite(['resources/assets/vendor/libs/select2/select2.js',
             'resources/assets/vendor/js/forms-selects.js',

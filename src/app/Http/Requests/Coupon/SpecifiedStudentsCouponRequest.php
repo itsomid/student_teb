@@ -15,6 +15,13 @@ class SpecifiedStudentsCouponRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'discount_amount' =>  !is_null($this->discount_amount) ? str_replace(',', '', $this->discount_amount) : null
+        ]);
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
