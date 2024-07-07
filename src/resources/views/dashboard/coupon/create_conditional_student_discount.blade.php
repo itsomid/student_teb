@@ -38,9 +38,9 @@
                                     multiple
                                     id="specificProductId"
                                     class="select2 form-control">
-                                @foreach($courses as $course)
-                                    <option value="{{$course->product->id}}">
-                                        {{$course->product->name}}
+                                @foreach($products as $product)
+                                    <option value="{{$product->id}}">
+                                        {{$product->name}}
                                     </option>
                                 @endforeach
                             </select>
@@ -136,9 +136,9 @@
                             <select name="purchased_items[]"
                                     multiple
                                     class="select2 form-control">
-                                @foreach($courses as $course)
-                                    <option value="{{$course->product->id}}">
-                                        {{$course->product->name}}
+                                @foreach($products as $product)
+                                    <option value="{{$product->id}}">
+                                        {{$product->name}}
                                     </option>
                                 @endforeach
                             </select>
@@ -167,9 +167,9 @@
                             <select name="specified_cart_items[]"
                                     multiple
                                     class="select2 form-control">
-                                @foreach($courses as $course)
-                                    <option value="{{$course->product->id}}">
-                                        {{$course->product->name}}
+                                @foreach($products as $product)
+                                    <option value="{{$product->id}}">
+                                        {{$product->name}}
                                     </option>
                                 @endforeach
                             </select>
@@ -187,7 +187,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label>پایه ی تحصیلی:</label>
-                            <select name="grade"
+                            <select name="grade[]"
                                     multiple
                                     class="select2 form-control">
                                 <optgroup class="divider"></optgroup>
@@ -204,7 +204,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label>رشته تحصیلی:</label>
-                            <select name="field_of_study"
+                            <select name="field_of_study[]"
                                     multiple
                                     class="select2 form-control">
                                 @foreach(\App\Data\FieldOfStudy::get() as $key=>$field)

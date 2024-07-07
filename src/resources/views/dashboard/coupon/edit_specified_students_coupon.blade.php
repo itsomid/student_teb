@@ -53,9 +53,9 @@
                                 id="productIds"
                                 class="select2 form-control">
                             <option value="0">دوره ی مورد نظر خود را انتخاب کنید</option>
-                            @foreach($courses as $course)
-                                <option @selected(in_array($course->product->id,  $coupon->product_ids))  value="{{$course->product->id}}">
-                                    {{$course->product->name}}
+                            @foreach($products as $product)
+                                <option @selected(in_array($product->id,  $coupon->product_ids))  value="{{$product->id}}">
+                                    {{$product->name}}
                                 </option>
                             @endforeach
                         </select>

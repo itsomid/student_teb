@@ -38,9 +38,9 @@
                                     id="specificProductId"
                                     class="select2 form-control">
                                 <option value="0">دوره ی مورد نظر خود را انتخاب کنید</option>
-                                @foreach($courses as $course)
-                                    <option value="{{$course->product->id}}">
-                                        {{$course->product->name}}
+                                @foreach($products as $product)
+                                    <option value="{{$product->id}}">
+                                        {{$product->name}}
                                     </option>
                                 @endforeach
                             </select>

@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\DTO\CouponCondition\CouponConditionDTO;
 use App\Enums\CouponTypesEnum;
+use App\Enums\ProductCategoryType;
+use App\Enums\ProductTypeEnum;
 use App\Exports\CouponExport;
 use App\Functions\DateFormatter;
 use App\Functions\FlashMessages\Toast;
@@ -16,6 +18,7 @@ use App\Http\Requests\Coupon\storeMassCreationRequest;
 use App\Http\Requests\Coupon\UpdateRequest;
 use App\Models\Coupon;
 use App\Models\Course;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -35,8 +38,12 @@ class CouponController extends Controller
     public function createSpecifiedStudentsCoupon()
     {
         //TODO :: Should Be Product
-        $courses= Course::query()->select(['id','product_id'])->latest()->with('product')->get();
-        return view('dashboard.coupon.create_specified_students_coupon')->with(['courses' => $courses]);
+        $products= Product::query()
+            ->whereIn('product_type_id',[ProductTypeEnum::COURSE, ProductTypeEnum::PACKAGE, ProductTypeEnum::CUSTOM_PACKAGE])
+            ->latest()
+            ->get();
+
+        return view('dashboard.coupon.create_specified_students_coupon')->with(['products' => $products]);
     }
     public function storeSpecifiedStudentsCoupon(SpecifiedStudentsCouponRequest $request)
     {
@@ -60,9 +67,13 @@ class CouponController extends Controller
 
     public function createMassCreation()
     {
-        $courses= Course::query()->select(['id','product_id'])->latest()->with('product')->get();
-        return view('dashboard.coupon.create_mass_creation')->with(['courses' => $courses]);
+        $products= Product::query()
+            ->whereIn('product_type_id',[ProductTypeEnum::COURSE, ProductTypeEnum::PACKAGE, ProductTypeEnum::CUSTOM_PACKAGE])
+            ->latest()
+            ->get();
+        return view('dashboard.coupon.create_mass_creation')->with(['products' => $products]);
     }
+
     public function storeMassCreation(storeMassCreationRequest $request)
     {
 
@@ -95,8 +106,11 @@ class CouponController extends Controller
 
     public function createConditionalStudentDiscount()
     {
-        $courses= Course::query()->select(['id','product_id'])->latest()->with('product')->get();
-        return view('dashboard.coupon.create_conditional_student_discount')->with(['courses' => $courses]);
+        $products= Product::query()
+            ->whereIn('product_type_id',[ProductTypeEnum::COURSE, ProductTypeEnum::PACKAGE, ProductTypeEnum::CUSTOM_PACKAGE])
+            ->latest()
+            ->get();
+        return view('dashboard.coupon.create_conditional_student_discount')->with(['products' => $products]);
     }
     public function storeConditionalStudentDiscount(ConditionalStudentDiscountRequest $request)
     {
@@ -134,13 +148,17 @@ class CouponController extends Controller
 
     public function edit(Coupon $coupon)
     {
-        $courses= Course::query()->select(['id','product_id'])->latest()->with('product')->get();
+        $products= Product::query()
+            ->whereIn('product_type_id',[ProductTypeEnum::COURSE, ProductTypeEnum::PACKAGE, ProductTypeEnum::CUSTOM_PACKAGE])
+            ->latest()
+            ->get();
+
         $bladeMap=[
             'SPECIFIED_STUDENTS_COUPON'    => view('dashboard.coupon.edit_specified_students_coupon')   ->with('coupon', $coupon),
             'CONDITIONAL_STUDENT_DISCOUNT' => view('dashboard.coupon.edit_conditional_student_discount')->with('coupon', $coupon),
         ];
 
-        return $bladeMap[$coupon->type]->with('courses' , $courses);
+        return $bladeMap[$coupon->type]->with('products' , $products);
     }
 
 

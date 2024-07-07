@@ -39,9 +39,9 @@
                                     multiple
                                     id="specificProductId"
                                     class="select2 form-control">
-                                @foreach($courses as $course)
-                                    <option value="{{$course->product->id}}" @selected(in_array($course->product->id,  $coupon->product_ids))>
-                                        {{$course->product->name}}
+                                @foreach($products as $product)
+                                    <option value="{{$product->id}}" @selected(in_array($product->id,  $coupon->product_ids))>
+                                        {{$product->name}}
                                     </option>
                                 @endforeach
                             </select>
@@ -137,9 +137,9 @@
                             <select name="purchased_items[]"
                                     multiple
                                     class="select2 form-control">
-                                @foreach($courses as $course)
-                                    <option @selected(in_array($course->product->id, $coupon->conditions->purchased_items))  value="{{$course->product->id}}">
-                                        {{$course->product->name}}
+                                @foreach($products as $product)
+                                    <option @selected(in_array($product->id, $coupon->conditions->purchased_items))  value="{{$product->id}}">
+                                        {{$product->name}}
                                     </option>
                                 @endforeach
                             </select>
@@ -168,9 +168,9 @@
                             <select name="specified_cart_items[]"
                                     multiple
                                     class="select2 form-control">
-                                @foreach($courses as $course)
-                                    <option @selected(in_array($course->product->id, $coupon->conditions->specified_cart_items)) value="{{$course->product->id}}">
-                                        {{$course->product->name}}
+                                @foreach($products as $product)
+                                    <option @selected(in_array($product->id, $coupon->conditions->specified_cart_items)) value="{{$product->id}}">
+                                        {{$product->name}}
                                     </option>
                                 @endforeach
                             </select>
