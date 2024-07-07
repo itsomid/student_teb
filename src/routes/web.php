@@ -58,14 +58,6 @@ Route::any('/callback_from_gateway', function () {
         $gateway = Gateway::initial();
         $gateway->verify($transaction);
 
-        $chargeAccountService = resolve(ChargeAccountService::class);
-        $chargeAccountService->charge(
-            (new ChargeAccountDTO())
-            ->setDepositType(DepositTypeEnum::BUY)
-            ->setUserId($transaction->user_id)
-            ->setAmount($transaction->price)
-        );
-
         // Refresh the transaction instance
         $transaction->refresh();
 
