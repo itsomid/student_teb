@@ -28,6 +28,11 @@ class PermissionList {
             ['permission.index'                      ,'مشاهده لیست مجوز ها'],
             ['permission.edit'                       ,'ویرایش مجوز'],
 
+            ['order.index'                          ,'مشاهده لیست سفارش ها'],
+
+            ['transaction.index'                    ,'مشاهده لیست تراکنش ها'],
+
+
             ['session.index'                        ,'مشاهده نشست های فعال'],
             ['session.destroy'                      ,'حذف نشست های فعال'],
 

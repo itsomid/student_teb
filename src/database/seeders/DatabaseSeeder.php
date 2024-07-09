@@ -80,7 +80,9 @@ class DatabaseSeeder extends Seeder
             UserTableSeeder::class,
             SettingTableSeeder::class,
             ProductSeeder::class,
-            CoupanSeeder::class
+            CoupanSeeder::class,
+            OrderSeeder::class,
+            OrderItemSeeder::class,
         ]);
     }
 }
