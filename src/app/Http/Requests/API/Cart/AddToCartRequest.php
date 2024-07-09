@@ -26,12 +26,13 @@ class AddToCartRequest extends FormRequest
      */
     public function rules(): array
     {
+        $user_id  = Auth::guard('student')->id();
         $rules = [
             'product_id' => [
                 'required',
                 'exists:products,id',
-                function($attribute, $value, $fail) {
-                    if (ProductAccess::query()->where('product_id', $value)->exists()) {
+                function($attribute, $value, $fail) use ($user_id) {
+                    if (ProductAccess::query()->where('product_id', $value)->where('user_id',$user_id)->exists()) {
                         $fail('این محصول قبلا خریداری شده است');
                     }
                 },
@@ -45,8 +46,8 @@ class AddToCartRequest extends FormRequest
             $rules['packages.*.product_id'] = [
                 'required',
                 'exists:products,id',
-                function($attribute, $value, $fail) {
-                    if (ProductAccess::query()->where('product_id', $value)->exists()) {
+                function($attribute, $value, $fail)  use ($user_id){
+                    if (ProductAccess::query()->where('product_id', $value)->where('user_id',$user_id)->exists()) {
                         $fail('این محصول قبلا خریداری شده است');
                     }
                 },
