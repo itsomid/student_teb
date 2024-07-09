@@ -14,6 +14,8 @@ use App\ShoppingCart\Exceptions\ItemNotInstallmentableException;
 use App\ShoppingCart\Exceptions\ProductDoesNotExistsException;
 use App\ShoppingCart\Exceptions\ProductNotCustomPackageException;
 use http\Exception;
+use Illuminate\Contracts\Routing\ResponseFactory;
+use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -28,16 +30,16 @@ class CartController
      */
     private int $userId;
 
-    public function __construct()
+    public function __construct(private StudentAccountService $accountService)
     {
         $this->userId = Auth::guard('student')->id();
     }
 
-    public function lists(StudentAccountService $accountService)
+    public function lists(): Application|Response|ResponseFactory
     {
         CartAdaptor::init($this->userId);
         $items = CartAdaptor::getItems();
-        $userCredit = $accountService->getAccount($this->userId);
+        $userCredit = $this->accountService->getAccount($this->userId);
         return response(
             new CartListCollection($items, $userCredit)
         );
@@ -153,9 +155,10 @@ class CartController
             );
         }
 
+        $items = CartAdaptor::getItems();
+        $userCredit = $this->accountService->getAccount($this->userId);
         return response(
-            [],
-            Response::HTTP_NO_CONTENT
+            new CartListCollection($items, $userCredit)
         );
     }
 
