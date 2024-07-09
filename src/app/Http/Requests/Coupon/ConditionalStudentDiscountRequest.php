@@ -4,7 +4,7 @@ namespace App\Http\Requests\Coupon;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class storeConditionalStudentDiscountRequest extends FormRequest
+class ConditionalStudentDiscountRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -12,6 +12,13 @@ class storeConditionalStudentDiscountRequest extends FormRequest
     public function authorize(): bool
     {
         return true;
+    }
+
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'discount_amount' =>  !is_null($this->discount_amount) ? str_replace(',', '', $this->discount_amount) : null
+        ]);
     }
 
     /**
@@ -40,7 +47,6 @@ class storeConditionalStudentDiscountRequest extends FormRequest
 
         return [
             'coupon'                => ['required'],
-            'consumer_ids'          => ['required'],
             'description'           => ['nullable', 'max:254'],
             'discount_percentage'   => ['nullable', 'numeric', 'required_without:discount_amount'],
             'discount_amount'       => ['nullable', 'numeric', 'required_without:discount_percentage'],

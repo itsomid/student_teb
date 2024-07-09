@@ -131,6 +131,11 @@ return [
             'path' => storage_path('logs/sms-error.log'),
             'level' => 'error',
         ],
+        'payment' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/payment.log'),
+            'level' => 'error',
+        ],
     ],
 
 ];

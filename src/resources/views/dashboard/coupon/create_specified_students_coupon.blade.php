@@ -52,9 +52,9 @@
                                 id="productIds"
                                 class="select2 form-control">
                             <option value="0">دوره ی مورد نظر خود را انتخاب کنید</option>
-                            @foreach($courses as $course)
-                                <option value="{{$course->product->id}}">
-                                    {{$course->product->name}}
+                            @foreach($products as $product)
+                                <option value="{{$product->id}}">
+                                    {{$product->name}}
                                 </option>
                             @endforeach
                         </select>
@@ -111,35 +111,6 @@
             'resources/assets/js/jalalidatepicker.js',
             'resources/assets/js/student.js',
           ])
-@endsection
-
-@section('scripts')
-    <script>
-        document.addEventListener('DOMContentLoaded', (event) => {
-            const inputsWithSeparator = document.querySelectorAll('[number-separator]');
-
-            inputsWithSeparator.forEach(input => {
-                // Format the initial value if there's a default value
-                input.value = formatNumber(input.value.replace(/,/g, ''));
-
-                // Add input event listener to handle ongoing input
-                input.addEventListener('input', (event) => {
-                    const value = event.target.value.replace(/,/g, ''); // Remove existing commas
-
-                    if (!/^\d*$/.test(value)) { // Ensure only digits
-                        event.target.value = value.slice(0, -1);
-                        return;
-                    }
-
-                    event.target.value = formatNumber(value);
-                });
-            });
-
-            function formatNumber(value) {
-                return value.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-            }
-        });
-    </script>
 @endsection
 @section('vendor-style')
     @vite(['resources/assets/vendor/libs/select2/select2.scss'])
