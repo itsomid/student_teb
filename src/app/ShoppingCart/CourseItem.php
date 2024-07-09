@@ -37,7 +37,7 @@ class CourseItem implements CartItemInterface
     /**
      * @var bool
      */
-    public bool $hasInstallmentMethod;
+    public bool $hasInstallmentMethod = true;
 
     /**
      * CourseItem constructor.
@@ -94,6 +94,7 @@ class CourseItem implements CartItemInterface
     public function addModel(Model $model): void
     {
         $this->model = $model;
+        $this->hasInstallmentMethod = $model->product->has_installment;
         $this->initInstallment();
     }
 
@@ -200,6 +201,9 @@ class CourseItem implements CartItemInterface
         } elseif ($this->model->coupon && $this->model->coupon->discount_percentage) {
             $final_price -= ($final_price * ($this->model->coupon->discount_percentage / 100));
         }
+        if ($this->is_installment) {
+            $final_price *= 1.05;
+        }
         return $final_price;
     }
 
@@ -213,6 +217,10 @@ class CourseItem implements CartItemInterface
         return $this->model->product->original_price;
     }
 
+    public function changeInstallment(bool $newState = true): void
+    {
+        $this->is_installment = $newState;
+    }
     /**
      * Initialize the installment plan for the course item if applicable.
      *
