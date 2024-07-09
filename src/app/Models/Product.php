@@ -178,7 +178,12 @@ class Product extends Model
         return $result;
     }
 
+    public function getInstallmentPrice(): int
+    {
+        $result = ($this->price * 1.05);
 
+        return (int) ceil($result);
+    }
     public function getImageSrc()
     {
         if ($this->img_filename) {
