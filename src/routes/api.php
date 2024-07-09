@@ -33,8 +33,8 @@ Route::middleware('checkJWT')->group(callback: function () {
     Route::get('/store/product-detail/{product}', [StoreController::class, 'storeItemDetails']);
     Route::get('/store/packages/{product}', [StoreController::class, 'packageShow']);
 
-    Route::get('/cart', [CartController::class, 'lists']);
-    Route::post('/cart/add', [CartController::class, 'add']);
+    Route::get('/cart', [CartController::class, 'lists'])->name('cart.lists');
+    Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
     Route::patch('cart/package/update', [CartController::class, 'updatePackage']);
     Route::delete('/cart/remove/{product}', [CartController::class, 'remove']);
     Route::post('/cart/change-installment', [CartController::class, 'changeToInstallmentCart']);
