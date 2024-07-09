@@ -6,6 +6,7 @@ use App\Enums\ProductTypeEnum;
 use App\Http\Requests\API\Cart\AddToCartRequest;
 use App\Http\Resources\StudentPanel\Cart\CartListCollection;
 use App\Models\Product;
+use App\Services\StudentAccountService;
 use App\ShoppingCart\CartAdaptor;
 use App\ShoppingCart\Exceptions\ItemDoesNotExistsInShoppingCart;
 use App\ShoppingCart\Exceptions\ItemExistsInShoppingCart;
@@ -29,14 +30,14 @@ class CartController
 
     public function __construct()
     {
-        $this->userId = 1;
+        $this->userId = Auth::guard('student')->id();
     }
 
-    public function lists()
+    public function lists(StudentAccountService $accountService)
     {
         CartAdaptor::init($this->userId);
         $items = CartAdaptor::getItems();
-        $userCredit = Auth::guard('student')->user()->balance;
+        $userCredit = $accountService->getAccount($this->userId);
         return response(
             new CartListCollection($items, $userCredit)
         );
