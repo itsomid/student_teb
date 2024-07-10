@@ -1,12 +1,15 @@
 <?php
 
-namespace App\Http\Requests\Api\Cart;
+namespace App\Http\Requests\API\Cart;
 
 use App\Enums\ProductTypeEnum;
 use App\Models\Product;
+use App\Models\ProductAccess;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
-class AddRequest extends FormRequest
+class AddToCartRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,16 +26,32 @@ class AddRequest extends FormRequest
      */
     public function rules(): array
     {
+        $user_id  = Auth::guard('student')->id();
         $rules = [
-            'product_id' => ['required', 'exists:products,id'],
+            'product_id' => [
+                'required',
+                'exists:products,id',
+                function($attribute, $value, $fail) use ($user_id) {
+                    if (ProductAccess::query()->where('product_id', $value)->where('user_id',$user_id)->exists()) {
+                        $fail('این محصول قبلا خریداری شده است');
+                    }
+                },
+            ],
         ];
-        //TODO: give product type id from front (in request)
 
         $product = Product::find($this->input('product_id'));
 
         if ($product && $product->product_type_id === ProductTypeEnum::CUSTOM_PACKAGE) {
             $rules['packages'] = ['required', 'array'];
-            $rules['packages.*.product_id'] = ['required', 'exists:products,id'];
+            $rules['packages.*.product_id'] = [
+                'required',
+                'exists:products,id',
+                function($attribute, $value, $fail)  use ($user_id){
+                    if (ProductAccess::query()->where('product_id', $value)->where('user_id',$user_id)->exists()) {
+                        $fail('این محصول قبلا خریداری شده است');
+                    }
+                },
+            ];
         }
 
         return $rules;

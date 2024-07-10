@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\DTO\StudentAccount\ChargeAccountDTO;
+use App\Enums\DepositTypeEnum;
 use App\Functions\FlashMessages\Toast;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StudentAccount\ChargeAccountRequest;
@@ -30,10 +31,12 @@ class StudentAccountController extends Controller
         try{
             DB::beginTransaction();
 
+            $depositType = array_key_exists('gift_credit', $input) ? DepositTypeEnum::Gift : DepositTypeEnum::Admin;
+
             $this->chargeAccountService->charge(
                 (new ChargeAccountDTO())
                 ->setAdminId(Auth::guard('admin')->id())
-                ->setIsGift(array_key_exists('gift_credit', $input))
+                ->setDepositType($depositType)
                 ->setUserDescription($input['user_description'])
                 ->setUserId($input['user_id'])
                 ->setAmount($input['amount'])
