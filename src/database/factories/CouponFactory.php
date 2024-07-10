@@ -3,9 +3,11 @@
 namespace Database\Factories;
 
 use App\Data\Grades;
+use App\DTO\CouponCondition\CouponConditionDTO;
 use App\Models\Product;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Coupon>
@@ -19,32 +21,34 @@ class CouponFactory extends Factory
      */
     public function definition(): array
     {
+        $type= Arr::random(['SPECIFIED_STUDENTS_COUPON', 'CONDITIONAL_STUDENT_DISCOUNT']);
+        $discount_percentage = Arr::random([true, false]);
         return [
-            'creator_user_id' => fake()->numberBetween(1, 11),
-            'consumer_user_id' => Arr::random([null, null, fake()->numberBetween(1, 11)]),
-            'specific_product_id' => fake()->numberBetween(1, 10),
-            'discount_percentage' => fake()->numberBetween(1, 100),
-            'coupon' => fake()->unique()->colorName(),
-            'discount_amount' => fake()->numberBetween(1000, 50000),
-            'description' => fake()->sentence,
-            'is_disposable' => fake()->boolean,
-            'is_multiuser' =>fake()->boolean,
-            'for_old_users' => fake()->boolean,
-            'number_of_use' => fake()->numberBetween(0, 50),
-            'conditions' => $this->getConditions()
+            'type'                => $type,
+            'coupon'              => Str::random(3),
+            'description'         => fake()->sentence,
+            'creator_id'          => fake()->numberBetween(1, 11),
+            'consumer_ids'        => $type == 'CONDITIONAL_STUDENT_DISCOUNT' ? null : [1, 2, 3, 4],
+            'product_ids'         => Arr::random([[2, 3, 4], [], [2, 3]]) ,
+            'discount_percentage' => $discount_percentage ? fake()->numberBetween(1, 100) : null,
+            'discount_amount'     => $discount_percentage ? null : fake()->numberBetween(1000, 50000),
+            'is_one_time'         => fake()->boolean,
+            'expired_at'          =>fake()->dateTimeThisMonth(),
+            'number_of_use'       => fake()->numberBetween(0, 50),
+            'conditions'          =>  $type == 'CONDITIONAL_STUDENT_DISCOUNT' ? $this->getConditions()->getObject() : null
         ];
     }
 
-    private function getConditions(): array
+    private function getConditions(): CouponConditionDTO
     {
-        $productLimit = rand(1, 10);
-
-        return [
-            'product_atleast_count' => $productLimit,
-            'product' => Product::select('id')->inRandomOrder()->limit($productLimit)->get()->pluck('id')->toArray(),
-            'product_atleast_one' => fake()->boolean,
-            'product_bought_atleast_count' => $productLimit,
-            'profile' => ['grade' => Arr::random(array_keys(Grades::get()))]
-        ];
+        return (new CouponConditionDTO())
+            ->setForLastYearStudents(Arr::random([true, false]))
+            ->setLastYearMinimumPurchase(rand(1,5))
+            ->setPurchasesStatus(Arr::random(["all", "once_or_more", "with_no_purchase"]))
+            ->setPurchasedItems(Arr::random([[1,2], [2,3,4] , [] ]))
+            ->setCartItemsCount(rand(0,3))
+            ->setSpecifiedCartItems(Arr::random([[1,2], [2,3,4] , [] ]))
+            ->setGrade(Arr::random([[1,2], [10,11,12] , [] ]))
+            ->setFieldOfStudy([[1,2], [3,4] , [] ]);
     }
 }

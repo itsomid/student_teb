@@ -23,32 +23,33 @@
                             </tr>
                         </thead>
                         <tbody class="table-border-bottom-0">
+                        @foreach($orders as $order)
                             <tr>
-                                <td>100</td>
-                                <td>محمد کثیری</td>
-                                <td>100,000</td>
-                                <td>10,000</td>
-                                <td></td>
-                                <td></td>
+                                <td>{{$order->id}}</td>
+                                <td>{{$order->user->name}}</td>
+                                <td>{{$order->total_payable_price}}</td>
+                                <td>{{$order->vat_tax}}</td>
+                                <td>{{$order->installment_total_amount}}</td>
+                                <td>{{$order->repayment_count}}</td>
                                 <td>
                                     <span class="text text-success">
-                                        تکمیل شده
+                                       {{\App\Enums\OrderStatusEnum::STATUS_LABEL[$order->status->value]}}
                                     </span>
                                 </td>
                                 <td>
-                                    1403/6/4 10:12
+                                    {{$order->created_at}}
                                 </td>
                                 <td>
-                                    <button class="btn btn-primary text-white me-1" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-                                       مشاهده جزئیات
+                                    <button class="btn btn-primary text-white me-1" type="button" data-bs-toggle="collapse" data-bs-target="#order_detail_{{$order->id}}" aria-expanded="false" aria-controls="order_detail_{{$order->id}}">
+                                        مشاهده جزئیات
                                     </button>
                                 </td>
                             </tr>
                             <tr>
                                 <td colspan="12">
-                                    <div class="collapse" id="collapseExample">
+                                    <div class="collapse" id="order_detail_{{$order->id}}">
                                         <div class="table-responsive text-nowrap">
-                                            <table class="table">
+                                            <table class="table table-hover table-secondary">
                                                 <thead>
                                                 <tr>
                                                     <td>محصول</td>
@@ -58,18 +59,22 @@
                                                 </tr>
                                                 </thead>
                                                 <tbody class="table-border-bottom-0">
-                                                <tr>
-                                                    <td>دوره ی حسابان آریان حیدی</td>
-                                                    <td>100,000</td>
-                                                    <td>90,000</td>
-                                                    <td>10,000</td>
-                                                </tr>
+                                                @foreach($order->items as $item)
+                                                    <tr>
+                                                        <td>{{$item->product->name}}</td>
+                                                        <td>{{$item->product_price}}</td>
+                                                        <td>{{$item->final_price}}</td>
+                                                        <td>{{$item->discount_price}}</td>
+                                                    </tr>
+                                                @endforeach
+
                                                 </tbody>
                                             </table>
                                         </div>
                                     </div>
                                 </td>
                             </tr>
+                        @endforeach
                         </tbody>
                     </table>
                 </div>

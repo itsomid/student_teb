@@ -114,6 +114,22 @@
         <li class="menu-header small text-uppercase">
             <span class="menu-header-text"> مالی و خرید ها</span>
         </li>
+        @can('order.index')
+            <li class="menu-item @if(request()->is('admin/orders*')) active @endif">
+                <a href="{{route('admin.orders.index')}}" class="menu-link">
+                    <i class="menu-icon fa-solid fa-books fa-sm"></i>
+                    <div data-i18n="Page 1">لیست سفارشها</div>
+                </a>
+            </li>
+        @endcan
+        @can('transaction.index')
+            <li class="menu-item @if(request()->is('admin/transaction*')) active @endif">
+                <a href="{{route('admin.transaction.index')}}" class="menu-link">
+                    <i class="menu-icon fa-regular fa-coins fa-sm"></i>
+                    <div data-i18n="Page 1">لیست تراکنش ها</div>
+                </a>
+            </li>
+        @endcan
         @can('student-account.charge')
             <li class="menu-item @if(request()->is(['student-account*'])) active open @endif">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
