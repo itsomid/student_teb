@@ -5,9 +5,11 @@ namespace App\Http\Controllers\API;
 use App\Enums\ProductTypeEnum;
 use App\Http\Requests\API\Cart\AddToCartRequest;
 use App\Http\Resources\StudentPanel\Cart\CartListCollection;
+use App\Models\Coupon;
 use App\Models\Product;
 use App\Services\StudentAccountService;
 use App\ShoppingCart\CartAdaptor;
+use App\ShoppingCart\Exceptions\CouponNotUsableException;
 use App\ShoppingCart\Exceptions\ItemDoesNotExistsInShoppingCart;
 use App\ShoppingCart\Exceptions\ItemExistsInShoppingCart;
 use App\ShoppingCart\Exceptions\ItemNotInstallmentableException;
@@ -19,6 +21,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Throwable;
 
 class CartController
@@ -165,7 +168,7 @@ class CartController
     public function remove(Product $product)
     {
         CartAdaptor::init($this->userId);
-        $userCredit = Auth::guard('student')->user()->balance;
+        $userCredit = $this->accountService->getAccount($this->userId);
 
         try {
             CartAdaptor::remove($product->id);
@@ -181,5 +184,31 @@ class CartController
             'data' => new CartListCollection($items, $userCredit),
             'message' => 'محصول با موفقیت از سبد خرید حذف شد.'
         ]);
+    }
+
+    public function applyCoupon(Request $request)
+    {
+        $request->validate([
+            'coupon_name' => ['required', 'exists:coupons,coupon']
+        ]);
+        $couponName = $request->input('coupon_name');
+        CartAdaptor::init($this->userId);
+
+        try{
+            DB::beginTransaction();
+            $coupon = Coupon::query()->where('coupon', $couponName)->first();
+
+            CartAdaptor::applyCoupon($coupon->id);
+            DB::commit();
+        }catch (CouponNotUsableException) {
+            DB::rollBack();
+            return response(['message' => 'کوپن قابل استفاده نمی باشد.'], Response::HTTP_NOT_FOUND);
+        }catch (Throwable $exception) {
+            report($exception);
+            dd($exception);
+            return response(['message' => 'مشکل فنی رخ داده است لطفا بعدا تلاش کنید.'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return response(['message' => 'کد تخفیف باموفقیت اعمال شد.']);
     }
 }

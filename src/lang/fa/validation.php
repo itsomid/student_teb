@@ -131,6 +131,7 @@ return array(
         "first_installment_ratio"             =>       "میزان پرداختی اولیه",
         "final_installment_date"              =>       "زمان سر رسید قسط آخر",
         "is_purchasable"                      =>       "قابل خرید مجزا",
-        "img_filename"                        =>       "تصویر"
+        "img_filename"                        =>       "تصویر",
+        'coupon_name'                         => 'کد تخفیف'
     ),
 );
