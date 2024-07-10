@@ -27,6 +27,8 @@ class CartTest extends TestCase
         parent::setUp();
         $this->seed();
         $this->withoutMiddleware([JwtAuthenticator::class]);
+        $this->user = User::factory()->create();
+        $this->actingAs($this->user, 'student');
     }
 
 
@@ -35,23 +37,19 @@ class CartTest extends TestCase
      */
     public function test_add_course_on_cart_successfully(): void
     {
-        $user = User::factory()->create();
-        auth()->guard('student')->loginUsingId($user->id);
         $product = Product::factory()->course()->has(Course::factory())->create();
         $this->postJson(route('cart.add'), [
             'product_id' => $product->id
         ])->assertOk();
 
-        $this->assertDatabaseHas(CartItem::class, ['product_id' => $product->id, 'user_id' => $user->id]);
+        $this->assertDatabaseHas(CartItem::class, ['product_id' => $product->id, 'user_id' => $this->user->id]);
     }
 
     public function test_add_course_with_installment_method_pay()
     {
-        $user = User::factory()->create();
-        auth()->guard('student')->loginUsingId($user->id);
         $studentAccountService = resolve(StudentAccountService::class);
         $product = Product::factory()->installment(4, 25)->course()->state(['original_price' => 1000000, 'off_price' => null])->has(Course::factory())->create();
-        CartAdaptor::init($user->id);
+        CartAdaptor::init($this->user->id);
         CartAdaptor::changeInstallment(true);
         CartAdaptor::addCourse($product->id);
 
@@ -92,11 +90,11 @@ class CartTest extends TestCase
             'invoice' => [
                 "vat" => (int)($product->getInstallmentPrice() * $vatPercentage),
                 "vat_percentage" => (int)($vatPercentage*100),
-                "user_credit" => $studentAccountService->getAccount($user->id),
+                "user_credit" => $studentAccountService->getAccount($this->user->id),
                 "sum_price" => (int)$product->getInstallmentPrice(),
                 "final_price" => $finalPrice,
                 "payable_price" => $payable_for_bank,
-                "payable_for_bank" => $payable_for_bank - $studentAccountService->getAccount($user->id),
+                "payable_for_bank" => $payable_for_bank - $studentAccountService->getAccount($this->user->id),
             ],
             'installments' => [
 
@@ -107,12 +105,10 @@ class CartTest extends TestCase
 
     public function test_amount_is_valid(): void
     {
-        $user = User::factory()->create();
-        auth()->guard('student')->loginUsingId($user->id);
         $studentAccountService = resolve(StudentAccountService::class);
 
         $product = Product::factory()->course()->has(Course::factory())->create();
-        CartAdaptor::init($user->id);
+        CartAdaptor::init($this->user->id);
         CartAdaptor::addCourse($product->id);
 
         $vatPercentage = config('shoppingcart.vat');
@@ -142,22 +138,20 @@ class CartTest extends TestCase
             'invoice' => [
                 "vat" => (int)($price * $vatPercentage),
                 "vat_percentage" => (int)($vatPercentage*100),
-                "user_credit" => $studentAccountService->getAccount($user->id),
+                "user_credit" => $studentAccountService->getAccount($this->user->id),
                 "sum_price" => (int)$price,
                 "final_price" => (int)$priceCalculate,
                 "payable_price" => (int)$priceCalculate,
-                "payable_for_bank" => (int)$priceCalculate - $studentAccountService->getAccount($user->id),
+                "payable_for_bank" => (int)$priceCalculate - $studentAccountService->getAccount($this->user->id),
             ]
         ]);
     }
 
     public function test_send_already_purchased_course()
     {
-        $user = User::factory()->create();
-        auth()->guard('student')->loginUsingId($user->id);
         $product = Product::factory()->course()->has(Course::factory())->create();
 
-        CartAdaptor::init($user->id);
+        CartAdaptor::init($this->user->id);
         CartAdaptor::addCourse($product->id);
 
         $chargeAccount = resolve(ChargeAccountService::class);
@@ -165,11 +159,11 @@ class CartTest extends TestCase
             (new ChargeAccountDTO())
                 ->setAmount($product->amount * 2)
                 ->setDepositType(DepositTypeEnum::BUY)
-                ->setUserId($user->id)
+                ->setUserId($this->user->id)
         );
 
         $orderService = resolve(OrderService::class);
-        $orderService->buy($user->id);
+        $orderService->buy($this->user->id);
 
         $res = $this->postJson(route('cart.add'), [
             'product_id' => $product->id
