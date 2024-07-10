@@ -8,6 +8,6 @@ class CouponExpirySpecification implements \App\Services\Coupon\Validation\Contr
 {
     public function isSatisfiedBy($coupon): bool
     {
-        return Carbon::parse($coupon->expired_at)->isPast();
+        return Carbon::parse($coupon->expired_at)->isFuture();
     }
 }
