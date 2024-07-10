@@ -207,7 +207,7 @@ class Cart
     public function applyCoupon(int $coupon_id): void
     {
         $this->items = $this->items->map(function (CartItemInterface $item) use($coupon_id){
-            if ($this->couponValidator->isCouponValid($coupon_id, $this->user, $item->getModel()->product)) {
+            if ($this->couponValidator->isCouponValid($coupon_id, $this->user->id, $item->getModel()->product->id)) {
                 return tap($item)->changeCouponId($coupon_id)->update();
             }else{
                 throw new CouponNotUsableException;
