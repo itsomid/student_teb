@@ -35,16 +35,12 @@
                     <div class="col-md-6">
                         <div class="form-group mt-3">
                             <label for="specificProductId">مخصوص محصول :</label>
-                            <select name="product_ids[]"
-                                    multiple
-                                    id="specificProductId"
-                                    class="select2 form-control">
-                                @foreach($products as $product)
-                                    <option value="{{$product->id}}" @selected(in_array($product->id,  $coupon->product_ids))>
-                                        {{$product->name}}
-                                    </option>
-                                @endforeach
-                            </select>
+                            @include('components.course-list-component', [
+                                'inputName' =>'product_ids[]',
+                                'multiple'  => true,
+                                'courses'   => $products,
+                                'selected'  => $coupon->product_ids
+                            ])
                             @error('product_ids')<small class="text-danger">{{$message}}</small>@enderror
                         </div>
                     </div>
@@ -134,15 +130,12 @@
                     <div class="col-md-9">
                         <div class="form-group">
                             <label>مخصوص محصول :</label>
-                            <select name="purchased_items[]"
-                                    multiple
-                                    class="select2 form-control">
-                                @foreach($products as $product)
-                                    <option @selected(in_array($product->id, $coupon->conditions->purchased_items))  value="{{$product->id}}">
-                                        {{$product->name}}
-                                    </option>
-                                @endforeach
-                            </select>
+                            @include('components.course-list-component', [
+                              'inputName' =>'purchased_items[]',
+                              'multiple'  => true,
+                              'products'   => $products,
+                              'selected'  => $coupon->conditions->purchased_items
+                          ])
                             @error('purchased_items')<small class="text-danger">{{$message}}</small>@enderror
                         </div>
                     </div>
