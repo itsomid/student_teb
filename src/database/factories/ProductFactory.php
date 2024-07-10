@@ -112,4 +112,19 @@ class ProductFactory extends Factory
             ];
         });
     }
+
+    /**
+     * @param int $count
+     * @param int $ratio
+     * @return Factory
+     */
+    public function installment(int $count = 3, int $ratio = 25): Factory
+    {
+        return $this->state(fn(array $attribute) => [
+           'has_installment' => true,
+           'installment_count' => $count,
+           'first_installment_ratio' => $ratio,
+           'final_installment_date' => now()->addMonth()
+        ]);
+    }
 }

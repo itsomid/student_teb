@@ -54,4 +54,18 @@ class Account extends Model
         $account->withdrawal_amount = $account->balance - $account->gift_amount;
         $account->save();
     }
+
+    /**
+     * @param int $userId
+     * @return int
+     */
+
+    public static function getStudentBalance(int $userId): int
+    {
+        $account = static::query()
+            ->where(['user_id' => $userId])
+            ->firstOrCreate(['user_id' => $userId, 'balance' => 0, 'withdrawal_amount' => 0]);
+
+        return $account->balance;
+    }
 }

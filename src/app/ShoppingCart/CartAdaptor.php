@@ -35,13 +35,11 @@ class CartAdaptor
      */
     public static function init(int $userId, bool $is_installment = false): self
     {
-        if (empty(static::$instance) || empty(static::$cartInstance)) {
-            static::$cartInstance = resolve(Cart::class, [
-                'userId' => $userId,
-                'installment' => $is_installment
-            ]);
-            static::$instance = new self;
-        }
+        static::$cartInstance = resolve(Cart::class, [
+            'userId' => $userId,
+            'installment' => $is_installment
+        ]);
+        static::$instance = new self;
 
         return static::$instance;
     }

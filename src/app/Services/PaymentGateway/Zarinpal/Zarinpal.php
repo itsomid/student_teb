@@ -2,6 +2,7 @@
 
 namespace App\Services\PaymentGateway\Zarinpal;
 
+use App\Models\GatewayTransaction;
 use App\Services\PaymentGateway\Event\PaymentTransactionSuccessEvent;
 use App\Services\PaymentGateway\Exception\BankAuthenticationException;
 use App\Services\PaymentGateway\Exception\BankException;
@@ -130,7 +131,7 @@ class Zarinpal extends PortAbstract implements PortInterface
         $this->transactionSetRefId();
         $this->transactionSucceed();
         //Fire PaymentTransactionSuccess
-        event(PaymentTransactionSuccessEvent::dispatch($transaction));
+        PaymentTransactionSuccessEvent::dispatch($transaction);
 
         return $this;
     }

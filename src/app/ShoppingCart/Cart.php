@@ -11,9 +11,7 @@ use App\ShoppingCart\Exceptions\ItemDoesNotExistsInShoppingCart;
 use App\ShoppingCart\Exceptions\ItemExistsInShoppingCart;
 use App\Models\User;
 use App\ShoppingCart\Exceptions\ItemNotInstallmentableException;
-use Carbon\Carbon;
 use Illuminate\Support\Collection;
-use App\Models\CartItem as CartItemModel;
 
 /**
  * Class Cart
@@ -192,9 +190,10 @@ class Cart
         if (! is_null($hasntInstallment = $this->items->where('hasInstallmentMethod', false)->first())) {
             throw new ItemNotInstallmentableException('This product cannot be purchased on installment: ' . $hasntInstallment->product_id);
         }
-        CartItemModel::query()->where('user_id', $this->userId)->update([
-            'is_installment' => $is_installment
-        ]);
+        foreach ($this->items as $item) {
+            $item->changeInstallment(true);
+            $item->initInstallment();
+        }
         $this->cartItemRepository->updateInstallmentByUserId($this->userId, $is_installment);
         $this->isInstallment = $is_installment;
     }

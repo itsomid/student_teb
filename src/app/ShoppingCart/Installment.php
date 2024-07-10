@@ -46,8 +46,8 @@ class Installment
         ); // 15 esfand
 
 
-        //include VAT amount - n% maaliat arzesh afzoode
-        $product_price = (int) ($this->getInstallmentPrice()*(1+config('shoppingcart.vat')));
+        //include VAT amount  + 5% installment
+        $product_price = $this->getInstallmentPrice();
 
         $installment_array = [];
 
@@ -79,8 +79,7 @@ class Installment
 
     public function getInstallmentPrice(): int
     {
-        $result = ($this->cartItem->getPrice() * 1.05);
-
+        $result= $this->cartItem->getPrice();
         return (int) ceil($result);
     }
 
