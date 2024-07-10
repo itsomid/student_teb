@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Casts\Json;
+use App\Enums\CouponTypesEnum;
+use App\Filters\Filterable;
 use App\Helpers\PanelConditions;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -13,7 +15,9 @@ use Morilog\Jalali\Jalalian;
 
 class Coupon extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, Filterable;
+
+    public $filterNameSpace = "App\Filters\CouponFilter";
 
     protected array $dates = [
         'expired_at',
@@ -88,7 +92,7 @@ class Coupon extends Model
 
     public function expired_at()
     {
-        return Jalalian::forge($this->created_at)->toDateTimeString();
+        return Jalalian::forge($this->expired_at)->toDateTimeString();
     }
 
     public function calculatePrice($price): int
@@ -291,13 +295,39 @@ class Coupon extends Model
         $this->save();
     }
 
-    public static function getDiscountRange()
+    /**
+     * @param bool $color
+     * @return string
+     */
+    public function type(bool $color = false) : string
     {
-        return json_decode(json_encode([
-           'min' => 2,
-           'max' => 20
-        ]));
+        $map=[
+            CouponTypesEnum::MASS_CREATION->value                   => 'عمده',
+            CouponTypesEnum::CONDITIONAL_STUDENT_DISCOUNT->value    => 'شرطی',
+            CouponTypesEnum::SPECIFIED_STUDENTS_COUPON->value       => 'تکی',
+        ];
+
+        if ($color)
+            $map=[
+                CouponTypesEnum::MASS_CREATION->value                   => 'warning',
+                CouponTypesEnum::CONDITIONAL_STUDENT_DISCOUNT->value    => 'danger',
+                CouponTypesEnum::SPECIFIED_STUDENTS_COUPON->value       => 'info',
+            ];
+
+
+        return $map[$this->type];
     }
 
+    /**
+     * @return string[]
+     */
+    public static function types() : array
+    {
+        return [
+            CouponTypesEnum::MASS_CREATION->value                   => 'عمده',
+            CouponTypesEnum::CONDITIONAL_STUDENT_DISCOUNT->value    => 'شرطی',
+            CouponTypesEnum::SPECIFIED_STUDENTS_COUPON->value       => 'تکی',
+        ];
+    }
 
 }

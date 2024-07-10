@@ -13,8 +13,8 @@ class CouponConditionDTO
     private int    $cart_items_count;
     private array  $specified_cart_items;
 
-    private string $grade;
-    private string $field_of_study;
+    private array $grade;
+    private array $field_of_study;
 
     /**
      * @param bool $for_last_year_students
@@ -52,7 +52,7 @@ class CouponConditionDTO
      */
     public function setPurchasedItems(array $purchased_items): CouponConditionDTO
     {
-        $this->purchased_items = array_map('intval', array_keys($purchased_items)) ;
+        $this->purchased_items = array_map('intval', $purchased_items) ;
         return $this;
     }
 
@@ -72,7 +72,7 @@ class CouponConditionDTO
      */
     public function setSpecifiedCartItems(array $specified_cart_items): CouponConditionDTO
     {
-        $this->specified_cart_items = array_map('intval', array_keys($specified_cart_items));
+        $this->specified_cart_items = array_map('intval', $specified_cart_items);
         return $this;
     }
 
@@ -80,9 +80,9 @@ class CouponConditionDTO
      * @param string $grade
      * @return CouponConditionDTO
      */
-    public function setGrade(string $grade): CouponConditionDTO
+    public function setGrade(array $grade): CouponConditionDTO
     {
-        $this->grade = $grade;
+        $this->grade =  array_map('intval', $grade);
         return $this;
     }
 
@@ -91,9 +91,9 @@ class CouponConditionDTO
      * @param string $field_of_study
      * @return CouponConditionDTO
      */
-    public function setFieldOfStudy(string $field_of_study): CouponConditionDTO
+    public function setFieldOfStudy(array $field_of_study): CouponConditionDTO
     {
-        $this->field_of_study = $field_of_study;
+        $this->field_of_study = array_map('intval', $field_of_study);
         return $this;
     }
 
