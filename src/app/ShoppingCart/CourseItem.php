@@ -196,8 +196,8 @@ class CourseItem implements CartItemInterface
     {
         $final_price = $this->model->product->off_price ?? $this->getOriginalPrice();
 
-        if ($this->model->coupon && $this->model->coupon->discount_price) {
-            $final_price -= $this->model->coupon->discount_price;
+        if ($this->model->coupon && $this->model->coupon->discount_amount) {
+            $final_price -= $this->model->coupon->discount_amount;
         } elseif ($this->model->coupon && $this->model->coupon->discount_percentage) {
             $final_price -= ($final_price * ($this->model->coupon->discount_percentage / 100));
         }
