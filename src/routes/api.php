@@ -38,7 +38,7 @@ Route::middleware('checkJWT')->group(callback: function () {
     Route::patch('cart/package/update', [CartController::class, 'updatePackage']);
     Route::delete('/cart/remove/{product}', [CartController::class, 'remove']);
     Route::post('/cart/change-installment', [CartController::class, 'changeToInstallmentCart']);
-    Route::post('/cart/apply-coupon', [CartController::class, 'applyCoupon']);
+    Route::post('/cart/apply-coupon', [CartController::class, 'applyCoupon'])->name('cart.apply-coupon');
 
     Route::get('cart/buy', [BuyController::class, 'payCart']);
 
