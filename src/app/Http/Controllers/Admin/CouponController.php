@@ -54,7 +54,7 @@ class CouponController extends Controller
             'coupon'                => strtolower($request->coupon),
             'description'           => $request->description,
             'discount_percentage'   => $request->discount_percentage,
-            'discount_amount'       => Str::remove(',', $request->discount_amount),
+            'discount_amount'       => (int)Str::remove(',', $request->discount_amount),
             'expired_at'            => DateFormatter::format($request->expired_at),
             'product_ids'           => array_map('intval', $request->product_ids),
             'is_one_time'           => (boolean)$request->is_one_time
