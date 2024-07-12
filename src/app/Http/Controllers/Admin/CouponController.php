@@ -37,7 +37,6 @@ class CouponController extends Controller
 
     public function createSpecifiedStudentsCoupon()
     {
-        //TODO :: Should Be Product
         $products= Product::query()
             ->whereIn('product_type_id',[ProductTypeEnum::COURSE, ProductTypeEnum::PACKAGE, ProductTypeEnum::CUSTOM_PACKAGE])
             ->latest()
@@ -47,6 +46,10 @@ class CouponController extends Controller
     }
     public function storeSpecifiedStudentsCoupon(SpecifiedStudentsCouponRequest $request)
     {
+        $request->validate([
+            'coupon' =>  Rule::unique('coupons')
+        ]);
+
         Coupon::query()->create([
             'type'                  => CouponTypesEnum::SPECIFIED_STUDENTS_COUPON,
             'creator_id'            => auth('admin')->id(),
@@ -114,6 +117,10 @@ class CouponController extends Controller
     }
     public function storeConditionalStudentDiscount(ConditionalStudentDiscountRequest $request)
     {
+        $request->validate([
+            'coupon' =>  Rule::unique('coupons')
+        ]);
+
         $conditions= (new CouponConditionDTO())
             ->setForLastYearStudents((bool)$request->for_last_year_students)
             ->setLastYearMinimumPurchase($request->last_year_minimum_purchase)
@@ -164,6 +171,10 @@ class CouponController extends Controller
 
     public function updateSpecifiedStudentsCoupon(Coupon $coupon, SpecifiedStudentsCouponRequest $request)
     {
+        $request->validate([
+            'coupon' =>  Rule::unique('coupons')->ignore($coupon->id),
+        ]);
+
         $coupon->update([
             'consumer_ids'          => array_map('intval', $request->consumer_ids),
             'coupon'                => strtolower($request->coupon),
@@ -175,12 +186,15 @@ class CouponController extends Controller
             'is_one_time'           => (boolean)$request->is_one_time
         ]);
 
-        Toast::message('کد تخفیف با موفقیت ایجاد شد')->success()->notify();
-        return redirect()->back('admin.coupons.index');
+        Toast::message('کد تخفیف با موفقیت ویرایش شد')->success()->notify();
+        return redirect()->route('admin.coupons.index');
     }
 
     public function updateConditionalStudentDiscount(Coupon $coupon, ConditionalStudentDiscountRequest $request)
     {
+        $request->validate([
+            'coupon' =>  Rule::unique('coupons')->ignore($coupon->id),
+        ]);
         $conditions= (new CouponConditionDTO())
             ->setForLastYearStudents((bool)$request->for_last_year_students)
             ->setLastYearMinimumPurchase($request->last_year_minimum_purchase)
