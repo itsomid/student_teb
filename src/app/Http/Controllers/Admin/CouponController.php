@@ -59,7 +59,7 @@ class CouponController extends Controller
             'discount_percentage'   => $request->discount_percentage,
             'discount_amount'       => (int)Str::remove(',', $request->discount_amount),
             'expired_at'            => DateFormatter::format($request->expired_at),
-            'product_ids'           => array_map('intval', $request->product_ids),
+            'product_ids'           => array_map('intval', $request->product_ids ?? []),
             'is_one_time'           => (boolean)$request->is_one_time
         ]);
 
@@ -96,7 +96,7 @@ class CouponController extends Controller
                 'discount_percentage'   => $request->discount_percentage,
                 'discount_amount'       => $request->discount_amount,
                 'expired_at'            => DateFormatter::format($request->expired_at),
-                'product_ids'           => array_map('intval', $request->product_ids),
+                'product_ids'           => array_map('intval', $request->product_ids ?? []),
                 'is_one_time'           => true
             ]);
         }
@@ -139,7 +139,7 @@ class CouponController extends Controller
             'discount_percentage'   => $request->discount_percentage,
             'discount_amount'       => $request->discount_amount,
             'expired_at'            => DateFormatter::format($request->expired_at),
-            'product_ids'           => array_map('intval', $request->product_ids),
+            'product_ids'           => array_map('intval', $request->product_ids ?? []),
             'is_one_time'           => (boolean)$request->is_one_time,
             'conditions'            => $conditions->getObject()
         ]);
@@ -182,7 +182,7 @@ class CouponController extends Controller
             'discount_percentage'   => $request->discount_percentage,
             'discount_amount'       => $request->discount_amount,
             'expired_at'            => DateFormatter::format($request->expired_at),
-            'product_ids'           => array_map('intval', $request->product_ids),
+            'product_ids'           => array_map('intval', $request->product_ids ?? []),
             'is_one_time'           => (boolean)$request->is_one_time
         ]);
 
@@ -211,7 +211,7 @@ class CouponController extends Controller
             'discount_percentage'   => $request->discount_percentage,
             'discount_amount'       => $request->discount_amount,
             'expired_at'            => DateFormatter::format($request->expired_at),
-            'product_ids'           => array_map('intval', $request->product_ids),
+            'product_ids'           => array_map('intval', $request->product_ids ?? []),
             'is_one_time'           => (boolean)$request->is_one_time,
             'conditions'            => $conditions->getObject()
         ]);
