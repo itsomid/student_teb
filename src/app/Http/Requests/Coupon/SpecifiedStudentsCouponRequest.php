@@ -4,6 +4,7 @@ namespace App\Http\Requests\Coupon;
 
 use App\Models\Coupon;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class SpecifiedStudentsCouponRequest extends FormRequest
 {
