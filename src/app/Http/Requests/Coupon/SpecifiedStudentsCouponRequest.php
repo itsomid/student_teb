@@ -54,7 +54,7 @@ class SpecifiedStudentsCouponRequest extends FormRequest
             'discount_percentage'   => ['nullable', 'numeric', 'required_without:discount_amount'],
             'discount_amount'       => ['nullable', 'numeric', 'required_without:discount_percentage'],
             'expired_at'            => ['nullable', 'date'],
-            'product_ids'           => ['required', 'array'],
+            'product_ids'           => ['array'],
             'is_one_time'           => ['required', 'boolean'],
         ];
     }
