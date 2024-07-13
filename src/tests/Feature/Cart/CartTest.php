@@ -87,7 +87,7 @@ class CartTest extends TestCase
                 ],
                 'original_price' => $product->getPrice(),
                 'off_price' => $product->off_price,
-                'product_calculated_price' => $payable_for_bank,
+                'product_calculated_price' => $price,
                 'is_package' => false,
             ]],
             'invoice' => [
