@@ -23,27 +23,29 @@ class CartListCollection extends ResourceCollection
      */
     public function toArray(Request $request): array
     {
+        $discountCode = null;
         return [
-            'items' => $this->collection->map(fn($item) =>   [
-                'product_id' => $item->product_id,
-                'product_name' => $item->getModel()->product->name,
-                'product_image' => $item->getModel()->product->getImageUrl(),
-                'has_installment' => $item->getModel()->product->has_installment,
-                'options' => $item->getModel()->product->options,
-                "original_price" => $item->getModel()->product->getPrice(),
-                "off_price" => $item->getModel()->product->off_price,
-                'discount_code' => $this->when(true, 'test'),
-                'product_calculated_price' => $item->getCalcPrice(),
-                'is_package' => $item instanceof PackageItem,
-                'package_items' => $this->when($item instanceof PackageItem, fn ()=>
-                    $item->getModel()->packages->map(fn($item)=>[
+            'items' => $this->collection->map(function($item) use(&$discountCode){
+               return  [
+                    'product_id' => $item->product_id,
+                    'product_name' => $item->getModel()->product->name,
+                    'product_image' => $item->getModel()->product->getImageUrl(),
+                    'has_installment' => $item->getModel()->product->has_installment,
+                    'options' => $item->getModel()->product->options,
+                    "original_price" => $item->getModel()->product->getPrice(),
+                    "off_price" => $item->getModel()->product->off_price,
+                    'discount_code' => $this->when(!!$item->couponCode, $discountCode = $item->couponCode),
+                    'product_calculated_price' => $item->getCalcPrice(),
+                    'is_package' => $item instanceof PackageItem,
+                    'package_items' => $this->when($item instanceof PackageItem, fn() => $item->getModel()->packages->map(fn($item) => [
                         'id' => $item->id,
                         'product_id' => $item->product->id,
                         'name' => $item->product->name,
                     ]))
-            ])->toArray(),
+                ];
+                })->toArray(),
             'invoice' => [
-                'discount_code' => $this->when(true, 'test'),
+                'discount_code' => $this->when(!empty($discountCode), $discountCode),
                 "vat" => CartAdaptor::getTotalTax(),
                 "vat_percentage" => config('shoppingcart.vat') * 100,
                 "user_credit" => $this->userCredit,

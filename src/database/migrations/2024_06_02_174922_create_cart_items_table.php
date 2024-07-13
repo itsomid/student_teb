@@ -18,7 +18,7 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(Product::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
-            $table->foreignIdFor(Coupon::class)->nullable()->constrained()->cascadeOnDelete();
+            $table->string('coupon_code')->nullable();
             $table->unsignedTinyInteger('product_type_id');
 
             $table->boolean('is_installment')->default(false);
