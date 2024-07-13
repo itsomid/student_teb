@@ -2,6 +2,7 @@
 
 namespace App\ShoppingCart;
 
+use App\ShoppingCart\Contract\CartItemInterface;
 use Carbon\Carbon;
 
 
@@ -10,7 +11,7 @@ class Installment
     private array $installment_array = [];
 
 
-    public function __construct(private readonly CourseItem $cartItem)
+    public function __construct(private readonly CartItemInterface $cartItem)
     {
     }
 
