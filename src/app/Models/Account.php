@@ -63,8 +63,7 @@ class Account extends Model
     public static function getStudentBalance(int $userId): int
     {
         $account = static::query()
-            ->where(['user_id' => $userId])
-            ->firstOrCreate(['user_id' => $userId, 'balance' => 0, 'withdrawal_amount' => 0]);
+            ->firstOrCreate(['user_id' => $userId], ['user_id' => $userId, 'balance' => 0, 'withdrawal_amount' => 0]);
 
         return $account->balance;
     }
