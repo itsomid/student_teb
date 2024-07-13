@@ -5,7 +5,6 @@ namespace App\Http\Controllers\API;
 use App\Enums\ProductTypeEnum;
 use App\Http\Requests\API\Cart\AddToCartRequest;
 use App\Http\Resources\StudentPanel\Cart\CartListCollection;
-use App\Models\Coupon;
 use App\Models\Product;
 use App\Services\StudentAccountService;
 use App\ShoppingCart\CartAdaptor;
@@ -196,9 +195,7 @@ class CartController
 
         try{
             DB::beginTransaction();
-            $coupon = Coupon::query()->where('coupon', $couponName)->first();
-
-            CartAdaptor::applyCoupon($coupon->id);
+            CartAdaptor::applyCoupon($couponName);
             DB::commit();
         }catch (CouponNotUsableException) {
             DB::rollBack();

@@ -2,14 +2,12 @@
 
 namespace App\ShoppingCart;
 
-use App\Models\Coupon;
-use App\Models\User;
 use App\Services\Coupon\CouponService;
 
 class CouponValidator
 {
-    public function isCouponValid(int $couponId, int $product, int $user): bool
+    public function isCouponValid(string $couponCode, int $product, int $user): bool
     {
-        return  (new CouponService)->validateCoupon($couponId, $product, $user);
+        return  (new CouponService)->validateCoupon($couponCode, $product, $user);
     }
 }

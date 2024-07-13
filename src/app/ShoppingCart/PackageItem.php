@@ -43,17 +43,17 @@ class PackageItem implements CartItemInterface
      * PackageItem constructor.
      *
      * @param int $product_id The ID of the product.
-     * @param int|null $coupon_id The ID of the coupon applied to the item (optional).
+     * @param string|null $couponCode The ID of the coupon applied to the item (optional).
      * @param int $user_id The ID of the user (default is 0).
      * @param bool $is_installment Whether the item is purchased on installment (default is false).
      * @param array $packageItems
      * @throws ProductDoesNotExistsException If the product does not exist in the database.
      */
     public function __construct(
-        public int $product_id,
-        public ?int $coupon_id = null,
-        public int $user_id = 0,
-        public bool $is_installment = false,
+        public int   $product_id,
+        public ?string  $couponCode = null,
+        public int   $user_id = 0,
+        public bool  $is_installment = false,
         public array $packageItems = []
     ) {
         if (!Product::query()->where('id', $this->product_id)->exists()) {
@@ -70,7 +70,7 @@ class PackageItem implements CartItemInterface
     {
         $this->addModel($model = CartItemModel::query()->create([
             'product_id' => $this->product_id,
-            'coupon_id' => $this->coupon_id,
+            'coupon_code' => $this->couponCode,
             'user_id' => $this->user_id,
             'is_installment' => $this->is_installment,
             'product_type_id' => ProductTypeEnum::CUSTOM_PACKAGE
