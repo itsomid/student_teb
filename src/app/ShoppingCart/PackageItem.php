@@ -208,6 +208,9 @@ class PackageItem implements CartItemInterface
         } elseif ($this->model->coupon && $this->model->coupon->discount_percentage) {
             $final_price -= ($final_price * ($this->model->coupon->discount_percentage / 100));
         }
+        if ($this->is_installment) {
+            $final_price *= 1.05;
+        }
         return $final_price;
     }
 
