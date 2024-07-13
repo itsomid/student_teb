@@ -86,8 +86,8 @@ Route::post('/referral-codes', [ReferralCodeController::class, 'store'])->name('
 Route::get('/referral-codes/{referral_code}/edit', [ReferralCodeController::class, 'edit'])->name('referral_code.edit')->can('referral_code.edit');
 Route::patch('/referral-codes/{referral_code}', [ReferralCodeController::class, 'update'])->name('referral_code.update')->can('referral_code.edit');
 
-Route::get('/orders',           [OrderController::class, 'index'])      ->name('orders.index')     ->can('order.index');
-Route::get('/transactions',     [TransactionController::class, 'index'])->name('transaction.index')->can('transaction.index');
+Route::get('/orders',           [OrderController::class, 'index'])          ->name('orders.index')          ->can('order.index');
+Route::get('/transactions',     [TransactionController::class, 'index'])    ->name('transaction.index')     ->can('transaction.index');
 
 
 Route::get('/debit-cards', [DebitCardTransactionController::class, 'index'])->name('debit-card.index')->can('debit-card.index');
