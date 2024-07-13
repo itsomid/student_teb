@@ -65,7 +65,23 @@ class ChargeAccountDTO
     {
         return $this->userDescription;
     }
+    public function setSystemDescription(?string $systemDescription): self
+    {
+        $this->systemDescription = $systemDescription ?? null; // Use empty string if null is passed
+        return $this;
+    }
 
+    /**
+     * @return string
+     */
+    public function getSystemDescription(): ?string
+    {
+        return $this->systemDescription;
+    }
+    /**
+     * @param int|null $adminId
+     * @return $this
+     */
     /**
      * @param int|null $adminId
      * @return $this

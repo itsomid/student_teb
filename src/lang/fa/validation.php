@@ -132,6 +132,7 @@ return array(
         "final_installment_date"              =>       "زمان سر رسید قسط آخر",
         "is_purchasable"                      =>       "قابل خرید مجزا",
         "img_filename"                        =>       "تصویر",
-        'coupon_name'                         => 'کد تخفیف'
+        "token"                               =>       "کد",
+        'coupon_name'                         =>       'کد تخفیف'
     ),
 );
