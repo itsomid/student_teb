@@ -216,11 +216,6 @@ class CourseItem implements CartItemInterface
     {
         return $this->model->product->original_price;
     }
-
-    public function changeInstallment(bool $newState = true): void
-    {
-        $this->is_installment = $newState;
-    }
     /**
      * Initialize the installment plan for the course item if applicable.
      *

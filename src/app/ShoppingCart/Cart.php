@@ -191,7 +191,6 @@ class Cart
             throw new ItemNotInstallmentableException('This product cannot be purchased on installment: ' . $hasntInstallment->product_id);
         }
         foreach ($this->items as $item) {
-            $item->changeInstallment(true);
             $item->initInstallment();
         }
         $this->cartItemRepository->updateInstallmentByUserId($this->userId, $is_installment);
