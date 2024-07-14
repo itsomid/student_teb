@@ -35,7 +35,7 @@ class CartListCollection extends ResourceCollection
                     "original_price" => $item->getModel()->product->getPrice(),
                     "off_price" => $item->getModel()->product->off_price,
                     'discount_code' => $this->when(!!$item->couponCode, $discountCode = $item->couponCode),
-                    'product_calculated_price' => $item->getPrice(),
+                    'product_calculated_price' => $item->getModel()->product->price,
                     'is_package' => $item instanceof PackageItem,
                     'package_items' => $this->when($item instanceof PackageItem, fn() => $item->getModel()->packages->map(fn($item) => [
                         'id' => $item->id,
