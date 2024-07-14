@@ -6,7 +6,7 @@ use App\Models\Account;
 
 class StudentAccountService
 {
-    public function getAccount(int $userId): int
+    public function getBalance(int $userId): int
     {
         return Account::getStudentBalance($userId);
     }

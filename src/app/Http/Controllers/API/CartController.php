@@ -33,7 +33,7 @@ class CartController
      */
     private int $userId;
 
-    public function __construct(private StudentAccountService $accountService)
+    public function __construct(private readonly StudentAccountService $accountService)
     {
         $this->userId = Auth::guard('student')->id();
     }
@@ -42,7 +42,7 @@ class CartController
     {
         CartAdaptor::init($this->userId);
         $items = CartAdaptor::getItems();
-        $userCredit = $this->accountService->getAccount($this->userId);
+        $userCredit = $this->accountService->getBalance($this->userId);
         return response(
             new CartListCollection($items, $userCredit)
         );
@@ -159,7 +159,7 @@ class CartController
         }
 
         $items = CartAdaptor::getItems();
-        $userCredit = $this->accountService->getAccount($this->userId);
+        $userCredit = $this->accountService->getBalance($this->userId);
         return response(
             new CartListCollection($items, $userCredit)
         );
@@ -168,7 +168,7 @@ class CartController
     public function remove(Product $product)
     {
         CartAdaptor::init($this->userId);
-        $userCredit = $this->accountService->getAccount($this->userId);
+        $userCredit = $this->accountService->getBalance($this->userId);
 
         try {
             CartAdaptor::remove($product->id);
