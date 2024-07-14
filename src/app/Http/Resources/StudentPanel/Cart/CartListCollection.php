@@ -51,7 +51,7 @@ class CartListCollection extends ResourceCollection
                 "vat_percentage" => config('shoppingcart.vat') * 100,
                 "user_credit" => $this->userCredit,
                 "sum_price" => CartAdaptor::getTotal(),
-                "final_price" => (int)(CartAdaptor::getTotal() * (config('shoppingcart.vat')+1)),
+                "final_price" => CartAdaptor::getFinalPrice(),
                 "payable_price" => CartAdaptor::getPayableAmount(),
                 "payable_for_bank" => (CartAdaptor::getPayableAmount() - $this->userCredit) > 0 ? CartAdaptor::getPayableAmount() - $this->userCredit : 0 // sub-track with user balance
             ],

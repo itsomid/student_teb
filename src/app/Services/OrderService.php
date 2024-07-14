@@ -12,6 +12,7 @@ use App\Models\ProductAccess;
 use App\Models\User;
 use App\ShoppingCart\CartAdaptor;
 use App\ShoppingCart\Contract\CartItemInterface;
+use Illuminate\Database\Eloquent\Model;
 
 class OrderService
 {
@@ -62,12 +63,13 @@ class OrderService
         return $order;
     }
 
-    private function createOrder(User $user): Order
+    private function createOrder(User $user): Model|Order
     {
         return $user->orders()->create([
             'vat_tax' => CartAdaptor::getTotalTax(),
             'total_payable_price' => CartAdaptor::getPayableAmount(),
             'total_discount' => 0,
+            'final_price' =>  CartAdaptor::getFinalPrice(),
             'installment_total_amount' => 1,
             'repayment_count' => 1,
             'status' => OrderStatusEnum::PAID
