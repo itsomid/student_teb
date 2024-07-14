@@ -201,14 +201,14 @@ class Cart
     /**
      * Apply a coupon to all items in the cart.
      *
-     * @param int $coupon_id ID of the coupon to apply
+     * @param string $couponCode ID of the coupon to apply
      * @return void
      */
-    public function applyCoupon(int $coupon_id): void
+    public function applyCoupon(string $couponCode): void
     {
-        $this->items = $this->items->map(function (CartItemInterface $item) use($coupon_id){
-            if ($this->couponValidator->isCouponValid($coupon_id, $item->getModel()->product->id, $this->user->id)) {
-                return tap($item)->changeCouponId($coupon_id)->update();
+        $this->items = $this->items->map(function (CartItemInterface $item) use($couponCode){
+            if ($this->couponValidator->isCouponValid($couponCode, $item->getModel()->product->id, $this->user->id)) {
+                return tap($item)->changeCouponCode($couponCode)->update();
             }else{
                 throw new CouponNotUsableException;
             }

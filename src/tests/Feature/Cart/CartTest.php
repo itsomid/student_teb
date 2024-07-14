@@ -7,6 +7,8 @@ use App\Enums\DepositTypeEnum;
 use App\Http\Middleware\JwtAuthenticator;
 use App\Models\CartItem;
 use App\Models\Course;
+use App\Models\CustomPackage;
+use App\Models\CustomPackageItem;
 use App\Models\Product;
 use App\Models\User;
 use App\Services\ChargeAccountService;
@@ -14,6 +16,7 @@ use App\Services\OrderService;
 use App\Services\StudentAccountService;
 use App\ShoppingCart\CartAdaptor;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Arr;
 use Tests\TestCase;
 
 class CartTest extends TestCase
@@ -84,7 +87,7 @@ class CartTest extends TestCase
                 ],
                 'original_price' => $product->getPrice(),
                 'off_price' => $product->off_price,
-                'product_calculated_price' => $payable_for_bank,
+                'product_calculated_price' => $price,
                 'is_package' => false,
             ]],
             'invoice' => [
@@ -103,7 +106,175 @@ class CartTest extends TestCase
 
     }
 
-    public function test_amount_is_valid(): void
+    public function test_add_a_course_and_a_package_with_installment_payment_method()
+    {
+        $studentAccountService = resolve(StudentAccountService::class);
+
+        $productCourse = Product::factory()->installment(4, 25)->course()->state(['original_price' => 1000000, 'off_price' => null])->has(Course::factory())->create();
+        $productPackage = Product::factory()->installment(4, 25)->package()->state(['original_price' => 2000000, 'off_price' => null])->has(CustomPackage::factory()->has(CustomPackageItem::factory(), 'items'), 'packages')->create();
+
+        $packageSelected = [];
+        foreach($productPackage->packages as $package){
+            array_push($packageSelected, Arr::random($package->items()->pluck('product_id')->toArray()));
+        }
+
+        CartAdaptor::init($this->user->id);
+        CartAdaptor::changeInstallment(true);
+        CartAdaptor::addCourse($productCourse->id);
+        CartAdaptor::addPackage($productPackage->id, $packageSelected);
+
+
+        $installmentCount = 4;
+        $installmentRatio = 25 *0.01;
+
+
+//        $vatPercentage = config('shoppingcart.vat'); // 10%
+//
+//        $price = (int) ($product->getInstallmentPrice() * (1 + $vatPercentage));
+////dd($price, (int) ($price * $installmentRatio), $installmentRatio);
+//        $payable_for_bank = (int) ($price * $installmentRatio);
+//        $finalPrice = $price;
+
+
+
+        $vatPercentage = config('shoppingcart.vat');
+        $price = $productCourse->getInstallmentPrice() + $productPackage->getInstallmentPrice();
+
+        $payable_for_bank = (int) (($price*($vatPercentage+1))  * $installmentRatio);
+
+        $coursePriceCalculated = (int)($productCourse->getInstallmentPrice() * (1+$vatPercentage));
+        $packagePriceCalculated = (int)($productPackage->getInstallmentPrice() * (1+$vatPercentage));
+
+        $priceCalculate = $price * ($vatPercentage + 1);
+
+        $res = $this->getJson(route('cart.lists'));
+        $res->assertJson(
+            [
+                'items' => [
+                    [
+                        'product_id' => $productCourse->id,
+                        'product_name' => $productCourse->name,
+                        'product_image' => $productCourse->getImageUrl(),
+                        'has_installment' => (int)$productCourse->has_installment,
+                        'options' => [
+                            'holding_days1' => $productCourse->options['holding_days1'],
+                            'holding_hours1' => $productCourse->options['holding_hours1'],
+                            'holding_days2' => $productCourse->options['holding_days2'],
+                            'holding_hours2' => $productCourse->options['holding_hours2'],
+                            'holding_days3' => $productCourse->options['holding_days3'],
+                            'holding_hours3' => $productCourse->options['holding_hours3']
+                        ],
+                        'original_price' => $productCourse->getPrice(),
+                        'off_price' => $productCourse->off_price,
+                        'product_calculated_price' => $coursePriceCalculated,
+                        'is_package' => false,
+                    ], [
+                        'product_id' => $productPackage->id,
+                        'product_name' => $productPackage->name,
+                        'product_image' => $productPackage->getImageUrl(),
+                        'has_installment' => (int)$productPackage->has_installment,
+                        'options' => [
+                            'holding_days1' => $productPackage->options['holding_days1'],
+                            'holding_hours1' => $productPackage->options['holding_hours1'],
+                            'holding_days2' => $productPackage->options['holding_days2'],
+                            'holding_hours2' => $productPackage->options['holding_hours2'],
+                            'holding_days3' => $productPackage->options['holding_days3'],
+                            'holding_hours3' => $productPackage->options['holding_hours3']
+                        ],
+                        'original_price' => $productPackage->getPrice(),
+                        'off_price' => $productPackage->off_price,
+                        'product_calculated_price' => $packagePriceCalculated,
+                        'is_package' => true,
+                    ],
+                ],
+                'invoice' => [
+                    "vat" => (int)($price * $vatPercentage),
+                    "vat_percentage" => (int)($vatPercentage*100),
+                    "user_credit" => $studentAccountService->getAccount($this->user->id),
+                    "sum_price" => (int)$price,
+                    "final_price" => (int)$priceCalculate,
+                    "payable_price" => (int)$payable_for_bank,
+                    "payable_for_bank" => (int)$payable_for_bank - $studentAccountService->getAccount($this->user->id),
+                ]]);
+
+    }
+
+    public function test_add_a_course_and_a_package_expected_total_amount_is_valid()
+    {
+        $studentAccountService = resolve(StudentAccountService::class);
+
+        $productCourse = Product::factory()->course()->state(['original_price' => 1000000, 'off_price' => null])->has(Course::factory())->create();
+        $productPackage = Product::factory()->package()->state(['original_price' => 2000000, 'off_price' => null])->has(CustomPackage::factory()->has(CustomPackageItem::factory(), 'items'), 'packages')->create();
+
+        $packageSelected = [];
+        foreach($productPackage->packages as $package){
+            array_push($packageSelected, Arr::random($package->items()->pluck('product_id')->toArray()));
+        }
+
+        CartAdaptor::init($this->user->id);
+        CartAdaptor::addCourse($productCourse->id);
+        CartAdaptor::addPackage($productPackage->id, $packageSelected);
+
+        $vatPercentage = config('shoppingcart.vat');
+        $price = $productCourse->price + $productPackage->price;
+
+        $coursePriceCalculated = (int)($productCourse->price * (1+$vatPercentage));
+        $packagePriceCalculated = (int)($productPackage->price * (1+$vatPercentage));
+
+        $priceCalculate = $price * ($vatPercentage + 1);
+
+        $res = $this->getJson(route('cart.lists'));
+        $res->assertJson(
+            [
+            'items' => [
+                [
+                'product_id' => $productCourse->id,
+                'product_name' => $productCourse->name,
+                'product_image' => $productCourse->getImageUrl(),
+                'has_installment' => (int)$productCourse->has_installment,
+                'options' => [
+                    'holding_days1' => $productCourse->options['holding_days1'],
+                    'holding_hours1' => $productCourse->options['holding_hours1'],
+                    'holding_days2' => $productCourse->options['holding_days2'],
+                    'holding_hours2' => $productCourse->options['holding_hours2'],
+                    'holding_days3' => $productCourse->options['holding_days3'],
+                    'holding_hours3' => $productCourse->options['holding_hours3']
+                ],
+                'original_price' => $productCourse->getPrice(),
+                'off_price' => $productCourse->off_price,
+                'product_calculated_price' => $coursePriceCalculated,
+                'is_package' => false,
+            ], [
+                    'product_id' => $productPackage->id,
+                    'product_name' => $productPackage->name,
+                    'product_image' => $productPackage->getImageUrl(),
+                    'has_installment' => (int)$productPackage->has_installment,
+                    'options' => [
+                        'holding_days1' => $productPackage->options['holding_days1'],
+                        'holding_hours1' => $productPackage->options['holding_hours1'],
+                        'holding_days2' => $productPackage->options['holding_days2'],
+                        'holding_hours2' => $productPackage->options['holding_hours2'],
+                        'holding_days3' => $productPackage->options['holding_days3'],
+                        'holding_hours3' => $productPackage->options['holding_hours3']
+                    ],
+                    'original_price' => $productPackage->getPrice(),
+                    'off_price' => $productPackage->off_price,
+                    'product_calculated_price' => $packagePriceCalculated,
+                    'is_package' => true,
+                ],
+            ],
+            'invoice' => [
+                "vat" => (int)($price * $vatPercentage),
+                "vat_percentage" => (int)($vatPercentage*100),
+                "user_credit" => $studentAccountService->getAccount($this->user->id),
+                "sum_price" => (int)$price,
+                "final_price" => (int)$priceCalculate,
+                "payable_price" => (int)$priceCalculate,
+                "payable_for_bank" => (int)$priceCalculate - $studentAccountService->getAccount($this->user->id),
+            ]]);
+
+    }
+    public function test_add_a_course_expected_total_amount_is_valid(): void
     {
         $studentAccountService = resolve(StudentAccountService::class);
 

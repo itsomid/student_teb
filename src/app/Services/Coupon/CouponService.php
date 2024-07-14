@@ -9,9 +9,9 @@ use App\Services\Coupon\Validation\Conditions\UserEligibilitySpecification;
 
 class CouponService
 {
-    public function validateCoupon(int $couponId, int $product_id, int $user_id): bool
+    public function validateCoupon(string $couponCode, int $product_id, int $user_id): bool
     {
-        $coupon = Coupon::query()->find($couponId);
+        $coupon = Coupon::query()->where('coupon', $couponCode)->first();
 
         $expirySpec  = new CouponExpirySpecification();
         $productSpec = new ProductApplicableSpecification($product_id);
