@@ -4,6 +4,7 @@ namespace App\Http\Resources\StudentPanel\Cart;
 
 use App\ShoppingCart\CartAdaptor;
 use App\ShoppingCart\PackageItem;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
@@ -54,7 +55,29 @@ class CartListCollection extends ResourceCollection
                 "payable_price" => CartAdaptor::getPayableAmount(),
                 "payable_for_bank" => (CartAdaptor::getPayableAmount() - $this->userCredit) > 0 ? CartAdaptor::getPayableAmount() - $this->userCredit : 0 // sub-track with user balance
             ],
-            'installments' => $this->when(CartAdaptor::isInstallment(), CartAdaptor::getInstallments())
+            'installments' => $this->when(CartAdaptor::isInstallment(), $this->mergeAmountsByDate(CartAdaptor::getInstallments()))
         ];
+    }
+
+    function mergeAmountsByDate(array $data): array
+    {
+        $merged = [];
+
+        foreach ($data as $key => $entries) {
+            foreach ($entries as $entry) {
+                $date = Carbon::parse($entry['date'])->toDateString(); // Normalize date to "Y-m-d"
+                if (isset($merged[$date])) {
+                    $merged[$date]['amount'] += $entry['amount'];
+                } else {
+                    $merged[$date] = [
+                        'date' => $date,
+                        'amount' => $entry['amount']
+                    ];
+                }
+            }
+        }
+
+        // Convert the merged associative array back to a flat indexed array
+        return array_values($merged);
     }
 }
