@@ -82,7 +82,7 @@
                 <div class="col-md-6">
                     <div class="form-group mt-3">
                         <label class="form-label" for="discount_amount">مبلغ تخفیف (ریال):</label>
-                        <input name="discount_amount numeral-mask" type="text" id="discount_amount" class="form-control" placeholder="مبلغ تخفیف  را وارد کنید." value="{{old('discount_amount') ?? $coupon->discount_amount}}"  autocomplete="off">
+                        <input name="discount_amount" type="text" id="discount_amount" class="form-control numeral-mask" placeholder="مبلغ تخفیف  را وارد کنید." value="{{old('discount_amount') ?? $coupon->discount_amount}}"  autocomplete="off">
                         @error('discount_amount')<small class="text-danger">{{$message}}</small>@enderror
                     </div>
                 </div>

@@ -13,7 +13,7 @@ class CartItem extends Model
     use HasFactory;
 
     protected $fillable = [
-        'product_id', 'user_id', 'coupon_id', 'is_installment', 'product_type_id'
+        'product_id', 'user_id', 'coupon_code', 'is_installment', 'product_type_id'
     ];
     protected function casts(): array
     {
@@ -52,6 +52,6 @@ class CartItem extends Model
      */
     public function coupon(): BelongsTo
     {
-        return $this->belongsTo(Coupon::class);
+        return $this->belongsTo(Coupon::class, 'coupon_code', 'coupon');
     }
 }
