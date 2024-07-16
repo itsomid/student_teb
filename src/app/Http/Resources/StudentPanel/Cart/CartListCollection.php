@@ -33,10 +33,10 @@ class CartListCollection extends ResourceCollection
                     'product_image' => $item->getModel()->product->getImageUrl(),
                     'has_installment' => $item->getModel()->product->has_installment,
                     'options' => $item->getModel()->product->options,
-                    "original_price" => $item->getModel()->product->getPrice(),
+                    "original_price" => $item->getModel()->product->price,
                     "off_price" => $item->getModel()->product->off_price,
                     'discount_code' => $this->when(!!$item->couponCode, $discountCode = $item->couponCode),
-                    'product_calculated_price' => $item->getModel()->product->price,
+                    'product_calculated_price' => $item->getPrice(),
                     'is_package' => $item instanceof PackageItem,
                     'package_items' => $this->when($item instanceof PackageItem, fn() => $item->getModel()->packages->map(fn($item) => [
                         'id' => $item->id,
@@ -51,7 +51,7 @@ class CartListCollection extends ResourceCollection
                 "vat_percentage" => config('shoppingcart.vat') * 100,
                 "user_credit" => $this->userCredit,
                 "sum_price" => CartAdaptor::getTotal(),
-                "final_price" => (int)(CartAdaptor::getTotal() * (config('shoppingcart.vat')+1)),
+                "final_price" => CartAdaptor::getFinalPrice(),
                 "payable_price" => CartAdaptor::getPayableAmount(),
                 "payable_for_bank" => (CartAdaptor::getPayableAmount() - $this->userCredit) > 0 ? CartAdaptor::getPayableAmount() - $this->userCredit : 0 // sub-track with user balance
             ],

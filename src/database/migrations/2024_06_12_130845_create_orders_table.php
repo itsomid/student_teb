@@ -21,6 +21,7 @@ return new class extends Migration
                 ->cascadeOnDelete();
             $table->unsignedInteger('vat_tax');
             $table->unsignedInteger('total_payable_price');
+            $table->unsignedInteger('final_price');
             $table->unsignedInteger('total_discount');
             $table->unsignedInteger('installment_total_amount')->default(0);
             $table->unsignedInteger('repayment_count');

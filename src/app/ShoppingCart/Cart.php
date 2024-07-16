@@ -257,6 +257,14 @@ class Cart
     }
 
     /**
+     * @return int
+     */
+    public function getFinalPrice(): int
+    {
+        return $this->getTotal() + $this->getTotalTax();
+    }
+
+    /**
      * Get the array of installments.
      *
      * @return array An array of installments with dates and amounts
