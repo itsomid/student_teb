@@ -8,6 +8,7 @@ use App\Http\Controllers\API\Auth\PasswordLoginController;
 use App\Http\Controllers\API\Auth\RegisterController;
 use App\Http\Controllers\API\Auth\ReloadCaptchaController;
 use App\Http\Controllers\API\Auth\SendOTPController;
+use App\Http\Controllers\API\CourseController;
 use App\Http\Controllers\API\StudentController;
 use App\Http\Controllers\API\CartController;
 use App\Http\Controllers\API\StoreController;
@@ -44,6 +45,9 @@ Route::middleware('checkJWT')->group(callback: function () {
 
     Route::get('profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('profile/update', [ProfileController::class, 'update'])->name('profile.update');
+
+    //Course
+    Route::get('courses/my-courses', [CourseController::class, 'myCourses'])->name('courses.my-courses');
 });
 
 Route::name('api.')->group(callback: function () {

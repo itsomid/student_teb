@@ -39,13 +39,6 @@ class StudentAccountService
 
         $productAccesses = $productAccesses->get();
 
-        return $productAccesses->map(fn($access) =>
-            resolve(ProductAccessResponseDTO::class)
-            ->setUserId($access->user_id)
-            ->setProductId($access->product_id)
-            ->setEffectiveFromDateTime($access->effective_from_datetime)
-            ->setEffectiveToDateTime($access->effective_to_datetime)
-            ->setAccessReasonType($access->access_reason_type)
-        )->toArray();
+        return $productAccesses->map(fn($access) => $access->product_id)->toArray();
     }
 }
