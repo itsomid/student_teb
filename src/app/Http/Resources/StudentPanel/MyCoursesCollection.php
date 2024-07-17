@@ -19,6 +19,7 @@ class MyCoursesCollection extends ResourceCollection
             'product_id' => $DTO->getProductId(),
             'course_id' => $DTO->getCourseId(),
             'name' => $DTO->getName(),
+            'image_src' => $DTO->getImage(),
             'holding_days1' => $DTO->getHoldingDays1(),
             'holding_days2' => $DTO->getHoldingDays2(),
             'holding_days3' => $DTO->getHoldingDays3(),
