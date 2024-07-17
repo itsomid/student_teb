@@ -126,25 +126,26 @@ class OrderService
 
     private function processRegularItem($order, $item): void
     {
+        $price = $item->getModel()->product->original_price;
         $itemModel = $order->items()->create([
             'product_id' => $item->product_id,
             'final_price' => $item->getCalcPrice(),
-            'product_price' => $item->getModel()->product->original_price,
+            'product_price' => $price,
             'discount_price' => 0
         ]);
 
         if (array_key_exists($item->product_id, $this->installments)) {
             $this->generateInstallments($item->product_id, $itemModel->id);
         }
-        $this->accessProduct($item->product_id, $itemModel->id);
+        $this->accessProduct($item->product_id, $itemModel->id, $price === 0);
     }
 
-    private function accessProduct(int $productId, int $orderItemId): void
+    private function accessProduct(int $productId, int $orderItemId, bool $isFree = false): void
     {
         ProductAccess::query()->create([
             'product_id' => $productId,
             'user_id' => $this->userId,
-            'access_reason_type' => ProductAccessType::BOUGHT,
+            'access_reason_type' => $isFree ? ProductAccessType::FREE : ProductAccessType::BOUGHT,
             'order_item_id' => $orderItemId
         ]);
     }
