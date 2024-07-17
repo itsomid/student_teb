@@ -14,14 +14,12 @@
                                 <div class="col-md-9">
                                     <div class="form-group">
                                         <label for="product" class="mb-3">پشتیبان فروش :</label>
-                                        <dynamic-select
-                                            url="{{route('api.user.index', ['role' => 'sales_support'])}}"
-                                            label="اننتخاب پشتیبان"
-                                            input_name="user_id"
-                                            default_selected="{{request()->input('user_id' , null)}}"
-                                            option_title="name"
-                                            option_value="id"
-                                        ></dynamic-select>
+                                        @include('components.admin-selection-component',[
+                                            'inputName'         => 'user_id',
+                                            'placeholderName'   => 'انتخاب پشتیبان فروش جدید',
+                                            'admins'            => $supports,
+                                            'defaultValue'      => old('user_id')
+                                        ])
                                     </div>
                                 </div>
                                 <div class="col-md-3 d-flex align-items-center justify-content-center mt-3">
@@ -43,7 +41,7 @@
                                     <div class="form-group">
                                         <label for="code" class="mb-3">کد تایید :</label>
                                         <input type="number" name="code" class="form-control" placeholder="کد تایید را وارد کنید." {{!request()->has('sms') ? 'disabled' : ''}}>
-                                        <input type="hidden" value="{{request()->input('user_id')}}" name="user_id">
+                                        <input type="hidden" value="{{request()->input('support_id')}}" name="user_id">
                                     </div>
                                     <small class="text-danger"> @error('code'){{$message}} @enderror</small>
                                 </div>

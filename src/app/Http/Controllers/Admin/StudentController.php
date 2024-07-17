@@ -110,8 +110,10 @@ class StudentController extends Controller
     public function editSupport($student)
     {
         $student = User::find($student);
+        $supports= Admin::query()->role('sales_support')->get();
         return view('dashboard.student.support.edit')
-            ->with(['student' => $student]);
+            ->with(['supports' => $supports])
+            ->with(['student'  => $student]);
     }
 
     public function editSupportSMS($student, Request $request)
@@ -136,7 +138,7 @@ class StudentController extends Controller
 
     public function updateSupport(User $student, Request $request)
     {
-        $new_support = Admin::query()->where('id', $request->support_id)->firstOrFail();
+        $new_support = Admin::query()->where('id', $request->user_id )->firstOrFail();
         $is_verified = VerificationCode::query()
             ->where('receptor', $new_support->mobile)
             ->whereDate('expire_at', '>=', now())
@@ -149,7 +151,8 @@ class StudentController extends Controller
         $student->sale_support_id = $new_support->id;
         $student->save();
 
-        return redirect()->back()->with('success','تغییر پشتیبان با مپفقیت انجام شد');
+        Toast::message('پشتیبان با موفقیت تغییر کرد')->success()->notify();
+        return redirect()->route('admin.student.index');
     }
 
     public function verifyStudent(User $student)
