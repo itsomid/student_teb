@@ -49,6 +49,31 @@ class Product extends Model
         ];
     }
 
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        self::created(function(self $model){
+            $this->deleteProductTreeCache();
+        });
+
+        self::updated(function(self $model){
+            $this->deleteProductTreeCache();
+
+
+        });
+
+        self::deleted(function(self $model){
+            $this->deleteProductTreeCache();
+
+        });
+    }
+
+    public function deleteProductTreeCache(): void
+    {
+        cache()->forget('product_tree');
+    }
+
     public function isActiveCourse()
     {
         return is_null($this->parent_id) && !$this->archived && $this->show_in_list && $this->is_purchasable;
@@ -100,7 +125,7 @@ class Product extends Model
         return $this->hasMany(CustomPackage::class);
     }
 
-    public function cartItem()
+    public function cartItem(): HasMany
     {
         return $this->hasMany(CartItem::class);
     }
@@ -115,32 +140,32 @@ class Product extends Model
         return $result;
     }
 
-    public static function getProductsTree()
+    /**
+     * @return array
+     */
+    public static function getProductsTree(): array
     {
-        //new Algorithm - By M.Majidfar
-        $all_products = static::orderBy('parent_id', 'asc')->get();
-        $init_array = []; //all products_ids with their parent_id
-        $result = []; //final result
+        return cache()->remember('product_tree', 120, function (){
 
-        foreach ($all_products as $tmp_product) {
-            $init_array[$tmp_product->id] = $tmp_product->parent_id;
-        }
+            //new Algorithm - By M.Majidfar
+            $products = static::query()->orderBy('parent_id')->get();
+            $result = []; //final result
 
-        foreach ($all_products as $tmp_product) {
-            if (!$tmp_product->parent_id) {
-                $result[$tmp_product->id] = [];
-            } else {
-                //running BFF algorithm for searching parent_id in $result
-                $result = static::ProductsTreeBFFsearch($result, ['id' => $tmp_product->id, 'parent_id' => $tmp_product->parent_id]);
+            foreach ($products as $item) {
+                if (!$item->parent_id) {
+                    $result[$item->id] = [];
+                } else {
+                    //running BFF algorithm for searching parent_id in $result
+                    $result = static::ProductsTreeBFFsearch($result, ['id' => $item->id, 'parent_id' => $item->parent_id]);
+                }
             }
-        }
 
-        return $result;
+            return $result;
 
-
+        });
     }
 
-    public static function ProductsTreeBFFsearch($stack, $needle)
+    public static function ProductsTreeBFFsearch($stack, $needle): array
     {
         $my_product_id = $needle['id'];
         $my_product_parent_id = $needle['parent_id'];
@@ -161,7 +186,7 @@ class Product extends Model
         return $stack;
     }
 
-    public static function getProductsTreeLeafs($users_products_ids, $input_array, $return_all = false)
+    public static function getProductsTreeLeafs($users_products_ids, $input_array, $return_all = false): array
     {
         $result = [];
         if ($input_array && count($input_array) > 0) {
@@ -226,7 +251,7 @@ class Product extends Model
         return $final_price;
     }
 
-    public function getPrice()
+    public function getPrice(): string
     {
         if ($this->is_purchasable) {
 
@@ -240,7 +265,7 @@ class Product extends Model
         }
     }
 
-    static public function formatPrice($price)
+    static public function formatPrice(int $price): string
     {
         return number_format($price, 0) . " ریال";
     }
