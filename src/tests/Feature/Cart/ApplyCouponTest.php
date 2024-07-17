@@ -81,11 +81,11 @@ class ApplyCouponTest extends TestCase
                 'invoice' => [
                     "vat" => (int)($price * $vatPercentage),
                     "vat_percentage" => (int)($vatPercentage*100),
-                    "user_credit" => $studentAccountService->getAccount($this->user->id),
+                    "user_credit" => $studentAccountService->getBalance($this->user->id),
                     "sum_price" => (int)$price,
                     "final_price" => (int)$calculatePrice,
                     "payable_price" => (int)$calculatePrice,
-                    "payable_for_bank" => (int)$calculatePrice - $studentAccountService->getAccount($this->user->id),
+                    "payable_for_bank" => (int)$calculatePrice - $studentAccountService->getBalance($this->user->id),
                 ]
             ]);
     }
@@ -141,11 +141,11 @@ class ApplyCouponTest extends TestCase
                 'invoice' => [
                     "vat" => (int)($price * $vatPercentage),
                     "vat_percentage" => (int)($vatPercentage*100),
-                    "user_credit" => $studentAccountService->getAccount($this->user->id),
+                    "user_credit" => $studentAccountService->getBalance($this->user->id),
                     "sum_price" => (int)$price,
                     "final_price" => (int)$calculatePrice,
                     "payable_price" => (int)$calculatePrice,
-                    "payable_for_bank" => (int)$calculatePrice - $studentAccountService->getAccount($this->user->id),
+                    "payable_for_bank" => (int)$calculatePrice - $studentAccountService->getBalance($this->user->id),
                 ]
             ]);
     }
@@ -246,11 +246,11 @@ class ApplyCouponTest extends TestCase
                 'invoice' => [
                     "vat" => (int)($sumPrice * $vatPercentage),
                     "vat_percentage" => (int)($vatPercentage*100),
-                    "user_credit" => $studentAccountService->getAccount($this->user->id),
+                    "user_credit" => $studentAccountService->getBalance($this->user->id),
                     "sum_price" => (int)$sumPrice,
                     "final_price" => (int)$priceCalculate,
                     "payable_price" => (int)$payable_for_bank,
-                    "payable_for_bank" => (int)$payable_for_bank - $studentAccountService->getAccount($this->user->id),
+                    "payable_for_bank" => (int)$payable_for_bank - $studentAccountService->getBalance($this->user->id),
                 ]]);
 
 
