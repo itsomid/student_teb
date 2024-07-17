@@ -2,7 +2,7 @@
 
 namespace App\Listeners;
 
-use App\DTO\StudentAccount\ChargeAccountDTO;
+use App\DTO\StudentAccount\ChargeAccountRequestDTO;
 use App\Enums\DepositTypeEnum;
 use App\Services\ChargeAccountService;
 
@@ -25,7 +25,7 @@ class ChargeStudentAccountOnPaymentSuccessListener
 
         $chargeAccountService = resolve(ChargeAccountService::class);
         $chargeAccountService->charge(
-            (new ChargeAccountDTO())
+            (new ChargeAccountRequestDTO())
                 ->setDepositType(DepositTypeEnum::BUY)
                 ->setUserId($transaction->user_id)
                 ->setAmount($transaction->price)
