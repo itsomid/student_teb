@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Builder;
 class Product extends Model
 {
     use HasFactory, SoftDeletes, Filterable;
+    const string PRODUCT_TREE_CACHE_KEY = 'product_tree';
 
     public $filterNameSpace = 'App\Filters\ProductFilters';
     public $fillable = [
@@ -71,7 +72,7 @@ class Product extends Model
 
     public function deleteProductTreeCache(): void
     {
-        cache()->forget('product_tree');
+        cache()->forget(self::PRODUCT_TREE_CACHE_KEY);
     }
 
     public function isActiveCourse()
@@ -145,7 +146,7 @@ class Product extends Model
      */
     public static function getProductsTree(): array
     {
-        return cache()->remember('product_tree', 120, function (){
+        return cache()->remember(self::PRODUCT_TREE_CACHE_KEY, 120, function (){
 
             //new Algorithm - By M.Majidfar
             $products = static::query()->orderBy('parent_id')->get();
