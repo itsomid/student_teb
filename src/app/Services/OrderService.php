@@ -104,7 +104,7 @@ class OrderService
         $itemModel = $order->items()->create([
             'product_id' => $item->product_id,
             'final_price' => $amount,
-            'product_price' => $amount->getModel()->product->original_price,
+            'product_price' => $amount->getModel()->product->price,
             'discount_price' => 0
         ]);
 
@@ -117,7 +117,7 @@ class OrderService
             $itemModel = $order->items()->create([
                 'product_id' => $pkg->product_id,
                 'final_price' => $amount_temp,
-                'product_price' => $pkg->getModel()->product->original_price,
+                'product_price' => $pkg->getModel()->product->price,
                 'discount_price' => 0
             ]);
             $this->accessProduct($pkg->product_id, $itemModel->id);
@@ -126,7 +126,7 @@ class OrderService
 
     private function processRegularItem($order, $item): void
     {
-        $price = $item->getModel()->product->original_price;
+        $price = $item->getModel()->product->price;
         $itemModel = $order->items()->create([
             'product_id' => $item->product_id,
             'final_price' => $item->getCalcPrice(),
