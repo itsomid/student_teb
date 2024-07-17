@@ -55,17 +55,17 @@ class Product extends Model
         parent::boot();
 
         self::created(function(self $model){
-            $this->deleteProductTreeCache();
+            $model->deleteProductTreeCache();
         });
 
         self::updated(function(self $model){
-            $this->deleteProductTreeCache();
+            $model->deleteProductTreeCache();
 
 
         });
 
         self::deleted(function(self $model){
-            $this->deleteProductTreeCache();
+            $model->deleteProductTreeCache();
 
         });
     }
