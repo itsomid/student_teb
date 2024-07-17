@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Cart;
 
-use App\DTO\StudentAccount\ChargeAccountDTO;
+use App\DTO\StudentAccount\ChargeAccountRequestDTO;
 use App\Enums\DepositTypeEnum;
 use App\Http\Middleware\JwtAuthenticator;
 use App\Models\CartItem;
@@ -327,7 +327,7 @@ class CartTest extends TestCase
 
         $chargeAccount = resolve(ChargeAccountService::class);
         $chargeAccount->charge(
-            (new ChargeAccountDTO())
+            (new ChargeAccountRequestDTO())
                 ->setAmount($product->amount * 2)
                 ->setDepositType(DepositTypeEnum::BUY)
                 ->setUserId($this->user->id)
