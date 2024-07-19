@@ -27,8 +27,9 @@ class CreateRequest extends FormRequest
             'homework_is_mandatory'  => ['nullable'],
             'report_is_mandatory'    => ['nullable'],
             'is_free'                => ['nullable'],
-            'offline_link_woza'      => ['required', 'url'],
-            'offline_link_vod'       => ['required', 'url'],
+            'offline_link_aparat'    => ['nullable'],
+            'offline_link_woza'      => ['nullable'],
+            'offline_link_vod'       => ['nullable'],
             'emergency_link'         => ['nullable', 'url'],
             'attached_file_link'     => ['nullable', 'url'],
         ];

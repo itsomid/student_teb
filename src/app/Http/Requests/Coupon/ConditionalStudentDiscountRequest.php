@@ -46,12 +46,12 @@ class ConditionalStudentDiscountRequest extends FormRequest
         }
 
         return [
-            'coupon'                => ['required'],
+            'coupon_name'                => ['required'],
             'description'           => ['nullable', 'max:254'],
             'discount_percentage'   => ['nullable', 'numeric', 'required_without:discount_amount'],
             'discount_amount'       => ['nullable', 'numeric', 'required_without:discount_percentage'],
             'expired_at'            => ['nullable', 'date'],
-            'product_ids'           => ['array'],
+            'product_ids'           => ['required', 'array'],
             'is_one_time'           => ['required', 'boolean'],
         ];
     }

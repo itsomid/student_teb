@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('type',40);
 
-            $table->string('coupon')->index();
+            $table->string('coupon_name')->unique()->index();
 
             $table->string('description')->nullable();
 

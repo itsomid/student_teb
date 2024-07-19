@@ -4,6 +4,7 @@ namespace App\ShoppingCart;
 
 use App\Enums\ProductTypeEnum;
 use App\Models\CartItem as CartItemModel;
+use App\Models\Coupon;
 use App\Models\Product;
 use App\ShoppingCart\Contract\CartItemInterface;
 use App\ShoppingCart\Exceptions\ProductDoesNotExistsException;
@@ -43,17 +44,17 @@ class PackageItem implements CartItemInterface
      * PackageItem constructor.
      *
      * @param int $product_id The ID of the product.
-     * @param string|null $couponCode The ID of the coupon applied to the item (optional).
+     * @param int|null $coupon_id The ID of the coupon applied to the item (optional).
      * @param int $user_id The ID of the user (default is 0).
      * @param bool $is_installment Whether the item is purchased on installment (default is false).
      * @param array $packageItems
      * @throws ProductDoesNotExistsException If the product does not exist in the database.
      */
     public function __construct(
-        public int   $product_id,
-        public ?string  $couponCode = null,
-        public int   $user_id = 0,
-        public bool  $is_installment = false,
+        public int $product_id,
+        public ?int $coupon_id = null,
+        public int $user_id = 0,
+        public bool $is_installment = false,
         public array $packageItems = []
     ) {
         if (!Product::query()->where('id', $this->product_id)->exists()) {
@@ -70,7 +71,7 @@ class PackageItem implements CartItemInterface
     {
         $this->addModel($model = CartItemModel::query()->create([
             'product_id' => $this->product_id,
-            'coupon_code' => $this->couponCode,
+            'coupon_id' => $this->coupon_id,
             'user_id' => $this->user_id,
             'is_installment' => $this->is_installment,
             'product_type_id' => ProductTypeEnum::CUSTOM_PACKAGE
@@ -167,10 +168,8 @@ class PackageItem implements CartItemInterface
      */
     public function getCalcPrice(): int
     {
-        if ($this->is_installment) {
-            return $this->installment->getPayablePrice();
-        }
-        return $this->getPrice();
+
+        return $this->is_installment ? $this->installment->getPayablePrice() : $this->getPriceWithVat();
     }
 
     /**
@@ -178,41 +177,31 @@ class PackageItem implements CartItemInterface
      *
      * @return int
      */
-    public function getPrice(): int
-    {
-        $final_price = $this->getPriceWithDiscount();
-        return ($final_price * ($this->getVatPercentage() + 1));
-    }
-
-    /**
-     * Get the tax amount for the package item.
-     *
-     * @return float|int
-     */
-    public function getTax(): float|int
-    {
-        return $this->getPriceWithDiscount() * $this->getVatPercentage();
-    }
-
-    /**
-     * Get the price of the package item after applying discounts.
-     *
-     * @return int
-     */
     public function getPriceWithDiscount(): int
     {
         $final_price = $this->model->product->off_price ?? $this->getOriginalPrice();
 
-        if ($this->model->coupon && $this->model->coupon->discount_amount) {
-            $final_price -= $this->model->coupon->discount_price;
-        } elseif ($this->model->coupon && $this->model->coupon->discount_percentage) {
-            $final_price -= ($final_price * ($this->model->coupon->discount_percentage / 100));
+        if ($this->model->coupon) {
+            $coupon = $this->model->coupon;
+
+            if ($coupon->discount_amount) {
+                $final_price -= $coupon->discount_amount;
+            } elseif ($coupon->discount_percentage) {
+                $final_price -= ($final_price * ($coupon->discount_percentage / 100));
+            }
         }
         if ($this->is_installment) {
-            $final_price *= 1.05;
+            $final_price *= (config('shoppingcart.installment')+1);
         }
         return $final_price;
     }
+    public function getPriceWithVat(): int
+    {
+
+        $final_price = $this->getPriceWithDiscount();
+        return ($final_price * ($this->getVatPercentage() + 1));
+    }
+
 
     /**
      * Get the original price of the package item.
@@ -235,7 +224,41 @@ class PackageItem implements CartItemInterface
             $this->installment = resolve(Installment::class, ['cartItem' => $this]);
         }
     }
+    public function getCouponDiscountAmount(): int
+    {
+        if ($this->model->coupon) {
+            $coupon = $this->model->coupon;
+            if ($coupon->discount_amount) {
+                return $coupon->discount_amount;
+            } elseif ($coupon->discount_percentage) {
+                $originalPrice = $this->getOriginalPrice();
+                return $originalPrice * ($coupon->discount_percentage / 100);
+            }
+        }
+        return 0;
+    }
 
+
+
+    public function getCouponId(): ?int
+    {
+        return $this->coupon_id;
+    }
+
+    public function getCoupon(): ?Coupon
+    {
+        return $this->model->coupon; // Assuming there's a relationship defined in the model
+    }
+
+    /**
+     * Get the tax amount for the package item.
+     *
+     * @return float|int
+     */
+    public function getTax(): float|int
+    {
+        return $this->getPriceWithDiscount() * $this->getVatPercentage();
+    }
     /**
      * Get the VAT percentage applicable to the package item.
      *

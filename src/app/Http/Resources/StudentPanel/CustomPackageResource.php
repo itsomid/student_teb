@@ -18,29 +18,62 @@ class CustomPackageResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+
         return [
             'id' => $this->id,
             'name' => $this->name,
             'description' => $this->description,
             'teacher_name' => optional($this->teacher)->fullname(),
             'original_price' => $this->getPrice(),
-            'off_price' => $this->off_price,
+            "original_price_num" => $this->original_price,
+            "off_price" => $this->getOffPrice(),
+            "off_price_num" => $this->off_price,
             'sort_num' => $this->sort_num,
             'product_type_id' => $this->product_type_id,
             'img_filename' => $this->getImageUrl(),
             'has_installment' => $this->has_installment,
             'installment_count' => $this->installment_count,
             'start_date' => $this->packages[0]->items[0]->product->course->start_date,
+            'random_introduce_video'=>$this->getRandomVideoFromPackageCourses($this->packages),
+//            'packages' => $this->customPackageItems,
             'sections' => CustomPackageSectionResource::collection($this->packages),
+            'teachers' => CustomPackageTeachersResource::collection($this->packages),
             'is_purchasable' => (int)$this->is_purchasable,
             'show_in_list' => (int)$this->show_in_list,
-            'grades' => $this->categories->where('type', ProductCategoryType::GRADE)->pluck('id'),
-            'lessons' => $this->categories->where('type', ProductCategoryType::LESSON)->pluck('id'),
-            'courses' => $this->categories->where('type', ProductCategoryType::COURSE)->pluck('id'),
+            'grades' => $this->categories->where('type', ProductCategoryType::GRADE)->pluck('name', 'id'),
+            'lessons' => $this->categories->where('type', ProductCategoryType::LESSON)->pluck('name', 'id'),
+            'courses' => $this->categories->where('type', ProductCategoryType::COURSE)->pluck('name', 'id'),
             'store_status' => $this->determineStoreStatus(Auth::guard('student')->user())
         ];
     }
 
+    public function getRandomVideoFromPackageCourses($packages)
+    {
+         $items = $packages->flatMap->items;
+
+        if ($items->isEmpty()) {
+            return null;
+        }
+
+        $randomItem = $items->random();
+        return $this->getAparatToken($randomItem->product->course->introduce_video);
+    }
+    public function getAparatToken($video)
+    {
+        if ( str_contains( $video , 'aparat.com')) {
+            // Regular expression to find the code in the src attribute
+            $pattern = '/aparat\.com\/embed\/([a-zA-Z0-9]+)/';
+
+            preg_match($pattern, $video, $matches);
+
+            // Check if we have a match and return the code
+            if (isset($matches[1])) {
+                return $matches[1];
+            }
+        }
+
+        return null;
+    }
     protected function determineStoreStatus(?User $user): string
     {
 

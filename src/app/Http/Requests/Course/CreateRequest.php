@@ -51,6 +51,7 @@ class CreateRequest extends FormRequest
         $this->merge([
             'original_price' => str_replace(',', '', $this->original_price),
             'off_price' => str_replace(',', '', $this->off_price),
+            'first_installment_amount' => str_replace(',', '', $this->first_installment_amount),
         ]);
     }
     public function withValidator($validator): void

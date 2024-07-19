@@ -3,7 +3,7 @@
 @section('content')
     <div class="card">
         <div class="card-body">
-            <h5 class="card-title">افزودن پکیج سفارشی جدید </h5>
+            <h5 class="card-title">ویرایش پکیج سفارشی جدید </h5>
 
             <form action="{{route('admin.custom-package.update', $product->id)}}" method="post"
                   enctype="multipart/form-data">
@@ -28,7 +28,7 @@
                     <div class="col-md-6  mb-1">
                         <div class="form-group">
                             <label for="original_price">قیمت (ریال):</label>
-                            <input name="original_price" type="number" id="original_price" class="form-control"
+                            <input name="original_price" type="text" id="original_price" class="form-control numeral-mask"
                                    value="{{ $product->original_price }}"
                                    placeholder="قیمت را وارد کنید." required>
                             @error('original_price')<small class="text-danger">{{$message}}</small>@enderror
@@ -38,7 +38,7 @@
                     <div class="col-md-6  mb-1">
                         <div class="form-group mt-3">
                             <label for="off_price">قیمت حراجی با اعمال کد تخفیف (ریال):</label>
-                            <input name="off_price" type="number" id="off_price" class="form-control"
+                            <input name="off_price" type="text" id="off_price" class="form-control numeral-mask"
                                    value="{{ $product->off_price }}" placeholder="قیمت حراجی را وارد کنید.">
                             @error('off_price')<small class="text-danger">{{$message}}</small>@enderror
                         </div>
@@ -52,31 +52,55 @@
                                 role="teacher"
                                 placeholder-name="لطفا استاد را انتخاب کنید."
                             >
-
                             </x-admin-selection-component>
 
                             @error('user_id')<small class="text-danger">{{$message}}</small>@enderror
                         </div>
                     </div>
-
                     <div class="col-md-6 mt-3">
+                        <div class="form-group ">
+                            <label class="form-label" for="categories">دسته بندی:</label>
+                            <select id="categories" class="select2 text-capitalize mb-md-0 " name="categories[]"
+                                    multiple data-placeholder="لطفا دسته بندی را انتخاب کنید.">
 
+                                @foreach($categories as $category)
+                                    <option value="{{$category->id}}"
+                                        {{in_array($category->id, collect($product->categories)->pluck('id')->toArray()) ? 'selected' : null}}
+                                    >{{$category->name}}</option>
+                                @endforeach
+                            </select>
+                            @error('categories')<small class="text-danger">{{$message}}</small>@enderror
+
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 mt-3">
                         <div class="form-group">
-                            <img src="{{ $product->getImageUrl() }}" alt="" class="img-fluid rounded h-50 w-25"><br>
+
                             <label class="form-label" for="input_img">تصویر پکیج:</label>
                             <input class="form-control-file form-control" type="file" id="input_img"
                                    name="img_filename">
                             @error('img_filename')<small class="text-danger">{{$message}}</small>@enderror
                         </div>
                     </div>
+                    @if($product->img_filename)
+                        <div class="col-md-3 mb-1">
+                            <div class="form-group mt-3">
+                                <img src="{{ $product->getImageUrl() }}" class="img-fluid w-50">
+                            </div>
+                        </div>
+                    @endisset
                     <div class="col-md-12 mt-3">
                         <div class="form-group ">
                             <label for="description">توضیحات</label>
-                            <textarea class="form-control" name="description" id="description"
-                                      rows="5">{{ $product->description }}</textarea>
+
+                            <x-tinymce-editor selector="description" :value="$product->description"/>
                             @error('description')<small class="text-danger">{{$message}}</small>@enderror
                         </div>
                     </div>
+
+                    <hr class="mt-3">
+                    <h5 class="card-title">مدیریت اشتراک دوره</h5>
                     <div class="col-md-6 mt-3">
                         <div class="form-group">
                             <label for="subscription_start_at">زمان شروع دوره اشتراکی:</label>
@@ -96,21 +120,6 @@
                                    class="form-control"
                                    placeholder="مدت زمان اشتراک">
                             @error('expiration_duration')<small class="text-danger">{{$message}}</small>@enderror
-                        </div>
-                    </div>
-                    <div class="col-md-6 mb-1">
-                        <div class="form-group mt-3">
-                            <label class="form-label" for="familiarity_way">دسته بندی:</label>
-                            <select id="familiarity_way" class="form-select text-capitalize mb-md-0 " multiple
-                                    name="categories">
-                                <option value="">انتخاب نشده</option>
-                                @foreach($categories as $category)
-                                    <option
-                                        @if($product->categories && $product->categories->contains($category->id)) selected
-                                        @endif value="{{ $category->id }}">{{ $category->name }}</option>
-                                @endforeach
-                            </select>
-                            @error('categories')<small class="text-danger">{{$message}}</small>@enderror
                         </div>
                     </div>
 
@@ -171,7 +180,7 @@
                                     درصد):</label>
                                 <input name="first_installment_ratio" type="number" id="first_installment_ratio"
                                        class="form-control" placeholder="پیش فرض ۳۳"
-                                       value="{{ $product->first_installment_radio }}">
+                                       value="{{ $product->first_installment_ratio }}">
                                 @error('first_installment_ratio')<small
                                     class="text-danger">{{$message}}</small>@enderror
                             </div>
@@ -193,9 +202,9 @@
                         <div class="form-group mt-2">
                             <div class="form-group">
                                 <label class="form-label" for="final_installment_date">زمان سر رسید قسط آخر:</label>
-                                <input name="final_installment_date" type="number" id="final_installment_date"
-                                       class="form-control" placeholder="زمان سر رسید قسط آخر را وارد کنید."
-                                       value="{{ $product->first_installment_date }}">
+                                <input name="final_installment_date" type="text" id="final_installment_date"
+                                       class="form-control"  data-jdp  placeholder="زمان سر رسید قسط آخر را وارد کنید."
+                                       value="{{ $product->final_installment_date() }}">
                                 @error('final_installment_date')<small class="text-danger">{{$message}}</small>@enderror
                             </div>
                         </div>
@@ -205,7 +214,7 @@
                 <h5 class="card-title">محتوای پکیج سفارشی</h5>
                 @error('sections')<small class="text-danger">{{$message}}</small>@enderror
                 <custom-package
-                    sections_prop='@json(\App\Models\CustomPackage::getCoursesJson($product->packages))'></custom-package>
+                    sections_prop='@json(\App\Models\CustomPackage::getCoursesJson($product->packages))' :courses="{{$courses}}"></custom-package>
 
                 <div class=" d-flex justify-content-center mt-3">
                     <div class="col-md-1">
@@ -220,6 +229,15 @@
     </div>
 
 @endsection
-@section('scripts')
-    @vite(['resources/assets/js/jalalidatepicker.js'])
+@section('vendor-script')
+    @vite(['resources/assets/vendor/libs/select2/select2.js',
+            'resources/assets/vendor/js/forms-selects.js',
+            'resources/assets/js/jalalidatepicker.js',
+            'resources/assets/vendor/libs/cleavejs/cleave.js',
+            'resources/assets/js/forms-extras.js',
+            'resources/assets/vendor/libs/tinymce/tinymce.js'
+          ])
+@endsection
+@section('vendor-style')
+    @vite(['resources/assets/vendor/libs/select2/select2.scss'])
 @endsection

@@ -220,7 +220,8 @@ class ApplyCouponTest extends TestCase
                             'holding_days3' => $productCourse->options['holding_days3'],
                             'holding_hours3' => $productCourse->options['holding_hours3']
                         ],
-                        'original_price' => $productCourse->price,
+
+                        'original_price' => $productCourse->getPrice(),
                         'off_price' => $productCourse->off_price,
                         'product_calculated_price' => $coursePriceCalculated,
                         'is_package' => false,
@@ -237,7 +238,8 @@ class ApplyCouponTest extends TestCase
                             'holding_days3' => $productPackage->options['holding_days3'],
                             'holding_hours3' => $productPackage->options['holding_hours3']
                         ],
-                        'original_price' => $productPackage->price,
+
+                        'original_price' => $productPackage->getPrice(),
                         'off_price' => $productPackage->off_price,
                         'product_calculated_price' => $packagePriceCalculated,
                         'is_package' => true,

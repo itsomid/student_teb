@@ -75,7 +75,7 @@ class CreateRequest extends FormRequest
     public function messages()
     {
         return [
-            'user_id.required' => 'انتخاب استاد الزامی است.'
+          'user_id.required' => 'انتخاب استاد الزامی است.'
         ];
     }
 }

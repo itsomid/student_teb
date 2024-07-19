@@ -40,14 +40,17 @@ Route::middleware('checkJWT')->group(callback: function () {
     Route::delete('/cart/remove/{product}', [CartController::class, 'remove']);
     Route::post('/cart/change-installment', [CartController::class, 'changeToInstallmentCart']);
     Route::post('/cart/apply-coupon', [CartController::class, 'applyCoupon'])->name('cart.apply-coupon');
-
+    Route::patch('/cart/remove-coupon', [CartController::class, 'removeCoupon'])->name('cart.remove-coupon');
     Route::get('cart/buy', [BuyController::class, 'payCart']);
 
-    Route::get('profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('profile/update', [ProfileController::class, 'update'])->name('profile.update');
+    Route::get('/user', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/user/update', [ProfileController::class, 'update'])->name('profile.update');
+    Route::patch('/user/update-password',[ProfileController::class, 'updatePassword']);
+    Route::post('/user/update-avatar',[ProfileController::class, 'updateAvatar']);
 
     //Course
     Route::get('courses/my-courses', [CourseController::class, 'myCourses'])->name('courses.my-courses');
+
 });
 
 Route::name('api.')->group(callback: function () {

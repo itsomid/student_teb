@@ -20,21 +20,23 @@ class StoreCollection extends ResourceCollection
     {
         $user = Auth::guard('student')->user();
         return $this->collection->map( fn ($item) => [
-            'id'                =>$item->id,
-            "name"              => $item->name,
-            "teacher_name"      => optional($item->teacher)->fullname(),
-            "original_price"    => $item->getPrice(),
-            "off_price"         => $item->off_price,
-            "sort_num"          => $item->sort_num,
-            "product_type_id"   => $item->product_type_id,
-            "img_filename"      => $item->getImageUrl(),
-            "is_purchasable"    => (int)$item->is_purchasable,
-            "show_in_list"      => (int)$item->show_in_list,
-            "course_id"         => optional($item->course)->id,
-            'start_date'        => optional($item->course)->start_date,
-            "grades"            => $item->categories->where('type', ProductCategoryType::GRADE)->pluck('id'),
-            "lessons"           => $item->categories->where('type', ProductCategoryType::LESSON)->pluck('id'),
-            "courses"           => $item->categories->where('type', ProductCategoryType::COURSE)->pluck('id'),
+            'id'                 =>$item->id,
+            "name"               => $item->name,
+            "teacher_name"       => optional($item->teacher)->fullname(),
+            "original_price"     => $item->getPrice(),
+            "original_price_num" => $item->original_price,
+            "off_price"          => $item->getOffPrice(),
+            "off_price_num"      => $item->off_price,
+            "sort_num"           => $item->sort_num,
+            "product_type_id"    => $item->product_type_id,
+            "img_filename"       => $item->getImageUrl(),
+            "is_purchasable"     => (int)$item->is_purchasable,
+            "show_in_list"       => (int)$item->show_in_list,
+            "course_id"          => optional($item->course)->id,
+            'start_date'         => optional($item->course)->start_date,
+            "grades" => $item->categories->where('type', ProductCategoryType::GRADE)->pluck('name','id'),
+            "lessons" => $item->categories->where('type', ProductCategoryType::LESSON)->pluck('name','id'),
+            "courses" => $item->categories->where('type', ProductCategoryType::COURSE)->pluck('name','id'),
             'store_status'      => $this->determineStoreStatus($user,$item)
         ])->toArray();
 
@@ -46,7 +48,7 @@ class StoreCollection extends ResourceCollection
             return 'in_cart';
         }
 
-        if ($user->productAccess()->where('product_id', $item->id)->exists()) {
+        if ($user->orderItems()->where('product_id', $item->id)->exists()) {
             return 'purchased';
         }
 

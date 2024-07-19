@@ -30,33 +30,32 @@ class SpecifiedStudentsCouponRequest extends FormRequest
      */
     public function rules(): array
     {
-        if (!$this->filled('discount_percentage') && !$this->filled('discount_amount')) {
-
-            $error= [
-                'discount_percentage'=> 'مقدار درصدی یا مبلغ ثابت باید تعیین شوند',
-                'discount_amount'=> 'مقدار درصدی یا مبلغ ثابت باید تعیین شوند',
-            ];
-            throw \Illuminate\Validation\ValidationException::withMessages($error);
-        }
-
-        if ($this->filled('discount_percentage') && $this->filled('discount_amount')) {
-            $error= [
-                'discount_percentage'=> 'مقدار درصدی و مبلغ ثابت همزمان نمی توانند اعمال شوند',
-                'discount_amount'=> 'مقدار درصدی و مبلغ ثابت همزمان نمی توانند اعمال شوند',
-            ];
-            throw \Illuminate\Validation\ValidationException::withMessages($error);
-        }
 
         return [
-            'coupon'                => ['required'],
+            'coupon_name'           => ['required','max:20', Rule::unique('coupons', 'coupon_name')->ignore($this->route('coupon'))],
             'consumer_ids'          => ['required'],
             'description'           => ['nullable', 'max:254'],
             'discount_percentage'   => ['nullable', 'numeric', 'required_without:discount_amount'],
             'discount_amount'       => ['nullable', 'numeric', 'required_without:discount_percentage'],
             'expired_at'            => ['nullable', 'date'],
-            'product_ids'           => ['array'],
+            'product_ids'           => ['nullable', 'array'],
             'is_one_time'           => ['required', 'boolean'],
         ];
     }
+    public function withValidator($validator): void
+    {
+        $validator->after(function ($validator) {
+            if (!$this->filled('discount_percentage') && !$this->filled('discount_amount')) {
+
+                $validator->errors()->add('first_installment_ratio', 'مقدار درصدی یا مبلغ ثابت باید تعیین شوند.');
+            }
+
+            if ($this->filled('discount_percentage') && $this->filled('discount_amount')) {
+
+                $validator->errors()->add('first_installment_ratio', 'مقدار درصدی و مبلغ ثابت همزمان نمی توانند اعمال شوند.');
+            }
+        });
+    }
+
 
 }
