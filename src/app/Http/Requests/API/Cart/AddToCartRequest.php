@@ -31,7 +31,7 @@ class AddToCartRequest extends FormRequest
             'product_id' => [
                 'required',
                 'exists:products,id',
-                function($attribute, $value, $fail) use ($user_id) {
+                function($attribute, $value, $fail) use ($user_id){
                     if (ProductAccess::query()->where('product_id', $value)->where('user_id',$user_id)->exists()) {
                         $fail('این محصول قبلا خریداری شده است');
                     }
@@ -46,9 +46,9 @@ class AddToCartRequest extends FormRequest
             $rules['packages.*.product_id'] = [
                 'required',
                 'exists:products,id',
-                function($attribute, $value, $fail)  use ($user_id){
+                function($attribute, $value, $fail) use ($user_id){
                     if (ProductAccess::query()->where('product_id', $value)->where('user_id',$user_id)->exists()) {
-                        $fail('این محصول قبلا خریداری شده است');
+                        $fail('یکی از محصولات انتخابی در پکیج قبلا خریداری شده است.');
                     }
                 },
             ];
@@ -60,7 +60,7 @@ class AddToCartRequest extends FormRequest
     public function messages()
     {
         return [
-            'product_id.required' => 'product_id الزامی است',
+            'product_id.required' => 'محصول الزامی است',
             'product_id.exists' => 'محصول انتخاب شده موجود نیست.',
             'packages.required' => 'انتخاب دوره در پکیج الزامی است',
             'packages.array' => 'The packages must be an array.',

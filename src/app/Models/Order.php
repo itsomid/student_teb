@@ -14,6 +14,7 @@ class Order extends Model
 
     protected $fillable = [
         'vat_tax',
+        'final_price',
         'total_payable_price',
         'total_discount',
         'installment_total_discount',

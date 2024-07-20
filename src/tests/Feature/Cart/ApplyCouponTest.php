@@ -73,7 +73,7 @@ class ApplyCouponTest extends TestCase
                         'holding_days3' => $product->options['holding_days3'],
                         'holding_hours3' => $product->options['holding_hours3']
                     ],
-                    'original_price' => $product->getPrice(),
+                    'original_price' => $product->price,
                     'off_price' => $product->off_price,
                     'product_calculated_price' => (int)$calculatePrice,
                     'is_package' => false,
@@ -81,11 +81,11 @@ class ApplyCouponTest extends TestCase
                 'invoice' => [
                     "vat" => (int)($price * $vatPercentage),
                     "vat_percentage" => (int)($vatPercentage*100),
-                    "user_credit" => $studentAccountService->getAccount($this->user->id),
+                    "user_credit" => $studentAccountService->getBalance($this->user->id),
                     "sum_price" => (int)$price,
                     "final_price" => (int)$calculatePrice,
                     "payable_price" => (int)$calculatePrice,
-                    "payable_for_bank" => (int)$calculatePrice - $studentAccountService->getAccount($this->user->id),
+                    "payable_for_bank" => (int)$calculatePrice - $studentAccountService->getBalance($this->user->id),
                 ]
             ]);
     }
@@ -133,7 +133,7 @@ class ApplyCouponTest extends TestCase
                         'holding_days3' => $product->options['holding_days3'],
                         'holding_hours3' => $product->options['holding_hours3']
                     ],
-                    'original_price' => $product->getPrice(),
+                    'original_price' => $product->price,
                     'off_price' => $product->off_price,
                     'product_calculated_price' => (int)$calculatePrice,
                     'is_package' => false,
@@ -141,11 +141,11 @@ class ApplyCouponTest extends TestCase
                 'invoice' => [
                     "vat" => (int)($price * $vatPercentage),
                     "vat_percentage" => (int)($vatPercentage*100),
-                    "user_credit" => $studentAccountService->getAccount($this->user->id),
+                    "user_credit" => $studentAccountService->getBalance($this->user->id),
                     "sum_price" => (int)$price,
                     "final_price" => (int)$calculatePrice,
                     "payable_price" => (int)$calculatePrice,
-                    "payable_for_bank" => (int)$calculatePrice - $studentAccountService->getAccount($this->user->id),
+                    "payable_for_bank" => (int)$calculatePrice - $studentAccountService->getBalance($this->user->id),
                 ]
             ]);
     }
@@ -220,6 +220,7 @@ class ApplyCouponTest extends TestCase
                             'holding_days3' => $productCourse->options['holding_days3'],
                             'holding_hours3' => $productCourse->options['holding_hours3']
                         ],
+
                         'original_price' => $productCourse->getPrice(),
                         'off_price' => $productCourse->off_price,
                         'product_calculated_price' => $coursePriceCalculated,
@@ -237,6 +238,7 @@ class ApplyCouponTest extends TestCase
                             'holding_days3' => $productPackage->options['holding_days3'],
                             'holding_hours3' => $productPackage->options['holding_hours3']
                         ],
+
                         'original_price' => $productPackage->getPrice(),
                         'off_price' => $productPackage->off_price,
                         'product_calculated_price' => $packagePriceCalculated,
@@ -246,11 +248,11 @@ class ApplyCouponTest extends TestCase
                 'invoice' => [
                     "vat" => (int)($sumPrice * $vatPercentage),
                     "vat_percentage" => (int)($vatPercentage*100),
-                    "user_credit" => $studentAccountService->getAccount($this->user->id),
+                    "user_credit" => $studentAccountService->getBalance($this->user->id),
                     "sum_price" => (int)$sumPrice,
                     "final_price" => (int)$priceCalculate,
                     "payable_price" => (int)$payable_for_bank,
-                    "payable_for_bank" => (int)$payable_for_bank - $studentAccountService->getAccount($this->user->id),
+                    "payable_for_bank" => (int)$payable_for_bank - $studentAccountService->getBalance($this->user->id),
                 ]]);
 
 

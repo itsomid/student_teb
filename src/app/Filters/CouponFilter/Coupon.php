@@ -15,6 +15,6 @@ class Coupon implements \App\Filters\FilterContract
     public function handle($value= null): void
     {
         if (!is_null($value) )
-            $this->query->where('coupon',"LIKE", '%'.$value.'%');
+            $this->query->where('coupon_name',"LIKE", '%'.$value.'%');
     }
 }

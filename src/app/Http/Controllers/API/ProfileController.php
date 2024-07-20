@@ -3,12 +3,15 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\API\Auth\UpdateAvatarRequest;
+use App\Http\Requests\API\Auth\UpdatePasswordRequest;
 use App\Http\Requests\API\User\ProfileUpdateRequest;
 use App\Http\Resources\StudentPanel\UserProfileResourse;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -69,5 +72,39 @@ class ProfileController extends Controller
         return response()->json(
             ['message' => 'پروفایل شما با موفقیت ویرایش شد.'],
             Response::HTTP_OK);
+    }
+
+    public function updatePassword(UpdatePasswordRequest $request)
+    {
+        $user = Auth::guard('student')->user();
+
+        $user->password = Hash::make($request->new_password);
+        $user->save();
+
+        return response()->json(['message' => 'رمز عبور با موفقیت تغییر کرد.'], 200);
+
+    }
+
+    public function updateAvatar(UpdateAvatarRequest $request)
+    {
+        if ($request->hasFile('avatar')) {
+            $user = Auth::guard('student')->user();
+            $avatar = $request->file('avatar');
+            $avatarFileName = $avatar->hashName();
+            $avatarPath = $avatar->storeAs('students-avatar', $avatarFileName, 'public');
+
+            // Delete the old avatar if it exists
+            if ($user->profile_img) {
+                Storage::disk('public')->delete('students-avatar/' . $user->profile_img);
+            }
+
+            // Update the user's avatar path in the database
+            $user->profile_img = $avatarFileName;
+            $user->save();
+
+            return response()->json(['message' => 'عکس پروفایل شما با موفقیت تغییر کرد.', 'avatar_url' => Storage::url($avatarPath)], 200);
+        }
+
+        return response()->json(['message' => 'No avatar image uploaded.'], 400);
     }
 }

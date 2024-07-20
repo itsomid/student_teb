@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Cart;
 
-use App\DTO\StudentAccount\ChargeAccountDTO;
+use App\DTO\StudentAccount\ChargeAccountRequestDTO;
 use App\Enums\DepositTypeEnum;
 use App\Http\Middleware\JwtAuthenticator;
 use App\Models\CartItem;
@@ -85,7 +85,7 @@ class CartTest extends TestCase
                     'holding_days3' => $product->options['holding_days3'],
                     'holding_hours3' => $product->options['holding_hours3']
                 ],
-                'original_price' => $product->getPrice(),
+                'original_price' => $product->price,
                 'off_price' => $product->off_price,
                 'product_calculated_price' => $price,
                 'is_package' => false,
@@ -93,11 +93,11 @@ class CartTest extends TestCase
             'invoice' => [
                 "vat" => (int)($product->getInstallmentPrice() * $vatPercentage),
                 "vat_percentage" => (int)($vatPercentage*100),
-                "user_credit" => $studentAccountService->getAccount($this->user->id),
+                "user_credit" => $studentAccountService->getBalance($this->user->id),
                 "sum_price" => (int)$product->getInstallmentPrice(),
                 "final_price" => $finalPrice,
                 "payable_price" => $payable_for_bank,
-                "payable_for_bank" => $payable_for_bank - $studentAccountService->getAccount($this->user->id),
+                "payable_for_bank" => $payable_for_bank - $studentAccountService->getBalance($this->user->id),
             ],
             'installments' => [
 
@@ -190,11 +190,11 @@ class CartTest extends TestCase
                 'invoice' => [
                     "vat" => (int)($price * $vatPercentage),
                     "vat_percentage" => (int)($vatPercentage*100),
-                    "user_credit" => $studentAccountService->getAccount($this->user->id),
+                    "user_credit" => $studentAccountService->getBalance($this->user->id),
                     "sum_price" => (int)$price,
                     "final_price" => (int)$priceCalculate,
                     "payable_price" => (int)$payable_for_bank,
-                    "payable_for_bank" => (int)$payable_for_bank - $studentAccountService->getAccount($this->user->id),
+                    "payable_for_bank" => (int)$payable_for_bank - $studentAccountService->getBalance($this->user->id),
                 ]]);
 
     }
@@ -266,11 +266,12 @@ class CartTest extends TestCase
             'invoice' => [
                 "vat" => (int)($price * $vatPercentage),
                 "vat_percentage" => (int)($vatPercentage*100),
-                "user_credit" => $studentAccountService->getAccount($this->user->id),
+                "user_credit" => $studentAccountService->getBalance($this->user->id),
                 "sum_price" => (int)$price,
                 "final_price" => (int)$priceCalculate,
                 "payable_price" => (int)$priceCalculate,
-                "payable_for_bank" => (int)$priceCalculate - $studentAccountService->getAccount($this->user->id),
+                "payable_for_bank" => (int)$priceCalculate - $studentAccountService->getBalance($this->user->id),
+
             ]]);
 
     }
@@ -301,7 +302,7 @@ class CartTest extends TestCase
                     'holding_days3' => $product->options['holding_days3'],
                     'holding_hours3' => $product->options['holding_hours3']
                 ],
-                'original_price' => $product->getPrice(),
+                'original_price' => $product->price,
                 'off_price' => $product->off_price,
                 'product_calculated_price' => (int)$priceCalculate,
                 'is_package' => false,
@@ -309,11 +310,11 @@ class CartTest extends TestCase
             'invoice' => [
                 "vat" => (int)($price * $vatPercentage),
                 "vat_percentage" => (int)($vatPercentage*100),
-                "user_credit" => $studentAccountService->getAccount($this->user->id),
+                "user_credit" => $studentAccountService->getBalance($this->user->id),
                 "sum_price" => (int)$price,
                 "final_price" => (int)$priceCalculate,
                 "payable_price" => (int)$priceCalculate,
-                "payable_for_bank" => (int)$priceCalculate - $studentAccountService->getAccount($this->user->id),
+                "payable_for_bank" => (int)$priceCalculate - $studentAccountService->getBalance($this->user->id),
             ]
         ]);
     }
@@ -327,7 +328,7 @@ class CartTest extends TestCase
 
         $chargeAccount = resolve(ChargeAccountService::class);
         $chargeAccount->charge(
-            (new ChargeAccountDTO())
+            (new ChargeAccountRequestDTO())
                 ->setAmount($product->amount * 2)
                 ->setDepositType(DepositTypeEnum::BUY)
                 ->setUserId($this->user->id)

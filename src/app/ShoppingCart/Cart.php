@@ -7,6 +7,7 @@ use App\ShoppingCart\Events\CartAdded;
 use App\ShoppingCart\Events\CartDeleted;
 use App\ShoppingCart\Events\CartUpdated;
 use App\ShoppingCart\Exceptions\CouponNotUsableException;
+use App\ShoppingCart\Exceptions\CouponNotUsableProductNotApplicable;
 use App\ShoppingCart\Exceptions\ItemDoesNotExistsInShoppingCart;
 use App\ShoppingCart\Exceptions\ItemExistsInShoppingCart;
 use App\Models\User;
@@ -66,10 +67,10 @@ class Cart
         $this->cartItemRepository = $cartItemRepository;
         $this->couponValidator = $couponValidator;
 
-        if (count($items = $this->cartItemRepository->findByUserId($userId))){
+        if (count($items = $this->cartItemRepository->findByUserId($userId))) {
             $this->isInstallment = $items[0]->is_installment;
         }
-        $this->items =  new Collection($items);
+        $this->items = new Collection($items);
     }
 
     /**
@@ -77,7 +78,7 @@ class Cart
      *
      * @param CourseItem $item Item to be added
      * @return void
-     *@throws ItemExistsInShoppingCart If the item already exists in the cart
+     * @throws ItemExistsInShoppingCart If the item already exists in the cart
      */
     public function add(CartItemInterface $item): void
     {
@@ -97,14 +98,14 @@ class Cart
      *
      * @param CourseItem $item Item to be updated
      * @return void
-     *@throws ItemDoesNotExistsInShoppingCart If the item does not exist in the cart
+     * @throws ItemDoesNotExistsInShoppingCart If the item does not exist in the cart
      */
     public function update(CartItemInterface $item): void
     {
-        if (! $this->isItemExists($item->product_id)) {
+        if (!$this->isItemExists($item->product_id)) {
             throw new ItemDoesNotExistsInShoppingCart("Item does not exists in shopping cart in update action");
         }
-        $this->items = $this->items->map(fn ($row) => $row->product_id === $item->product_id ? $item : $row);
+        $this->items = $this->items->map(fn($row) => $row->product_id === $item->product_id ? $item : $row);
         event(CartUpdated::class, $item);
     }
 
@@ -112,18 +113,18 @@ class Cart
      * Remove an item from the cart.
      *
      * @param int $id ID of the item to be removed
-     * @throws ItemDoesNotExistsInShoppingCart If the item does not exist in the cart
      * @return void
+     * @throws ItemDoesNotExistsInShoppingCart If the item does not exist in the cart
      */
     public function remove(int $id): void
     {
-        if (! $this->isItemExists($id)) {
+        if (!$this->isItemExists($id)) {
             throw new ItemDoesNotExistsInShoppingCart("Item does not exists in shopping cart in remove action");
         }
 
         $item = $this->items->where('product_id', $id)->first();
         $item->remove();
-        $this->items = $this->items->reject(fn ($row) => $row->product_id === $id);
+        $this->items = $this->items->reject(fn($row) => $row->product_id === $id);
 
         event(CartDeleted::class, $item);
     }
@@ -133,7 +134,7 @@ class Cart
      *
      * @param int $id ID of the item to retrieve
      * @return CourseItem The retrieved item
-     *@throws ItemDoesNotExistsInShoppingCart If the item does not exist in the cart
+     * @throws ItemDoesNotExistsInShoppingCart If the item does not exist in the cart
      */
     public function getItem(int $id): CourseItem
     {
@@ -163,7 +164,7 @@ class Cart
      */
     public function isItemExists(int $id): bool
     {
-        return !! $this->items->where('product_id', $id)->count();
+        return !!$this->items->where('product_id', $id)->count();
     }
 
     /**
@@ -182,39 +183,117 @@ class Cart
      * Change the installment payment method.
      *
      * @param bool $is_installment Whether to use installment payment
-     * @throws ItemNotInstallmentableException If an item cannot be purchased on installment
      * @return void
+     * @throws ItemNotInstallmentableException If an item cannot be purchased on installment
      */
-    public function changeInstallment(bool $is_installment = true): void
+    public function removeInstallment()
     {
-        if (! is_null($hasntInstallment = $this->items->where('hasInstallmentMethod', false)->first())) {
+        if (!is_null($this->items->where('hasInstallmentMethod', false)->first())) {
+//            \Log::info('try to remove installment');
+            $this->cartItemRepository->updateInstallmentByUserId($this->userId, false);
+            $this->isInstallment = false;
+        }
+
+    }
+    public function changeInstallment(bool $is_installment)
+    {
+        if (!is_null($hasntInstallment = $this->items->where('hasInstallmentMethod', false)->first())) {
             throw new ItemNotInstallmentableException('This product cannot be purchased on installment: ' . $hasntInstallment->product_id);
         }
         foreach ($this->items as $item) {
-            $item->changeInstallment(true);
+//            \Log::info('changeInstallment method');
             $item->initInstallment();
         }
         $this->cartItemRepository->updateInstallmentByUserId($this->userId, $is_installment);
         $this->isInstallment = $is_installment;
+        return $this->isInstallment;
+    }
+    public function getAppliedCouponName()
+    {
+
+        $itemWithCoupon = $this->items->first(function (CartItemInterface $item) {
+            return $item->getCouponId() !== null;
+        });
+
+        return $itemWithCoupon ? $itemWithCoupon->getCoupon()->coupon_name : null;
     }
 
+    public function getAppliedCouponAmount(): int
+    {
+        $totalDiscount = 0;
+
+        // Iterate through each item in the cart
+        $this->items->each(function (CartItemInterface $item) use (&$totalDiscount) {
+            $totalDiscount += $item->getCouponDiscountAmount();
+        });
+
+        return $totalDiscount;
+    }
     /**
      * Apply a coupon to all items in the cart.
      *
-     * @param string $couponCode ID of the coupon to apply
+     * @param int $coupon_id ID of the coupon to apply
      * @return void
      */
-    public function applyCoupon(string $couponCode): void
+
+    public function applyCoupon(int $coupon_id): void
     {
-        $this->items = $this->items->map(function (CartItemInterface $item) use($couponCode){
-            if ($this->couponValidator->isCouponValid($couponCode, $item->getModel()->product->id, $this->user->id)) {
-                return tap($item)->changeCouponCode($couponCode)->update();
-            }else{
-                throw new CouponNotUsableException;
+
+        $nonEligibleProducts = [];
+        $isEligible = false;
+
+        // Validate each product and check if at least one is satisfied
+        $this->items->each(function (CartItemInterface $item) use ($coupon_id, &$nonEligibleProducts, &$isEligible) {
+            if ($this->couponValidator->isCouponValid($coupon_id, $item->getModel()->product->id, $this->user->id)) {
+                $isEligible = true;
+            } else {
+                $nonEligibleProducts[] = $item->getModel()->product->id;
             }
+        });
+
+        // If all products(cart items) are not satisfy, throw an exception
+        if (!$isEligible) {
+            throw new CouponNotUsableProductNotApplicable;
+        }
+
+        // Apply the coupon only to satisfy items
+        $this->items = $this->items->map(function (CartItemInterface $item) use ($coupon_id, $nonEligibleProducts) {
+            if (!in_array($item->getModel()->product->id, $nonEligibleProducts)) {
+                return tap($item)->changeCouponId($coupon_id)->update();
+            }
+            return $item;
+        });
+
+    }
+
+    public function removeCoupon(int $coupon_id): void
+    {
+        $this->items = $this->items->map(function (CartItemInterface $item) use ($coupon_id) {
+            return tap($item)->changeCouponId(null)->update();
         });
     }
 
+    /**
+     * Get the Final Price With Vat and discount.
+     *
+     * @return int The total amount after applying discount
+     */
+    public function getFinalPrice(): int
+    {
+        return $this->getTotal() + $this->getTotalTax();
+    }
+    /**
+     * Get the total amount with discounts.(Without Vat)
+     *
+     * @return int The total amount After Applying Discount
+     */
+    public function getTotal(): int
+    {
+        $sum = $this->items->reduce(fn(?int $carry, CartItemInterface $item) => ($carry + $item->getPriceWithDiscount())
+            , 0);
+
+        return (int)$sum;
+    }
     /**
      * Get the total payable amount.
      *
@@ -222,12 +301,12 @@ class Cart
      */
     public function getPayableAmount(): int
     {
-        $sum = $this->items->reduce(fn (?int $carry, CartItemInterface $item) =>
-        ($carry + $item->getCalcPrice())
+        $sum = $this->items->reduce(fn(?int $carry, CartItemInterface $item) => ($carry + $item->getCalcPrice())
             , 0);
 
-        return (int) $sum;
+        return (int)$sum;
     }
+
 
     /**
      * Get the total tax for the cart.
@@ -236,48 +315,36 @@ class Cart
      */
     public function getTotalTax(): int
     {
-        $sum = $this->items->reduce(fn (?int $carry, CartItemInterface $item) =>
-        ($carry + $item->getTax())
+        $sum = $this->items->reduce(fn(?int $carry, CartItemInterface $item) => ($carry + $item->getTax())
             , 0);
 
-        return (int) $sum;
+        return (int)$sum;
     }
-
-    /**
-     * Get the total amount before discounts.
-     *
-     * @return int The total amount before applying discounts
-     */
-    public function getTotal(): int
-    {
-        $sum = $this->items->reduce(fn (?int $carry, CartItemInterface $item) =>
-        ($carry + $item->getPriceWithDiscount())
-            , 0);
-
-        return (int) $sum;
-    }
-
     /**
      * Get the array of installments.
      *
      * @return array An array of installments with dates and amounts
      */
+
     public function getInstallments(): array
     {
+
         $installments = [];
 
-        if (! $this->isInstallment) {
+        if (!$this->isInstallment) {
             return [];
         }
 
-        foreach($this->items as $item)
-        {
-            if (count($generatedInstallment = $item->installment->generateInstallments()))
-            $installments[$item->product_id] = $generatedInstallment;
+        foreach ($this->items as $item) {
+            $generatedInstallment = $item->installment->generateInstallments();
+
+            if (count($generatedInstallment))
+                $installments[$item->product_id] = $generatedInstallment;
         }
 
         return $installments;
     }
+
     /**
      * @return bool
      */
@@ -285,4 +352,12 @@ class Cart
     {
         return $this->isInstallment;
     }
+
+    public function hasCoupon(): bool
+    {
+        return $this->items->contains(function (CartItemInterface $item) {
+            return $item->getCouponId() !== null;
+        });
+    }
+
 }

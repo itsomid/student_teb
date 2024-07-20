@@ -60,7 +60,7 @@ class CustomPackageController extends Controller
                 'installment_count' => $input['installment_count'],
                 'first_installment_ratio' => $input['first_installment_ratio'],
                 'first_installment_amount'  => $input['first_installment_amount'],
-                'final_installment_date' => isset($input['final_installment_date']) ? DateFormatter::format($input['holding_date']) : null,
+                'final_installment_date' => isset($request->final_installment_date) ? DateFormatter::format($request->final_installment_date) : null,
                 'subscription_start_at' => isset($input['subscription_start_at']) ? DateFormatter::format($input['subscription_start_at']) : null
             ]);
 
@@ -138,7 +138,7 @@ class CustomPackageController extends Controller
                 'installment_count' => $input['installment_count'],
                 'first_installment_ratio' => $input['first_installment_ratio'],
                 'first_installment_amount'  => $input['first_installment_amount'],
-                'final_installment_date' => isset($input['final_installment_date']) ? DateFormatter::format($input['holding_date']) : null,
+                'final_installment_date' => isset($request->final_installment_date) ? DateFormatter::format($request->final_installment_date) : null,
                 'subscription_start_at' => isset($input['subscription_start_at']) ? DateFormatter::format($input['subscription_start_at']) : null
             ]);
             $product->packages()->delete();

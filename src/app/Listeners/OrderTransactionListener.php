@@ -40,9 +40,9 @@ class OrderTransactionListener
         ]);
 
 
-        if ($event->order->toatl_discount > 0){
+        if ($event->order->total_discount > 0){
             Transaction::query()->create([
-                'amount' => $event->order->vat_tax,
+                'amount' => $event->order->total_discount,
                 'user_id' => $event->order->user_id,
                 'transaction_type' => TransactionTypeEnum::DISCOUNT
             ]);

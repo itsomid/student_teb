@@ -36,13 +36,15 @@ class CustomPackageSectionResource extends JsonResource
                     'name' => $item->product->name,
                     'image' => $item->product->getImageUrl(),
                     'product_id'=>$item->product->id,
+                    'bio' => $item->product->teacher->bio,
                     'teacher_id'=>$item->product->teacher->id,
                     'teacher_name'=>$item->product->teacher->fullname(),
                     'teacher_img'=>[
-                        'img_1' => isset(optional($item->product->teacher)->teacher_img_files['img_1']) ? optional($item->product->teacher)->teacher_img_files['img_1'] : null,  // Small One
-                        'img_2' => isset(optional($item->product->teacher)->teacher_img_files['img_2']) ? optional($item->product->teacher)->teacher_img_files['img_2'] : null,  // Somehow Bigger
-                        'img_3' => isset(optional($item->product->teacher)->teacher_img_files['img_3']) ? optional($item->product->teacher)->teacher_img_files['img_3'] : null,  // IDK
+                        'img_1' => $item->product->teacher->teacherImage('img_1') ?? null,  // Small One
+                        'img_2' => $item->product->teacher->teacherImage('img_2') ?? null,  // Somehow Bigger
+                        'img_3' => $item->product->teacher->teacherImage('img_3') ?? null,  // IDK
                     ],
+                    'introduce_video' => $this->getAparatToken($item->product->course->introduce_video),
                     'start_date' => $item->product->course->start_date,
                     'holding_days' => $item->product->course->holding_days(),
                     'start_time' => $item->product->course->start_time(),
@@ -51,5 +53,22 @@ class CustomPackageSectionResource extends JsonResource
                 ];
             }),
         ];
+    }
+
+    public function getAparatToken($video)
+    {
+        if ( str_contains( $video , 'aparat.com')) {
+            // Regular expression to find the code in the src attribute
+            $pattern = '/aparat\.com\/embed\/([a-zA-Z0-9]+)/';
+
+            preg_match($pattern, $video, $matches);
+
+            // Check if we have a match and return the code
+            if (isset($matches[1])) {
+                return $matches[1];
+            }
+        }
+
+        return null;
     }
 }

@@ -5,6 +5,7 @@ namespace App\Listeners;
 use App\DTO\StudentAccount\ChargeAccountDTO;
 use App\Enums\DepositTypeEnum;
 use App\Services\ChargeAccountService;
+use Illuminate\Support\Facades\Log;
 
 class ChargeStudentAccountOnPaymentSuccessListener
 {
@@ -21,12 +22,14 @@ class ChargeStudentAccountOnPaymentSuccessListener
      */
     public function handle(object $event): void
     {
-        $transaction = $event->gatewayTransaction;
 
+        $transaction = $event->gatewayTransaction;
         $chargeAccountService = resolve(ChargeAccountService::class);
+
         $chargeAccountService->charge(
             (new ChargeAccountDTO())
                 ->setDepositType(DepositTypeEnum::BUY)
+                ->setSystemDescription('Gateway #'.$transaction->id)
                 ->setUserId($transaction->user_id)
                 ->setAmount($transaction->price)
         );

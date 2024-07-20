@@ -29,7 +29,7 @@ class ProductSeeder extends Seeder
         )->create();
 
         foreach ($products as $product)
-            Product::factory(10)->class()->classname()->has(Classes::factory(1)->course_id($product->course))->create();
+            Product::factory(10)->class()->state(['parent_id' => $product->id])->classname()->has(Classes::factory(1)->course_id($product->course))->create();
 
     }
 }

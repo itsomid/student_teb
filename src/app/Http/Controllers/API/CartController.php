@@ -5,16 +5,20 @@ namespace App\Http\Controllers\API;
 use App\Enums\ProductTypeEnum;
 use App\Http\Requests\API\Cart\AddToCartRequest;
 use App\Http\Resources\StudentPanel\Cart\CartListCollection;
+use App\Models\Account;
+use App\Models\Coupon;
 use App\Models\Product;
+use App\Models\User;
 use App\Services\StudentAccountService;
 use App\ShoppingCart\CartAdaptor;
 use App\ShoppingCart\Exceptions\CouponNotUsableException;
+use App\ShoppingCart\Exceptions\CouponNotUsableProductNotApplicable;
+use App\ShoppingCart\Exceptions\CouponNotUsableUserNotApplicable;
 use App\ShoppingCart\Exceptions\ItemDoesNotExistsInShoppingCart;
 use App\ShoppingCart\Exceptions\ItemExistsInShoppingCart;
 use App\ShoppingCart\Exceptions\ItemNotInstallmentableException;
 use App\ShoppingCart\Exceptions\ProductDoesNotExistsException;
 use App\ShoppingCart\Exceptions\ProductNotCustomPackageException;
-use http\Exception;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
@@ -37,11 +41,14 @@ class CartController
         $this->userId = Auth::guard('student')->id();
     }
 
-    public function lists(): Application|Response|ResponseFactory
+    public function lists()
     {
+
         CartAdaptor::init($this->userId);
+        CartAdaptor::removeInstallment();
         $items = CartAdaptor::getItems();
         $userCredit = $this->accountService->getBalance($this->userId);
+//        dd($items[0]->getModel()->packages[0]-, $items);
         return response(
             new CartListCollection($items, $userCredit)
         );
@@ -99,8 +106,7 @@ class CartController
                     return $package['product_id'];
                 }, $packagesItem);
                 CartAdaptor::addPackage($product->id, $package_products_array);
-            }
-            else{
+            } else {
                 throw new ProductNotCustomPackageException();
             }
         } catch (ProductNotCustomPackageException $e) {
@@ -108,12 +114,12 @@ class CartController
                 ['message' => $e->getMessage()],
                 Response::HTTP_BAD_REQUEST
             );
-        }catch (ItemDoesNotExistsInShoppingCart) {
+        } catch (ItemDoesNotExistsInShoppingCart) {
             return response(
                 ['message' => 'محصول در سبد خرید وجود ندارد.'],
                 Response::HTTP_NOT_FOUND
             );
-        }catch (ProductDoesNotExistsException) {
+        } catch (ProductDoesNotExistsException) {
             return response(
                 ['message' => 'این محصول وجود ندارد.'],
                 Response::HTTP_NOT_FOUND
@@ -142,11 +148,22 @@ class CartController
         CartAdaptor::init($this->userId);
 
         try {
-            CartAdaptor::changeInstallment($isInstallment);
 
+//            $items = CartAdaptor::getItems();
+//            $userCredit = $this->accountService->getBalance($this->userId);
+//            return response(
+//                new CartListCollection($items, $userCredit)
+//            );
+            CartAdaptor::changeInstallment($isInstallment);
+            if ($isInstallment){
+                return response(['message' => 'سبد خرید با موفقیت قسطی شد.'], Response::HTTP_OK);
+            }
+            else{
+                return response(['message' => 'سبد خرید با موفقیت نقدی شد.'], Response::HTTP_OK);
+            }
         } catch (ItemNotInstallmentableException) {
             return response(
-                ['message' => 'محصولی قابلیت قسطی شدن را ندارند'],
+                ['message' => 'یک یا چند محصول از سبد خرید قابلیت قسطی شدن را ندارد'],
                 Response::HTTP_UNPROCESSABLE_ENTITY
             );
         } catch (Throwable $e) {
@@ -157,11 +174,6 @@ class CartController
             );
         }
 
-        $items = CartAdaptor::getItems();
-        $userCredit = $this->accountService->getBalance($this->userId);
-        return response(
-            new CartListCollection($items, $userCredit)
-        );
     }
 
     public function remove(Product $product)
@@ -188,24 +200,58 @@ class CartController
     public function applyCoupon(Request $request)
     {
         $request->validate([
-            'coupon_name' => ['required', 'exists:coupons,coupon']
+            'coupon_name' => ['required', 'exists:coupons,coupon_name']
         ]);
         $couponName = $request->input('coupon_name');
         CartAdaptor::init($this->userId);
 
-        try{
+        try {
             DB::beginTransaction();
-            CartAdaptor::applyCoupon($couponName);
+            $coupon = Coupon::query()->where('coupon_name', $couponName)->first();
+
+            CartAdaptor::applyCoupon($coupon->id);
             DB::commit();
-        }catch (CouponNotUsableException) {
+        } catch (CouponNotUsableUserNotApplicable) {
             DB::rollBack();
-            return response(['message' => 'کوپن قابل استفاده نمی باشد.'], Response::HTTP_NOT_FOUND);
-        }catch (Throwable $exception) {
+            return response(['message' => 'کد تخفیف برای شما قابل استفاده نیست.'], Response::HTTP_NOT_ACCEPTABLE);
+        } catch (CouponNotUsableProductNotApplicable) {
+            DB::rollBack();
+            return response(['message' => 'هیچ کدام از محصولات سبد خرید قابلیت استفاده از کد تخفیف را ندارند.',], Response::HTTP_NOT_ACCEPTABLE);
+        } catch (CouponNotUsableException) {
+            DB::rollBack();
+            return response(['message' => 'کد تخفیف قابل استفاده نمی باشد.'], Response::HTTP_NOT_FOUND);
+        } catch (Throwable $exception) {
             report($exception);
-            dd($exception);
             return response(['message' => 'مشکل فنی رخ داده است لطفا بعدا تلاش کنید.'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        return response(['message' => 'کد تخفیف باموفقیت اعمال شد.']);
+        return response(['message' => 'کد تخفیف باموفقیت اعمال شد.'], Response::HTTP_OK);
+    }
+
+    public function removeCoupon(Request $request)
+    {
+
+        $request->validate([
+            'coupon_name' => ['required', 'exists:coupons,coupon_name']
+        ]);
+
+        $couponName = $request->input('coupon_name');
+        CartAdaptor::init($this->userId);
+
+        try {
+            DB::beginTransaction();
+            $coupon = Coupon::query()->where('coupon_name', $couponName)->first();
+
+            CartAdaptor::removeCoupon($coupon->id);
+            DB::commit();
+        } catch (CouponNotUsableException) {
+            DB::rollBack();
+            return response(['message' => 'کد تخفیف قابل استفاده نمی باشد.'], Response::HTTP_NOT_FOUND);
+        } catch (Throwable $exception) {
+            report($exception);
+            return response(['message' => 'مشکل فنی رخ داده است لطفا بعدا تلاش کنید.'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return response(['message' => 'کد تخفیف با موفقیت حذف شد.'], Response::HTTP_OK);
     }
 }

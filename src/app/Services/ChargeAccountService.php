@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\DTO\StudentAccount\ChargeAccountDTO;
+use App\DTO\StudentAccount\ChargeAccountRequestDTO;
 use App\Enums\DepositTypeEnum;
 use App\Enums\TransactionTypeEnum;
 use App\Models\Account;
@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 
 class ChargeAccountService
 {
-    public function charge(ChargeAccountDTO $DTO): void
+    public function charge(ChargeAccountRequestDTO $DTO): void
     {
         $transaction = Transaction::query()->create([
             'amount' => $DTO->getAmount(),

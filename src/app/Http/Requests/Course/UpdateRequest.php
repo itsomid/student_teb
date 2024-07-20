@@ -52,6 +52,7 @@ class UpdateRequest extends FormRequest
         $this->merge([
             'original_price' => $this->original_price ? str_replace(',', '', $this->original_price) : null,
             'off_price' => $this->off_price ? str_replace(',', '', $this->off_price) : null,
+            'first_installment_amount' => $this->first_installment_amount ? str_replace(',', '', $this->first_installment_amount) : null,
         ]);
     }
     public function withValidator($validator): void

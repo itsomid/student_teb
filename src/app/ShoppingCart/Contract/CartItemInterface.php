@@ -2,6 +2,7 @@
 
 namespace App\ShoppingCart\Contract;
 
+use App\Models\Coupon;
 use App\ShoppingCart\Installment;
 use Illuminate\Database\Eloquent\Model;
 
@@ -12,10 +13,16 @@ interface CartItemInterface
     public function addModel(Model $model): void;
     public function update(): self;
     public function remove(): void;
+
+
     public function getCalcPrice(): int;
-    public function getPrice(): int;
-    public function getTax(): float|int;
+
     public function getPriceWithDiscount(): int;
+    public function getPriceWithVat(): int;
     public function getOriginalPrice(): int;
+    public function getCouponDiscountAmount(): int;
+    public function getCouponId(): ?int;
+    public function getCoupon(): ?Coupon;
+    public function getTax(): float|int;
     public function getVatPercentage(): float;
 }

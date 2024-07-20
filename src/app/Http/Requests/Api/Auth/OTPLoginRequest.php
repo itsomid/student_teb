@@ -26,7 +26,7 @@ class OTPLoginRequest extends FormRequest
     {
         return [
             'mobile' => 'required|digits:11',
-            'token' => ['required', 'digits:5', 'bail', new RequestValidRule($this->get('mobile'))],
+            'token' => ['required', 'digits:5', 'bail'],
         ];
     }
 

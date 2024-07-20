@@ -16,6 +16,7 @@ return new class extends Migration
             $table->integer('product_id')->unique();
             $table->string('start_date')->nullable();
             $table->string('about_course')->nullable();
+            $table->string('introduce_video')->nullable();
             $table->boolean('qa_status')->default(1);
 
             $table->timestamps();

@@ -31,7 +31,6 @@ class UpdateRequest extends FormRequest
         return [
             'user_id' => ['required', 'exists:admins,id'],
             'original_price' => ['required', 'numeric'],
-            'holding_date' => ['nullable', 'string'],
             'off_price' => ['nullable', 'numeric'],
             'description' => ['required', 'string'],
             'options' => ['array'],

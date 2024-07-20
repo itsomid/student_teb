@@ -4,7 +4,7 @@ namespace App\DTO\StudentAccount;
 
 use App\Enums\DepositTypeEnum;
 
-class ChargeAccountDTO
+class ChargeAccountRequestDTO
 {
     private int $amount;
     private int $userId;

@@ -18,7 +18,7 @@ class ChargeAccountRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $this->merge([
-            'amount' =>  str_replace(',', '', $this->amount)
+            'amount' => str_replace(',', '', $this->amount),
         ]);
     }
 
@@ -30,10 +30,20 @@ class ChargeAccountRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'amount' => ['required', 'integer', 'min:1000'],
+            'amount' => ['required', 'integer', 'min:10000'],
             'user_id' => ['required', Rule::exists('users', 'id')->whereNull('deleted_at')],
             'user_description' => ['nullable'],
             'gift_credit' => ['sometimes'],
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'user_id.required' => 'انتخاب کاربر الزامی است.',
+            'user_id.exists' => 'کاربر وجود ندارد.',
+            'amount.required' => 'مبلغ اعتبار الزامی است.',
+            'amount.min' => 'مبلغ باید حداقل ۱۰۰۰۰ ریال باشد.',
         ];
     }
 }

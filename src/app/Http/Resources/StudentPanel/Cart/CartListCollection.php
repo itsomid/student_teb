@@ -4,6 +4,7 @@ namespace App\Http\Resources\StudentPanel\Cart;
 
 use App\ShoppingCart\CartAdaptor;
 use App\ShoppingCart\PackageItem;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
@@ -23,38 +24,80 @@ class CartListCollection extends ResourceCollection
      */
     public function toArray(Request $request): array
     {
-        $discountCode = null;
         return [
-            'items' => $this->collection->map(function($item) use(&$discountCode){
-               return  [
-                    'product_id' => $item->product_id,
-                    'product_name' => $item->getModel()->product->name,
-                    'product_image' => $item->getModel()->product->getImageUrl(),
-                    'has_installment' => $item->getModel()->product->has_installment,
-                    'options' => $item->getModel()->product->options,
-                    "original_price" => $item->getModel()->product->getPrice(),
-                    "off_price" => $item->getModel()->product->off_price,
-                    'discount_code' => $this->when(!!$item->couponCode, $discountCode = $item->couponCode),
-                    'product_calculated_price' => $item->getPrice(),
-                    'is_package' => $item instanceof PackageItem,
-                    'package_items' => $this->when($item instanceof PackageItem, fn() => $item->getModel()->packages->map(fn($item) => [
+            'items' => $this->collection->map(fn($item) =>   [
+                'product_id' => $item->product_id,
+                'product_name' => $item->getModel()->product->name,
+                'product_image' => $item->getModel()->product->getImageUrl(),
+                'has_installment' => $item->getModel()->product->has_installment,
+                'options' => $item->getModel()->product->options,
+                "original_price" => $item->getModel()->product->getPrice(),
+                "original_price_num" => $item->getModel()->product->original_price,
+                "off_price" => $item->getModel()->product->getOffPrice(),
+                "off_price_num" => $item->getModel()->product->off_price,
+                'discount_code' => $this->when(CartAdaptor::hasCoupon(),optional($item->getModel()->coupon)->coupon_name),
+                'discount_amount' => $this->when(CartAdaptor::hasCoupon(),$this->calculateDiscountAmount($item)),
+                'product_calculated_price' => $item->getCalcPrice(),
+                'product_calculated_price_without_vat' => $item->getPriceWithDiscount(),
+                'is_package' => $item instanceof PackageItem,
+                'package_items' => $this->when($item instanceof PackageItem, fn ()=>
+                    $item->getModel()->packages->map(fn($item)=>[
                         'id' => $item->id,
                         'product_id' => $item->product->id,
                         'name' => $item->product->name,
                     ]))
-                ];
-                })->toArray(),
+            ])->toArray(),
             'invoice' => [
-                'discount_code' => $this->when(!empty($discountCode), $discountCode),
+                'discount_code' =>  $this->when(CartAdaptor::hasCoupon(),CartAdaptor::getAppliedCouponName()),
+                "discount_amount" =>$this->when(CartAdaptor::hasCoupon(),CartAdaptor::getAppliedCouponAmount()),
                 "vat" => CartAdaptor::getTotalTax(),
                 "vat_percentage" => config('shoppingcart.vat') * 100,
+//                "installment_percentage"=>$this->when(CartAdaptor::isInstallment(),config('shoppingcart.vat') * 100),
+//                "installment_amount"=>$this->when(CartAdaptor::isInstallment(),config('shoppingcart.vat') * 100),
                 "user_credit" => $this->userCredit,
-                "sum_price" => CartAdaptor::getTotal(),
-                "final_price" => (int)(CartAdaptor::getTotal() * (config('shoppingcart.vat')+1)),
-                "payable_price" => CartAdaptor::getPayableAmount(),
-                "payable_for_bank" => (CartAdaptor::getPayableAmount() - $this->userCredit) > 0 ? CartAdaptor::getPayableAmount() - $this->userCredit : 0 // sub-track with user balance
+                "sum_price" => CartAdaptor::getTotal(), //Without vat
+                "final_price" => CartAdaptor::getFinalPrice(),//with vat
+                "payable_price" => CartAdaptor::getPayableAmount(),//with vat,discount,installment
+                "payable_for_bank" => (CartAdaptor::getPayableAmount() - $this->userCredit) > 0 ? intval(CartAdaptor::getPayableAmount() - $this->userCredit) : 0 // sub-track with user balance
             ],
-            'installments' => $this->when(CartAdaptor::isInstallment(), CartAdaptor::getInstallments())
+            'installments' => $this->when(CartAdaptor::isInstallment(), $this->mergeAmountsByDate(CartAdaptor::getInstallments()))
+
         ];
+    }
+
+    public function calculateDiscountAmount($item) //TODO: use this method in CartItemInterface
+    {
+        $coupon = $item->getModel()->coupon;
+        if ($coupon) {
+            if ($coupon->discount_amount) {
+                return $coupon->discount_amount;
+            } elseif ($coupon->discount_percentage) {
+                $originalPrice = $item->getModel()->product->original_price;
+                return $originalPrice * ($coupon->discount_percentage / 100);
+            }
+        }
+        return 0;
+    }
+
+    function mergeAmountsByDate(array $data): array
+    {
+        $merged = [];
+
+        foreach ($data as $key => $entries) {
+            foreach ($entries as $entry) {
+                $date = Carbon::parse($entry['date'])->toDateString(); // Normalize date to "Y-m-d"
+                if (isset($merged[$date])) {
+                    $merged[$date]['amount'] += $entry['amount'];
+                } else {
+                    $merged[$date] = [
+                        'date' => $date,
+                        'amount' => $entry['amount']
+                    ];
+                }
+            }
+        }
+
+        // Convert the merged associative array back to a flat indexed array
+        return array_values($merged);
     }
 }

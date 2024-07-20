@@ -25,7 +25,7 @@ class CouponFactory extends Factory
         $discount_percentage = Arr::random([true, false]);
         return [
             'type'                => $type,
-            'coupon'              => Str::random(3),
+            'coupon_name'         => Str::random(3),
             'description'         => fake()->sentence,
             'creator_id'          => fake()->numberBetween(1, 11),
             'consumer_ids'        => $type == 'CONDITIONAL_STUDENT_DISCOUNT' ? null : [1, 2, 3, 4],

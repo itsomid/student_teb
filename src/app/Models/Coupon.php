@@ -27,7 +27,7 @@ class Coupon extends Model
 
     public $fillable = [
         'type',
-        'coupon',
+        'coupon_name',
         'description',
 
         'creator_id',
@@ -60,16 +60,6 @@ class Coupon extends Model
         ];
     }
 
-
-    /**
-     * Validation rules
-     *
-     * @var array
-     */
-    public static array $rules = [
-
-    ];
-
     public function scopeOwns($query, $userId)
     {
         return $query->where('creator_id', $userId);
@@ -90,6 +80,13 @@ class Coupon extends Model
         return $this->belongsTo(User::class,'consumer_id');
     }
 
+    public function scopeCheckPermissionToGetList($query, $admin)
+    {
+        return $admin->can('coupons.manage-all-data')
+            ? $query
+            : Coupon::where('creator_id', $admin->id);
+
+    }
     public function expired_at()
     {
         return Jalalian::forge($this->expired_at)->toDateTimeString();
@@ -193,87 +190,6 @@ class Coupon extends Model
         return $coupon;
     }
 
-
-    static public function checkCoupon($coupon_text, $user, $product)
-    {
-        $coupon = Coupons::where('coupon',strtolower($coupon_text))->first();
-
-        //check if coupon exists
-        if (!$coupon) {
-            return false;
-        }
-
-        //check if belongs to this user
-        if ($coupon->consumer_user_id) {
-            if ($coupon->consumer_user_id != $user->id) {
-                return false;
-            }
-        }
-
-        //check if belongs to specific product
-        if ($coupon->specific_product_id) {
-            if ($coupon->specific_product_id != $product->id) {
-                return false;
-            }
-        }
-
-        //check expiration
-        if ($coupon->expired_at) {
-            if ($coupon->expired_at->isPast()) {
-                return false;
-            }
-        }
-
-        //check if user used this coupon before
-        if ($coupon->is_disposable) {
-            $last_transaction_coupon = TransactionLogs::where('user_id',$user->id)->where('coupon_id',$coupon->id)->first();
-            if ($last_transaction_coupon) {
-                return false;
-            }
-        }
-
-        //check if other users use this
-        if (!$coupon->is_multiuser) {
-            $last_transaction_coupon = TransactionLogs::where('user_id','!=',$user->id)->where('coupon_id',$coupon->id)->first();
-            if ($last_transaction_coupon) {
-                return false;
-            }
-        }
-
-        // Check is just for old-users
-        if ($coupon->for_old_users) {
-            if (!OldUsers::where('user_mobile', $user->mobile)
-                ->where('paid', '>=', $coupon->for_old_users_min_pay)
-                ->first(['id'])
-            ) {
-                return false;
-            }
-        }
-
-        //check conditions
-        if ($coupon->conditions) {
-            if (!PanelConditions::checkPermissions($coupon->condition,$user,1,$product)) {
-                return false;
-            }
-        }
-
-        //check user has purchased
-        if ($coupon->has_purchased != 2){
-            if ($coupon->has_purchased == 0){
-                if ($user->total_buy_amount() > 0){
-                    return false;
-                }
-            }
-            elseif ($coupon->has_purchased == 1){
-                if ($user->total_buy_amount() <= 0){
-                    return false;
-                }
-            }
-        }
-
-        $product->coupon = $coupon;
-        return $coupon;
-    }
     public function transaction_logs(): HasMany
     {
         return $this->hasMany('App\Models\TransactionLogs','coupon_id');
