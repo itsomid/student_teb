@@ -13,8 +13,9 @@ class TransactionController extends Controller
         $transactions = Transaction::query()->with('user' , function ( $query ) {
             $query->select( 'id' , 'name');
         })
+        ->with('deposit')
         ->latest()
-        ->get();
+        ->paginate(100);
 
         // Return the view with the transactions data
         return view('dashboard.transaction.index')->with(['transactions' => $transactions]);

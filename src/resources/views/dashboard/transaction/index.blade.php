@@ -35,7 +35,14 @@
                                         <small>{{$transaction->user_description}}</small>
                                     </td>
                                     <td>{{$transaction->created_at()}}</td>
-                                    <td>---</td>
+                                    <td>
+                                        @if($transaction->deposit)
+                                            <a href="" class="btn btn-{{\App\Enums\DepositTypeEnum::TYPE_COLOR[$transaction->deposit->deposit_type->value]}} btn-sm">
+                                                {{\App\Enums\DepositTypeEnum::TYPE_LABEL[$transaction->deposit->deposit_type->value]}}
+                                            </a>
+                                         @endif
+
+                                    </td>
                                 </tr>
 
                             @endforeach
