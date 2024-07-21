@@ -211,7 +211,7 @@ class Cart
     {
 
         $itemWithCoupon = $this->items->first(function (CartItemInterface $item) {
-            return $item->getCouponId() !== null;
+            return $item->getCouponName() !== null;
         });
 
         return $itemWithCoupon ? $itemWithCoupon->getCoupon()->coupon_name : null;
@@ -367,7 +367,7 @@ class Cart
     public function hasCoupon(): bool
     {
         return $this->items->contains(function (CartItemInterface $item) {
-            return $item->getCouponId() !== null;
+            return $item->getCouponName() !== null;
         });
     }
 

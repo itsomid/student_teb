@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\Coupon;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
@@ -18,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(Product::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
-            $table->string('coupon_code')->nullable();
+            $table->string('coupon_name')->nullable()->index();
             $table->unsignedTinyInteger('product_type_id');
 
             $table->boolean('is_installment')->default(false);

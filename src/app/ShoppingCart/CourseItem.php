@@ -44,15 +44,15 @@ class CourseItem implements CartItemInterface
      * CourseItem constructor.
      *
      * @param int $product_id The ID of the product.
-     * @param int|null $coupon_id The ID of the coupon applied to the item (optional).
+     * @param string|null $coupon_name The ID of the coupon applied to the item (optional).
      * @param int $user_id The ID of the user (default is 0).
      * @param bool $is_installment Whether the item is purchased on installment (default is false).
      * @throws ProductDoesNotExistsException If the product does not exist in the database.
      */
     public function __construct(
-        public int $product_id,
-        public ?int $coupon_id = null,
-        public int $user_id = 0,
+        public int  $product_id,
+        public ?string $coupon_name = null,
+        public int  $user_id = 0,
         public bool $is_installment = false,
     ) {
         if (!Product::query()->where('id', $this->product_id)->exists()) {
@@ -69,7 +69,7 @@ class CourseItem implements CartItemInterface
     {
         $this->addModel(CartItemModel::query()->create([
             'product_id' => $this->product_id,
-            'coupon_id' => $this->coupon_id,
+            'coupon_name' => $this->coupon_name,
             'user_id' => $this->user_id,
             'is_installment' => $this->is_installment,
             'product_type_id' => ProductTypeEnum::COURSE
@@ -172,7 +172,7 @@ class CourseItem implements CartItemInterface
      */
     public function getPriceWithDiscount(): int
     {
-        $final_price = $this->model->product->off_price ?? $this->getOriginalPrice();
+        $final_price = $this->model->product->price;
 
         if ($this->model->coupon) {
             $coupon = $this->model->coupon;
@@ -216,9 +216,7 @@ class CourseItem implements CartItemInterface
      */
     private function initInstallment(): void
     {
-
         if ($this->is_installment) {
-//            \Log::info('Installment status changed');
             $this->installment = resolve(Installment::class, ['cartItem' => $this]);
         }
     }
@@ -237,9 +235,9 @@ class CourseItem implements CartItemInterface
         }
         return 0;
     }
-    public function getCouponId(): ?int
+    public function getCouponName(): ?string
     {
-        return $this->coupon_id;
+        return $this->coupon_name;
     }
 
     public function getCoupon(): ?Coupon

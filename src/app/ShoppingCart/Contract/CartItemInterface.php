@@ -21,7 +21,7 @@ interface CartItemInterface
     public function getPriceWithVat(): int;
     public function getOriginalPrice(): int;
     public function getCouponDiscountAmount(): int;
-    public function getCouponId(): ?int;
+    public function getCouponName(): ?string;
     public function getCoupon(): ?Coupon;
     public function getTax(): float|int;
     public function getVatPercentage(): float;

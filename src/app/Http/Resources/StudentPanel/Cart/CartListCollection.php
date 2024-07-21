@@ -36,7 +36,7 @@ class CartListCollection extends ResourceCollection
                 "original_price_num" => $item->getModel()->product->original_price,
                 "off_price" => $item->getModel()->product->getOffPrice(),
                 "off_price_num" => $item->getModel()->product->off_price,
-                'discount_code' => $this->when(CartAdaptor::hasCoupon(), optional($item->getModel()->coupon)->coupon_name),
+                'discount_code' => $this->when(CartAdaptor::hasCoupon(), $item->getCouponName()),
                 'discount_amount' => $this->when(CartAdaptor::hasCoupon(),$item->getCouponDiscountAmount()),
                 'product_calculated_price' => $item->getCalcPrice(),
                 'product_calculated_price_without_vat' => $item->getPriceWithDiscount(),

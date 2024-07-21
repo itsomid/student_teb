@@ -17,7 +17,7 @@ class CartItemRepository
                 if ($item->product_type_id === ProductTypeEnum::COURSE) {
                     $model = resolve(CourseItem::class, [
                         'product_id'=> $item->product_id,
-                        'coupon_id'=> $item->coupon_id,
+                        'coupon_name'=> $item->coupon_name,
                         'user_id'=> $item->user_id,
                         'is_installment'=> $item->is_installment
                     ]);
@@ -25,7 +25,7 @@ class CartItemRepository
                 }elseif($item->product_type_id === ProductTypeEnum::CUSTOM_PACKAGE) {
                     $model = resolve(PackageItem::class, [
                         'product_id'=> $item->product_id,
-                        'coupon_id'=> $item->coupon_id,
+                        'coupon_name'=> $item->coupon_name,
                         'user_id'=> $item->user_id,
                         'is_installment'=> $item->is_installment,
                         'packageItems' => $item->packages->pluck('product_id')->toArray(),
