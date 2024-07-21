@@ -6,7 +6,6 @@ use App\ShoppingCart\Contract\CartItemInterface;
 use App\ShoppingCart\Events\CartAdded;
 use App\ShoppingCart\Events\CartDeleted;
 use App\ShoppingCart\Events\CartUpdated;
-use App\ShoppingCart\Exceptions\CouponNotUsableException;
 use App\ShoppingCart\Exceptions\CouponNotUsableProductNotApplicable;
 use App\ShoppingCart\Exceptions\ItemDoesNotExistsInShoppingCart;
 use App\ShoppingCart\Exceptions\ItemExistsInShoppingCart;
@@ -319,6 +318,18 @@ class Cart
             , 0);
 
         return (int)$sum;
+    }
+
+    /**
+     * @return int
+     */
+    public function getInstallmentCount(): int
+    {
+        $installmentCount = 0;
+        foreach ($this->getInstallments() as $productInstallments){
+            $installmentCount += count($productInstallments);
+        }
+        return $installmentCount;
     }
     /**
      * Get the array of installments.

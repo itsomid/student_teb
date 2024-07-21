@@ -73,7 +73,7 @@ class OrderService
             'total_payable_price' => CartAdaptor::getPayableAmount(),
             'total_discount' => CartAdaptor::getAppliedCouponAmount() ,
             'final_price' =>  CartAdaptor::getFinalPrice() + CartAdaptor::getAppliedCouponAmount(),
-            'repayment_count' => 1,
+            'repayment_count' => CartAdaptor::getInstallmentCount() - 1, // always one of them are paid
             'status' => OrderStatusEnum::PAID
         ]);
     }
