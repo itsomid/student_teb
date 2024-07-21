@@ -14,6 +14,7 @@ class TransactionController extends Controller
             $query->select( 'id' , 'name');
         })
         ->with('deposit')
+        ->filterBy(request()->all())
         ->latest()
         ->paginate(100);
 
