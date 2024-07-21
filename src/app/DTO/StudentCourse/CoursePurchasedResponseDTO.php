@@ -7,13 +7,16 @@ class CoursePurchasedResponseDTO
     private int $courseId;
     private int $productId;
     private string $name;
+    private string $teacherName;
     private string $image;
+    private  $productTypeId;
     private ?int $holdingDays1;
     private ?int $holdingDays2;
     private ?int $holdingDays3;
     private ?array $holdingHours1;
     private ?array $holdingHours2;
     private ?array $holdingHours3;
+    private $courses;
 
     /**
      * @param int $courseId
@@ -79,6 +82,29 @@ class CoursePurchasedResponseDTO
         return $this;
     }
 
+    public function setTeacherName(string $teacherName): self
+    {
+        $this->teacherName = $teacherName;
+        return $this;
+    }
+
+
+    public function getTeacherName() : string
+    {
+        return $this->teacherName;
+    }
+
+    public function setProductTypeId( int $productTypeId): self
+    {
+        $this->productTypeId = $productTypeId;
+        return $this;
+    }
+
+
+    public function getProductTypeId()
+    {
+        return $this->productTypeId;
+    }
     /**
      * @return string
      */
@@ -193,5 +219,16 @@ class CoursePurchasedResponseDTO
     public function getHoldingHours3(): ?array
     {
         return $this->holdingHours3;
+    }
+
+    public function setCoursesCategory($courses): self
+    {
+        $this->courses = $courses;
+        return $this;
+    }
+
+    public function getCoursesCategory()
+    {
+        return $this->courses;
     }
 }
