@@ -3,6 +3,7 @@
 namespace App\Http\Resources\StudentPanel\Cart;
 
 use App\ShoppingCart\CartAdaptor;
+use App\ShoppingCart\Contract\CartItemInterface;
 use App\ShoppingCart\PackageItem;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -25,7 +26,7 @@ class CartListCollection extends ResourceCollection
     public function toArray(Request $request): array
     {
         return [
-            'items' => $this->collection->map(fn($item) =>   [
+            'items' => $this->collection->map(fn(CartItemInterface $item) =>   [
                 'product_id' => $item->product_id,
                 'product_name' => $item->getModel()->product->name,
                 'product_image' => $item->getModel()->product->getImageUrl(),
@@ -35,8 +36,8 @@ class CartListCollection extends ResourceCollection
                 "original_price_num" => $item->getModel()->product->original_price,
                 "off_price" => $item->getModel()->product->getOffPrice(),
                 "off_price_num" => $item->getModel()->product->off_price,
-                'discount_code' => $this->when(CartAdaptor::hasCoupon(),optional($item->getModel()->coupon)->coupon_name),
-                'discount_amount' => $this->when(CartAdaptor::hasCoupon(),$this->calculateDiscountAmount($item)),
+                'discount_code' => $this->when(CartAdaptor::hasCoupon(), optional($item->getModel()->coupon)->coupon_name),
+                'discount_amount' => $this->when(CartAdaptor::hasCoupon(),$item->getCouponDiscountAmount()),
                 'product_calculated_price' => $item->getCalcPrice(),
                 'product_calculated_price_without_vat' => $item->getPriceWithDiscount(),
                 'is_package' => $item instanceof PackageItem,
@@ -63,20 +64,6 @@ class CartListCollection extends ResourceCollection
             'installments' => $this->when(CartAdaptor::isInstallment(), $this->mergeAmountsByDate(CartAdaptor::getInstallments()))
 
         ];
-    }
-
-    public function calculateDiscountAmount($item) //TODO: use this method in CartItemInterface
-    {
-        $coupon = $item->getModel()->coupon;
-        if ($coupon) {
-            if ($coupon->discount_amount) {
-                return $coupon->discount_amount;
-            } elseif ($coupon->discount_percentage) {
-                $originalPrice = $item->getModel()->product->original_price;
-                return $originalPrice * ($coupon->discount_percentage / 100);
-            }
-        }
-        return 0;
     }
 
     function mergeAmountsByDate(array $data): array
