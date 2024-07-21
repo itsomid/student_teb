@@ -73,7 +73,6 @@ class OrderService
             'total_payable_price' => CartAdaptor::getPayableAmount(),
             'total_discount' => CartAdaptor::getAppliedCouponAmount() ,
             'final_price' =>  CartAdaptor::getFinalPrice() + CartAdaptor::getAppliedCouponAmount(),
-            'installment_total_amount' => 1,
             'repayment_count' => 1,
             'status' => OrderStatusEnum::PAID
         ]);
@@ -98,7 +97,7 @@ class OrderService
         }
     }
 
-    private function processPackageItem($order, $item): void
+    private function processPackageItem(Order $order, CartItemInterface $item): void
     {
         $amount = $item->getCalcPrice();
 
@@ -109,7 +108,7 @@ class OrderService
             'product_id' => $item->product_id,
             'final_price' => $amount,
             'product_price' => $item->getModel()->product->price,
-            'discount_price' => $this->calculateDiscountAmount($item)
+            'discount_price' => $item->getCouponDiscountAmount()
         ]);
 
         if (array_key_exists($item->product_id, $this->installments)) {
@@ -127,7 +126,7 @@ class OrderService
         });
     }
 
-    private function processRegularItem($order, $item): void
+    private function processRegularItem(Order $order, CartItemInterface $item): void
     {
         $price = $item->getModel()->product->price;
 
@@ -135,7 +134,7 @@ class OrderService
             'product_id' => $item->product_id,
             'final_price' => $item->getCalcPrice(),
             'product_price' => $price,
-            'discount_price' => $this->calculateDiscountAmount($item)
+            'discount_price' => $item->getCouponDiscountAmount()
         ]);
         if (array_key_exists($item->product_id, $this->installments)) {
             $this->generateInstallments($item->product_id, $itemModel->id);
@@ -169,18 +168,5 @@ class OrderService
                 'status' => $index === 0 ? InstallmentStatusEnum::Paid : InstallmentStatusEnum::Pending
             ]);
         }
-    }
-    public function calculateDiscountAmount($item)
-    {
-        $coupon = $item->getModel()->coupon;
-        if ($coupon) {
-            if ($coupon->discount_amount) {
-                return $coupon->discount_amount;
-            } elseif ($coupon->discount_percentage) {
-                $originalPrice = $item->getModel()->product->original_price;
-                return $originalPrice * ($coupon->discount_percentage / 100);
-            }
-        }
-        return 0;
     }
 }

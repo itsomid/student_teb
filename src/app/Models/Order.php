@@ -17,7 +17,6 @@ class Order extends Model
         'final_price',
         'total_payable_price',
         'total_discount',
-        'installment_total_discount',
         'repayment_count',
         'status'
     ];
