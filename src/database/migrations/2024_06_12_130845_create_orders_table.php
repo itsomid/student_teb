@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Coupon;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
@@ -35,6 +36,9 @@ return new class extends Migration
                 ->constrained()
                 ->cascadeOnDelete();
             $table->foreignIdFor(Product::class)
+                ->constrained()
+                ->restrictOnDelete();
+            $table->foreignIdFor(Coupon::class)
                 ->constrained()
                 ->restrictOnDelete();
 
