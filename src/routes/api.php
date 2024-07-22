@@ -50,6 +50,7 @@ Route::middleware('checkJWT')->group(callback: function () {
 
     //Course
     Route::get('courses/my-courses', [CourseController::class, 'myCourses'])->name('courses.my-courses');
+    Route::get('courses/{course_id}/classes', [CourseController::class, 'classes'])->name('courses.classes');
 
 });
 

@@ -2,6 +2,8 @@
 
 namespace App\DTO\StudentCourse;
 
+use App\Enums\ProductTypeEnum;
+
 class CoursePurchasedResponseDTO
 {
     private int $courseId;
@@ -9,7 +11,7 @@ class CoursePurchasedResponseDTO
     private string $name;
     private string $teacherName;
     private string $image;
-    private  $productTypeId;
+    private  ProductTypeEnum $productTypeId;
     private ?int $holdingDays1;
     private ?int $holdingDays2;
     private ?int $holdingDays3;
@@ -94,14 +96,14 @@ class CoursePurchasedResponseDTO
         return $this->teacherName;
     }
 
-    public function setProductTypeId( int $productTypeId): self
+    public function setProductTypeId(ProductTypeEnum $productTypeId): self
     {
         $this->productTypeId = $productTypeId;
         return $this;
     }
 
 
-    public function getProductTypeId()
+    public function getProductTypeId(): ProductTypeEnum
     {
         return $this->productTypeId;
     }

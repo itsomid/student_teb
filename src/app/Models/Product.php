@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\ProductTypeEnum;
 use App\Filters\Filterable;
+use App\Services\ProductService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -17,7 +18,6 @@ use Illuminate\Database\Eloquent\Builder;
 class Product extends Model
 {
     use HasFactory, SoftDeletes, Filterable;
-    const string PRODUCT_TREE_CACHE_KEY = 'product_tree';
 
     public $filterNameSpace = 'App\Filters\ProductFilters';
     public $fillable = [
@@ -55,24 +55,16 @@ class Product extends Model
         parent::boot();
 
         self::created(function(self $model){
-            $model->deleteProductTreeCache();
+            ProductService::deleteProductTreeCache();
         });
 
         self::updated(function(self $model){
-            $model->deleteProductTreeCache();
-
-
+            ProductService::deleteProductTreeCache();
         });
 
         self::deleted(function(self $model){
-            $model->deleteProductTreeCache();
-
+            ProductService::deleteProductTreeCache();
         });
-    }
-
-    public function deleteProductTreeCache(): void
-    {
-        cache()->forget(self::PRODUCT_TREE_CACHE_KEY);
     }
 
     public function isActiveCourse()
@@ -137,69 +129,6 @@ class Product extends Model
         $result = [];
         foreach ($products as $product) {
             $result[$product->id] = $product->id;
-        }
-        return $result;
-    }
-
-    /**
-     * @return array
-     */
-    public static function getProductsTree(): array
-    {
-        return cache()->remember(self::PRODUCT_TREE_CACHE_KEY, 120, function (){
-
-            //new Algorithm - By M.Majidfar
-            $products = static::query()->orderBy('parent_id')->get();
-            $result = []; //final result
-
-            foreach ($products as $item) {
-                if (!$item->parent_id) {
-                    $result[$item->id] = [];
-                } else {
-                    //running BFF algorithm for searching parent_id in $result
-                    $result = static::ProductsTreeBFFsearch($result, ['id' => $item->id, 'parent_id' => $item->parent_id]);
-                }
-            }
-
-            return $result;
-
-        });
-    }
-
-    public static function ProductsTreeBFFsearch($stack, $needle): array
-    {
-        $my_product_id = $needle['id'];
-        $my_product_parent_id = $needle['parent_id'];
-
-        foreach ($stack as $index_parent_id => $children_ids) {
-            if ($index_parent_id == $my_product_parent_id) {
-                $stack[$index_parent_id][$my_product_id] = [];
-                return $stack;
-            }
-        }
-
-        foreach ($stack as $index_parent_id => $children_ids) {
-            if (count($children_ids) > 0) {
-                $stack[$index_parent_id] = static::ProductsTreeBFFsearch($children_ids, $needle);
-            }
-        }
-
-        return $stack;
-    }
-
-    public static function getProductsTreeLeafs($users_products_ids, $input_array, $return_all = false): array
-    {
-        $result = [];
-        if ($input_array && count($input_array) > 0) {
-            foreach ($input_array as $key => $value) {
-                if ($return_all || in_array($key, $users_products_ids)) {
-
-                    $result[] = $key;
-                    $result = array_merge($result, static::getProductsTreeLeafs($users_products_ids, $value, true));
-                } else {
-                    $result = array_merge($result, static::getProductsTreeLeafs($users_products_ids, $value, false));
-                }
-            }
         }
         return $result;
     }
