@@ -74,6 +74,9 @@ class PermissionList {
             ['classes.create'                       ,'افزودن کلاس جدید'],
             ['classes.edit'                         ,'ویرایش کلاس'],
 
+            ['cc_servers'                           ,'سرورهای کلاسینو کانکت'],
+
+
             ['product_category.index'               ,'مشاهده دسته بندی محصولات'],
             ['product_category.create'              ,'افزودن دسته بندی محصولات جدید'],
             ['product_category.edit'                ,'ویرایش دسته بندی محصولات'],
@@ -95,6 +98,7 @@ class PermissionList {
             ['report.registered_users'              ,'آمار ثبت نام نماینده های فروش'],
 
             ['student-account.charge'               ,'افزایش اعتبار دانش آموز'],
+
 
         ];
 
