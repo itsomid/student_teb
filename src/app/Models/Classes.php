@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\ClassStatusEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -41,7 +42,8 @@ class Classes extends Model
     protected function casts(): array
     {
         return [
-            'holding_date' => 'datetime'
+            'holding_date' => 'datetime',
+            'status' => ClassStatusEnum::class
         ];
     }
 
