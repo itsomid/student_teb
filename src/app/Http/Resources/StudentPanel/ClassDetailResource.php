@@ -34,6 +34,8 @@ class ClassDetailResource extends JsonResource
             'teacher_id' => $this->resource->getTeacherId(),
             'teacher_image' => $this->resource->getTeacherImage(),
             'course_name' => $this->resource->getCourseName(),
+            'is_student_block' => $this->resource->getIsStudentBlock(),
+            'student_block_description' => $this->when($this->resource->getIsStudentBlock(), $this->resource->getStudentBlockDescription()),
         ];
     }
 }

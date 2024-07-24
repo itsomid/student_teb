@@ -5,7 +5,9 @@ namespace App\Services;
 use App\DTO\StudentCourse\ClassDetailDTO;
 use App\DTO\StudentCourse\CourseClassesPurchasedResponseDTO;
 use App\DTO\StudentCourse\CoursePurchasedResponseDTO;
+use App\DTO\StudentCourse\StudentClassBlockResponseDTO;
 use App\Exceptions\ClassNotFoundException;
+use App\Models\ClassBlock;
 use App\Models\Classes;
 use App\Models\Course;
 use Illuminate\Database\Eloquent\Builder;
@@ -94,13 +96,15 @@ class StudentCourseService
         )->toArray();
     }
 
-    public function getSingleClass(int $productId): ClassDetailDTO
+    public function getSingleClass(int $userId, int $productId): ClassDetailDTO
     {
         $class = Classes::query()->with('product', 'course')->where('product_id', $productId)->first();
 
         if (empty($class)) {
             throw new ClassNotFoundException();
         }
+
+        $classBlockedDTO = $this->getStudentBlockClassState($userId, $productId);
 
         return resolve(ClassDetailDTO::class)
                 ->setName($class->product->name)
@@ -115,6 +119,25 @@ class StudentCourseService
                 ->setDescription($class->product->description)
                 ->setQaStatus($class->qa_is_active)
                 ->setTeacherImage($class->product->teacher->avatar())
-                ->setCourseName($class->course->product->name);
+                ->setCourseName($class->course->product->name)
+                ->setIsStudentBlock($classBlockedDTO->getIsBlocked())
+                ->setStudentBlockDescription($classBlockedDTO->getDescription());
+    }
+
+    /**
+     * Check a student block from a class
+     * @param int $userId
+     * @param int $classId
+     * @return StudentClassBlockResponseDTO
+     */
+    public function getStudentBlockClassState(int $userId, int $classId): StudentClassBlockResponseDTO
+    {
+        $classBockModel = ClassBlock::query()
+            ->where('student_id', $userId)
+            ->where('product_id', $classId)->first();
+
+        return resolve(StudentClassBlockResponseDTO::class)
+            ->setIsBlocked(!empty($classBockModel))
+            ->setDescription($classBockModel?->description);
     }
 }
