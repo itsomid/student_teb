@@ -8,6 +8,7 @@ use App\Http\Controllers\API\Auth\PasswordLoginController;
 use App\Http\Controllers\API\Auth\RegisterController;
 use App\Http\Controllers\API\Auth\ReloadCaptchaController;
 use App\Http\Controllers\API\Auth\SendOTPController;
+use App\Http\Controllers\API\ClassController;
 use App\Http\Controllers\API\CourseController;
 use App\Http\Controllers\API\StudentController;
 use App\Http\Controllers\API\CartController;
@@ -51,6 +52,7 @@ Route::middleware('checkJWT')->group(callback: function () {
     //Course
     Route::get('courses/my-courses', [CourseController::class, 'myCourses'])->name('courses.my-courses');
     Route::get('courses/{course_id}/classes', [CourseController::class, 'classes'])->name('courses.classes');
+    Route::get('courses/classes/{class_id}', [ClassController::class, 'show'])->name('courses.classes.show');
 
 });
 

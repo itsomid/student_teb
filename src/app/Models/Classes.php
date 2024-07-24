@@ -38,6 +38,13 @@ class Classes extends Model
         'report_is_mandatory',
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'holding_date' => 'datetime'
+        ];
+    }
+
     public function product() : BelongsTo
     {
         return $this->belongsTo(Product::class,'product_id');

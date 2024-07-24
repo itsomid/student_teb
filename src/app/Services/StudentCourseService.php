@@ -2,8 +2,10 @@
 
 namespace App\Services;
 
+use App\DTO\StudentCourse\ClassDetailDTO;
 use App\DTO\StudentCourse\CourseClassesPurchasedResponseDTO;
 use App\DTO\StudentCourse\CoursePurchasedResponseDTO;
+use App\Exceptions\ClassNotFoundException;
 use App\Models\Classes;
 use App\Models\Course;
 use Illuminate\Database\Eloquent\Builder;
@@ -90,5 +92,29 @@ class StudentCourseService
                 ->setIsFree($class->is_free);
                 }
         )->toArray();
+    }
+
+    public function getSingleClass(int $productId): ClassDetailDTO
+    {
+        $class = Classes::query()->with('product', 'course')->where('product_id', $productId)->first();
+
+        if (empty($class)) {
+            throw new ClassNotFoundException();
+        }
+
+        return resolve(ClassDetailDTO::class)
+                ->setName($class->product->name)
+                ->setClassId($class->id)
+                ->setProductId($class->product_id)
+                ->setTeacherId($class->product->user_id)
+                ->setIsActiveHomework($class->homework_is_active)
+                ->setIsForceHomework($class->homework_is_mandatory)
+                ->setHoldingDate($class->holding_date)
+                ->setClassStatus($class->status)
+                ->setIsForeReport($class->report_is_mandatory)
+                ->setDescription($class->product->description)
+                ->setQaStatus($class->qa_is_active)
+                ->setTeacherImage($class->product->teacher->avatar())
+                ->setCourseName($class->course->product->name);
     }
 }
