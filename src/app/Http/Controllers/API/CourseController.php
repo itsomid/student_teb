@@ -34,9 +34,9 @@ class CourseController extends Controller
             ], Response::HTTP_FORBIDDEN);
         }
 
-        return response(new CourseClassesCollection(
+        return new CourseClassesCollection(
                 $this->courseService->getPurchasedCourseClasses($userId, $productId),
                 $this->courseService->getCourse($productId)
-            ));
+            );
     }
 }
