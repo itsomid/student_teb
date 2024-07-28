@@ -83,6 +83,7 @@ class DatabaseSeeder extends Seeder
             CoupanSeeder::class,
             OrderSeeder::class,
             OrderItemSeeder::class,
+            TransactionSeeder::class
         ]);
     }
 }

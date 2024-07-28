@@ -55,15 +55,15 @@ class Product extends Model
         parent::boot();
 
         self::created(function(self $model){
-            ProductService::deleteProductTreeCache();
+            ProductService::clearProductTreeCache();
         });
 
         self::updated(function(self $model){
-            ProductService::deleteProductTreeCache();
+            ProductService::clearProductTreeCache();
         });
 
         self::deleted(function(self $model){
-            ProductService::deleteProductTreeCache();
+            ProductService::clearProductTreeCache();
         });
     }
 

@@ -21,7 +21,6 @@ class OrderFactory extends Factory
             'total_payable_price' => $price = $this->faker->numberBetween(1,3) * 100000,
             'final_price' => $vat+$price,
             'total_discount' => $this->faker->numberBetween(1,3) * 10000,
-            'installment_total_amount' => $this->faker->numberBetween(1,3),
             'repayment_count' => $this->faker->numberBetween(1, 12),
             'status' => $this->faker->randomElement(array_column(OrderStatusEnum::cases(), 'value'))
         ];

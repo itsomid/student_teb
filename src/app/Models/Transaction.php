@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\TransactionTypeEnum;
+use App\Filters\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -11,7 +12,9 @@ use Morilog\Jalali\Jalalian;
 
 class Transaction extends Model
 {
-    use HasFactory;
+    use HasFactory, Filterable;
+
+    public $filterNameSpace = "App\Filters\TransactionFilter";
 
     protected $fillable = [
         'user_id', 'amount', 'transaction_type', 'user_description', 'system_description'
