@@ -41,9 +41,17 @@ class OTPLoginVerifyController extends Controller
 
         VerificationCode::query()->where('receptor', $user->mobile)->delete();
 
+        if ($user->tokens()->count() >= User::MAX_TOKENS) {
+            return response()->json([
+                'message' => 'شما نمیتوانید با بیش از ' . User::MAX_TOKENS . ' دستگاه وارد شوید.'
+            ], 403);
+        }
+
+        $token = $user->createToken($request->ip());
+
         //Give JWT
         return response([
-            'token' => JWT::new()->payload(VerificationCode::getPayload($user->id))->encode(),
+            'token' =>  $token->plainTextToken,
             'user'  => new UserResource($user)
         ]);
     }

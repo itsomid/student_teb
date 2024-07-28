@@ -20,9 +20,10 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    const NEW_TOKEN_INTERVAL = 20;
+    use HasFactory, Filterable, HasApiTokens;
 
-    use HasFactory, Filterable;
+    const NEW_TOKEN_INTERVAL = 20;
+    const MAX_TOKENS = 2;
 
     public $filterNameSpace = 'App\Filters\StudentFilter';
 

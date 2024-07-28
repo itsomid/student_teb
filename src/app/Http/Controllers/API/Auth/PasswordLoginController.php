@@ -26,13 +26,17 @@ class PasswordLoginController extends Controller
             ], Response::HTTP_FORBIDDEN);
         }
 
-        $user->save();
+        if ($user->tokens()->count() >= User::MAX_TOKENS) {
+            return response()->json([
+                'message' => 'شما نمیتوانید با بیش از ' . User::MAX_TOKENS . ' دستگاه وارد شوید.'
+            ], 403);
+        }
+
+        $token = $user->createToken($request->ip());
 
         return response([
-            'token' => JWT::new()
-                ->payload(VerificationCode::getPayload($user->id))
-                ->encode(),
-            'user' => new UserResource($user)
+            'token' => $token->plainTextToken,
+            'user'  => new UserResource($user)
         ]);
     }
 }

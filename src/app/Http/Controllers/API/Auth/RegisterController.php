@@ -35,14 +35,11 @@ class RegisterController extends Controller
         $user->verified_by_supporter = 1;
         $user->save();
 
-        //TODO: Enable remove code
-//        VerificationCode::query()->where('receptor', $user->mobile)->delete();
-        return response([
-            'token' => JWT::new()
-                ->payload(VerificationCode::getPayload($user->id))
-                ->encode(),
-            'user' => new UserResource($user)
-        ], Response::HTTP_CREATED);
+        $token = $user->createToken($request->ip());
 
+        return response([
+            'token' => $token->plainTextToken,
+            'user'  => new UserResource($user)
+        ], Response::HTTP_CREATED);
     }
 }
