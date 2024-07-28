@@ -38,6 +38,7 @@ return new class extends Migration
                 ->constrained()
                 ->restrictOnDelete();
             $table->foreignIdFor(Coupon::class)
+                ->nullable()
                 ->constrained()
                 ->restrictOnDelete();
 
@@ -54,5 +55,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('orders');
+        Schema::dropIfExists('order_items');
     }
 };
