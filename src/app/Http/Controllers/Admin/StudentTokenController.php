@@ -12,4 +12,9 @@ class StudentTokenController extends Controller
         $tokens= $student->tokens()->get();
         return view('dashboard.student.token.index')->with('tokens',$tokens)->with('student',$student);
     }
+
+    public function revoke(User $student, $token){
+        $student->tokens()->where('id', $token)->delete();
+        return redirect()->back();
+    }
 }

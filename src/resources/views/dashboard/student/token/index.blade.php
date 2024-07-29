@@ -26,6 +26,7 @@
                             <td>
                                 <form action="{{route('admin.student.token.revoke', ['student'=>$student->id, 'token' => $token->id])}}" method="post">
                                     @csrf
+                                    @method('PATCH')
                                     <button class="btn btn-danger">منقضی سازی</button>
                                 </form>
                             </td>

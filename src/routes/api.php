@@ -32,12 +32,6 @@ Route::get('captcha_reload',        [ReloadCaptchaController::class,        '__i
 Route::post('lock_time',            [LockTimeController::class,             '__invoke']);
 
 
-Route::get('/aaaa', function(){
-    return response()->json(['user' => auth()->user()]);
-})->middleware('auth:sanctum');
-
-
-
 
 Route::get('pay/cart/callback', [BuyController::class, 'cartCallback'])->name('bank.cart.callback');
 
