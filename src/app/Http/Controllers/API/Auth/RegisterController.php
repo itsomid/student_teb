@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\VerificationCode;
 use App\Services\JWT;
 use Illuminate\Http\Response;
+use Jenssegers\Agent\Agent;
 
 class RegisterController extends Controller
 {
@@ -35,7 +36,8 @@ class RegisterController extends Controller
         $user->verified_by_supporter = 1;
         $user->save();
 
-        $token = $user->createToken($request->ip());
+        $token = $user->createToken((new Agent)->isMobile() ? 'Mobile' : 'Desktop');
+        $user->setDetailOnToken($token);
 
         return response([
             'token' => $token->plainTextToken,

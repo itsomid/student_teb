@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
+use Jenssegers\Agent\Agent;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Sanctum\HasApiTokens;
 use Morilog\Jalali\Jalalian;
@@ -148,5 +149,14 @@ class User extends Authenticatable
                 : str_pad(random_int(10000, 99999), 5, '0', STR_PAD_LEFT);
     }
 
+    public function setDetailOnToken($token)
+    {
+        $agent = new Agent();
+        $device = $agent->platform().'-';
+        $device = $device.$agent->browser();
 
+        $token->accessToken->device = $device;
+        $token->accessToken->ip = request()->ip();
+        $token->accessToken->save();
+    }
 }

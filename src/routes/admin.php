@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\InquiryController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\StudentAccountController;
 use App\Http\Controllers\Admin\SelectsApiController;
+use App\Http\Controllers\Admin\StudentTokenController;
 use App\Http\Controllers\Admin\TransactionController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\CouponController;
@@ -78,6 +79,10 @@ Route::get('/students/{student}/edit_support', [StudentController::class, 'editS
 Route::post('/students/{student}/edit_support_sms', [StudentController::class, 'editSupportSMS'])->name('student.edit-support-sms')->can('student.edit-support');
 Route::patch('/students/{student}/update_support', [StudentController::class, 'updateSupport'])->name('student.update-support')->can('student.edit-support');
 Route::patch('students/{student}/verify', [StudentController::class, 'verifyStudent'])->name('student.verify')->can('student.verify');
+
+Route::get('/students/{student}/tokens',                  [StudentTokenController::class, 'index'])  ->name('student.token.index') ->can('student.edit');
+Route::patch('/students/{student}/tokens/{token}/revoke', [StudentTokenController::class, 'revoke']) ->name('student.token.revoke')->can('student.edit');
+
 
 Route::get('/user_support', [UserSupportController::class, 'index'])->name('user_support.get')->can('student.support.history');
 

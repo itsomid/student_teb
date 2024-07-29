@@ -17,7 +17,7 @@ use App\Http\Controllers\API\BuyController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\ProfileController;
 
-Route::post('auth',                 [CheckRegistrationController::class,    '__invoke']);
+Route::get('auth',                 [CheckRegistrationController::class,    '__invoke']);
 
 Route::post('password_login',       [PasswordLoginController::class,        '__invoke']);
 
@@ -32,7 +32,9 @@ Route::get('captcha_reload',        [ReloadCaptchaController::class,        '__i
 Route::post('lock_time',            [LockTimeController::class,             '__invoke']);
 
 
-
+Route::get('/aaaa', function(){
+    return response()->json(['user' => auth()->user()]);
+})->middleware('auth:sanctum');
 
 
 

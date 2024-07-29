@@ -9,12 +9,14 @@ use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Models\VerificationCode;
 use App\Services\JWT;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
+use Jenssegers\Agent\Agent;
 
 class PasswordLoginController extends Controller
 {
-    public function __invoke(PasswordLoginRequest $request)
+    public function __invoke(Request $request)
     {
         $user = User::where('mobile', $request->mobile)->first();
 
@@ -32,7 +34,8 @@ class PasswordLoginController extends Controller
             ], 403);
         }
 
-        $token = $user->createToken($request->ip());
+        $token = $user->createToken((new Agent)->isMobile() ? 'Mobile' : 'Desktop');
+        $user->setDetailOnToken($token);
 
         return response([
             'token' => $token->plainTextToken,

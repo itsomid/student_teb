@@ -11,6 +11,7 @@ use App\Models\VerificationCode;
 use App\Services\JWT;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Jenssegers\Agent\Agent;
 
 class OTPLoginVerifyController extends Controller
 {
@@ -47,7 +48,8 @@ class OTPLoginVerifyController extends Controller
             ], 403);
         }
 
-        $token = $user->createToken($request->ip());
+        $token = $user->createToken((new Agent)->isMobile() ? 'Mobile' : 'Desktop');
+        $user->setDetailOnToken($token);
 
         //Give JWT
         return response([
