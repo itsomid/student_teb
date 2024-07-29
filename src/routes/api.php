@@ -17,7 +17,7 @@ use App\Http\Controllers\API\BuyController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\ProfileController;
 
-Route::get('auth',                 [CheckRegistrationController::class,    '__invoke']);
+Route::post('auth',                 [CheckRegistrationController::class,    '__invoke']);
 
 Route::post('password_login',       [PasswordLoginController::class,        '__invoke']);
 
