@@ -2,6 +2,7 @@
 
 namespace App\DTO\StudentCourse;
 
+use App\Enums\ClassStatusEnum;
 use Illuminate\Support\Carbon;
 
 class ClassDetailDTO
@@ -17,7 +18,7 @@ class ClassDetailDTO
     private string $description;
     private int $teacherId;
     private string $teacherImage;
-    private string $classStatus;
+    private ClassStatusEnum $classStatus;
     private string $courseName;
 
     public function setName(string $name): self
@@ -130,13 +131,13 @@ class ClassDetailDTO
         return $this->teacherImage;
     }
 
-    public function setClassStatus(string $classStatus): self
+    public function setClassStatus(ClassStatusEnum $classStatus): self
     {
         $this->classStatus = $classStatus;
         return $this;
     }
 
-    public function getClassStatus(): string
+    public function getClassStatus(): ClassStatusEnum
     {
         return $this->classStatus;
     }
