@@ -35,7 +35,7 @@ Route::post('lock_time',            [LockTimeController::class,             '__i
 
 Route::get('pay/cart/callback', [BuyController::class, 'cartCallback'])->name('bank.cart.callback');
 
-Route::middleware('checkJWT')->group(callback: function () {
+Route::middleware('auth:sanctum')->group(callback: function () {
 
     Route::get('/store', [StoreController::class, 'store']);
     Route::get('/store/product-detail/{product}', [StoreController::class, 'storeItemDetails']);
