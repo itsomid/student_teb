@@ -95,10 +95,36 @@
                             <tr>
                                 <th>ID</th>
                                 <th>کاربر</th>
-                                <th>مبلغ</th>
+                                <th>
+                                    @php
+                                        $currentParams = request()->except('sortByAmount');
+                                        $newSortDirection = request()->input('sortByAmount') == 'asc' ? 'desc' : 'asc';
+                                    @endphp
+                                    <a href="{{ route('admin.transaction.index', array_merge($currentParams, ['sortByAmount' => $newSortDirection])) }}" class="text-black">
+                                        مبلغ
+                                        @if( request()->input('sortByAmount') == 'asc')
+                                            <span>&uarr;</span>
+                                        @else
+                                            <span>&darr;</span>
+                                        @endif
+                                    </a>
+                                </th>
                                 <th>نوع</th>
                                 <th>توضیحات کاربر</th>
-                                <th>تاریخ ایجاد</th>
+                                <th>
+                                    @php
+                                        $currentParams = request()->except('sortByCreatedAt');
+                                        $newSortDirection = request()->input('sortByCreatedAt') == 'asc' ? 'desc' : 'asc';
+                                    @endphp
+                                    <a href="{{ route('admin.transaction.index', array_merge($currentParams, ['sortByCreatedAt' => $newSortDirection])) }}" class="text-black">
+                                        تاریخ ایجاد
+                                        @if( request()->input('sortByCreatedAt') == 'asc')
+                                            <span>&uarr;</span>
+                                        @else
+                                            <span>&darr;</span>
+                                        @endif
+                                    </a>
+                                </th>
                                 <th>عملیات</th>
                             </tr>
                         </thead>
@@ -132,6 +158,7 @@
                     </table>
                 </div>
             </div>
+            {{$transactions->appends(request()->except('page'))->links()}}
         </div>
     </div>
 @endsection

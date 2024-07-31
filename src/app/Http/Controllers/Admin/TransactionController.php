@@ -44,7 +44,6 @@ class TransactionController extends Controller
         })
         ->with('deposit')
         ->filterBy(request()->all())
-        ->latest()
         ->paginate(100);
 
         // Return the view with the transactions data
