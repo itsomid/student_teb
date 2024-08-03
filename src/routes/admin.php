@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\CcServerController;
 use App\Http\Controllers\Admin\InquiryController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\StudentAccountController;
@@ -169,3 +170,10 @@ Route::get('/report/registered_users/{student}/verificationLogs', [SaleSupportRe
 
 Route::get('/student-account/charge' , [StudentAccountController::class, 'chargeForm'])->name('student-account.charge-form');
 Route::post('/student-account/charge', [StudentAccountController::class, 'chargeAccount'])->name('student-account.charge');
+
+Route::get('cc_servers',                  [CcServerController::class, 'index'])     ->name('cc_servers.index')        ->can('cc_servers');
+Route::get('cc_servers/create',           [CcServerController::class, 'create'])    ->name('cc_servers.create')       ->can('cc_servers');
+Route::post('cc_servers',                 [CcServerController::class, 'store'])     ->name('cc_servers.store')        ->can('cc_servers');
+Route::get('cc_servers/{cc_server}/edit', [CcServerController::class, 'edit'])      ->name('cc_servers.edit')         ->can('cc_servers');
+Route::put('cc_servers/{cc_server}',      [CcServerController::class, 'update'])    ->name('cc_servers.update')       ->can('cc_servers');
+Route::delete('cc_servers/{cc_server}',   [CcServerController::class, 'destroy'])   ->name('cc_servers.destroy')      ->can('cc_servers');
