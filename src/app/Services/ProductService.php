@@ -9,6 +9,7 @@ class ProductService
 {
     private const string PRODUCT_TREE_CACHE_KEY = 'product_tree';
     private const int CACHE_EXPIRATION_MINUTES = 120;
+    private array $cachedProductTreeLeaves = [];
 
     /**
      * Clears the product tree cache when a product is changed.
@@ -72,8 +73,11 @@ class ProductService
      */
     public function getProductTreeLeaves(array $userProductIds): array
     {
+        if (count($this->cachedProductTreeLeaves)){
+            return $this->cachedProductTreeLeaves;
+        }
         $productTree = $this->getProductTree();
-        return $this->findProductTreeLeaves($userProductIds, $productTree);
+        return $this->cachedProductTreeLeaves = $this->findProductTreeLeaves($userProductIds, $productTree);
     }
 
     /**
