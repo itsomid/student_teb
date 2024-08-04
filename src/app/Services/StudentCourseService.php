@@ -133,6 +133,7 @@ class StudentCourseService
     public function getStudentBlockClassState(int $userId, int $classId): StudentClassBlockResponseDTO
     {
         $classBockModel = ClassBlock::query()
+            ->valid()
             ->where('student_id', $userId)
             ->where('product_id', $classId)->first();
 
