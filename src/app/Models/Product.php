@@ -123,6 +123,14 @@ class Product extends Model
         return $this->hasMany(CartItem::class);
     }
 
+    /**
+     * @return HasMany
+     */
+    public function teacherCommission(): HasMany
+    {
+        return $this->hasMany(TeacherProductCommission::class);
+    }
+
     public static function get_free_products_ids()
     {
         $products = static::where('original_price', 0)->orWhere('off_price', 0)->get();

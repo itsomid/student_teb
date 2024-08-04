@@ -8,6 +8,7 @@ use App\Models\CustomPackage;
 use App\Models\CustomPackageItem;
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\TeacherProductCommission;
 use Illuminate\Database\Seeder;
 
 class ProductSeeder extends Seeder
@@ -20,8 +21,12 @@ class ProductSeeder extends Seeder
         Category::factory(40)->create();
 
         $products= Product::factory(11)->course()->has(
-            Course::factory()->count(1),
-        )->create();
+            Course::factory()->count(1)
+        )
+            ->has(
+                TeacherProductCommission::factory()->count(1),
+                'teacherCommission'
+            )->create();
 
         //create package
         Product::factory(10)->package()->has(

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreignId('product_id')->constrained(table: 'classes', column: 'product_id')->cascadeOnDelete();
             $table->text('description')->nullable();
             $table->timestamp('expired_at');
-            $table->index(['student_id', 'user_id', 'expired_at']);
+            $table->index(['student_id', 'product_id', 'expired_at']);
             $table->timestamps();
         });
     }
