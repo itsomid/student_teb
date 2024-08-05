@@ -33,7 +33,7 @@ class CartItemRepository
                     $model->hasInstallmentMethod = $item->product->has_installment;
                 }
 
-                $model->addModel($item);
+                $model->setModel($item);
                 return $model;
             });
     }
