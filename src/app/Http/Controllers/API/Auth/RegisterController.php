@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\VerificationCode;
 use App\Services\JWT;
 use Illuminate\Http\Response;
+use Jenssegers\Agent\Agent;
 
 class RegisterController extends Controller
 {
@@ -35,14 +36,12 @@ class RegisterController extends Controller
         $user->verified_by_supporter = 1;
         $user->save();
 
-        //TODO: Enable remove code
-//        VerificationCode::query()->where('receptor', $user->mobile)->delete();
-        return response([
-            'token' => JWT::new()
-                ->payload(VerificationCode::getPayload($user->id))
-                ->encode(),
-            'user' => new UserResource($user)
-        ], Response::HTTP_CREATED);
+        $token = $user->createToken((new Agent)->isMobile() ? 'Mobile' : 'Desktop');
+        $user->setDetailOnToken($token);
 
+        return response([
+            'token' => $token->plainTextToken,
+            'user'  => new UserResource($user)
+        ], Response::HTTP_CREATED);
     }
 }

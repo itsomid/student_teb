@@ -278,9 +278,14 @@
                                                     <i class="fa-solid fa-history"></i>
                                                     تاریخچه ی پشتیبان ها
                                                 </a>
-
                                             @endcan
-
+                                            @can('student.support.history')
+                                                <a class="dropdown-item"
+                                                   href="{{route('admin.student.token.index', ['student' => $student->id])}}">
+                                                    <i class="fa-solid fa-key"></i>
+                                                   نشست های فعال
+                                                </a>
+                                            @endcan
                                         </div>
                                     </div>
                                     @can('student.edit-note')

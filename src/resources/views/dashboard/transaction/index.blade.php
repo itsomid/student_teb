@@ -1,6 +1,43 @@
 @extends('dashboard.layout.master')
 @section('title', 'مدیریت تراکنش ها')
 @section('content')
+    <div class="row my-3 align-stretch">
+        <div class="col-md">
+            <div class="card shadow-none bg-primary  h-100">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <h6 class="card-title text-white my-0">مبلغ واریز امروز</h6>
+                    <h6 class="card-text text-white">
+                        {{number_format($depositAmountSum)}} تومان
+                    </h6>
+                </div>
+            </div>
+        </div>
+        <div class="col-md">
+            <div class="card shadow-none bg-secondary  h-100">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <h6 class="card-title  text-white my-0">تعداد واریزهای امروز</h6>
+                    <h6 class="card-text text-white">
+                        {{$depositCount}}
+                    </h6>
+                </div>
+            </div>
+        </div>
+        <div class="col-md">
+            <div class="card shadow-none bg-success h-100">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <h6 class="card-title text-white my-0">دانش آموزان با بیشترین واریز امروز</h6>
+                    <ul class="list-unstyled avatar-group d-flex my-0">
+                        @foreach($usersWithGreatestAmountOfTransaction as $transaction)
+                            <li data-bs-toggle="tooltip" data-popup="tooltip-custom" data-bs-placement="top" title="{{$transaction->user->name}}" class="avatar pull-up">
+                                <img class="rounded-circle" src="https://lh3.googleusercontent.com/e6PBGAIgp4UBlNKZYqXl0LU1hM_j2YHgY-aJDHzvTMe0R7_dJ9WkwKYIymQNHlyQqhHgM0hY2cx8G7rXrYug6KFWAfEbFuvo6aI2he2HjTdok_4O87r0C4mGeAj3=e365-rw-v0-w580" alt="Avatar">
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="row">
         <div class="card">
             <div class="card-body">
@@ -58,10 +95,36 @@
                             <tr>
                                 <th>ID</th>
                                 <th>کاربر</th>
-                                <th>مبلغ</th>
+                                <th>
+                                    @php
+                                        $currentParams = request()->except('sortByAmount');
+                                        $newSortDirection = request()->input('sortByAmount') == 'asc' ? 'desc' : 'asc';
+                                    @endphp
+                                    <a href="{{ route('admin.transaction.index', array_merge($currentParams, ['sortByAmount' => $newSortDirection])) }}" class="text-black">
+                                        مبلغ
+                                        @if( request()->input('sortByAmount') == 'asc')
+                                            <span>&uarr;</span>
+                                        @else
+                                            <span>&darr;</span>
+                                        @endif
+                                    </a>
+                                </th>
                                 <th>نوع</th>
                                 <th>توضیحات کاربر</th>
-                                <th>تاریخ ایجاد</th>
+                                <th>
+                                    @php
+                                        $currentParams = request()->except('sortByCreatedAt');
+                                        $newSortDirection = request()->input('sortByCreatedAt') == 'asc' ? 'desc' : 'asc';
+                                    @endphp
+                                    <a href="{{ route('admin.transaction.index', array_merge($currentParams, ['sortByCreatedAt' => $newSortDirection])) }}" class="text-black">
+                                        تاریخ ایجاد
+                                        @if( request()->input('sortByCreatedAt') == 'asc')
+                                            <span>&uarr;</span>
+                                        @else
+                                            <span>&darr;</span>
+                                        @endif
+                                    </a>
+                                </th>
                                 <th>عملیات</th>
                             </tr>
                         </thead>
@@ -95,6 +158,7 @@
                     </table>
                 </div>
             </div>
+            {{$transactions->appends(request()->except('page'))->links()}}
         </div>
     </div>
 @endsection

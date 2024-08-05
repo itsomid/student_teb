@@ -17,19 +17,25 @@ use App\Http\Controllers\API\BuyController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\ProfileController;
 
-Route::post('auth', [CheckRegistrationController::class, '__invoke']);
-Route::get('referrer', [CheckRegistrationController::class, 'referrer']);
-Route::post('password_login', [PasswordLoginController::class, '__invoke']);
-Route::post('send_otp', [SendOTPController::class, '__invoke']);
-Route::post('otp_login', [OTPLoginVerifyController::class, '__invoke']);
-Route::post('otp_register', [OTPRegisterVerifyController::class, '__invoke']);
-Route::post('registering', [RegisterController::class, '__invoke']);
-Route::get('captcha_reload', [ReloadCaptchaController::class, '__invoke']);
-Route::post('lock_time', [LockTimeController::class, '__invoke']);
+Route::post('auth',                 [CheckRegistrationController::class,    '__invoke']);
+
+Route::post('password_login',       [PasswordLoginController::class,        '__invoke']);
+
+Route::post('send_otp',             [SendOTPController::class,              '__invoke']);
+
+Route::post('otp_login',            [OTPLoginVerifyController::class,       '__invoke']);
+Route::post('otp_register',         [OTPRegisterVerifyController::class,    '__invoke']);
+
+Route::post('registering',          [RegisterController::class,             '__invoke']);
+
+Route::get('captcha_reload',        [ReloadCaptchaController::class,        '__invoke']);
+Route::post('lock_time',            [LockTimeController::class,             '__invoke']);
+
+
 
 Route::get('pay/cart/callback', [BuyController::class, 'cartCallback'])->name('bank.cart.callback');
 
-Route::middleware('checkJWT')->group(callback: function () {
+Route::middleware('auth:sanctum')->group(callback: function () {
 
     Route::get('/store', [StoreController::class, 'store']);
     Route::get('/store/product-detail/{product}', [StoreController::class, 'storeItemDetails']);

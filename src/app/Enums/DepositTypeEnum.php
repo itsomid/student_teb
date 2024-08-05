@@ -10,8 +10,8 @@ enum DepositTypeEnum: string
     case BUY = 'buy';
 
     const array TYPE_LABEL = [
-        self::Admin->value => 'توسط ادمین',
-        self::Gift->value => 'هدیه',
+        self::Admin->value  => 'توسط ادمین',
+        self::Gift->value   => 'هدیه',
         self::Debit->value  => 'کارت به کارت',
         self::BUY->value    => 'درگاه',
     ];

@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
+use Jenssegers\Agent\Agent;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Sanctum\HasApiTokens;
 use Morilog\Jalali\Jalalian;
@@ -20,9 +21,10 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    const NEW_TOKEN_INTERVAL = 20;
+    use HasFactory, Filterable, HasApiTokens;
 
-    use HasFactory, Filterable;
+    const NEW_TOKEN_INTERVAL = 20;
+    const MAX_TOKENS = 2;
 
     public $filterNameSpace = 'App\Filters\StudentFilter';
 
@@ -147,5 +149,14 @@ class User extends Authenticatable
                 : str_pad(random_int(10000, 99999), 5, '0', STR_PAD_LEFT);
     }
 
+    public function setDetailOnToken($token)
+    {
+        $agent = new Agent();
+        $device = $agent->platform().'-';
+        $device = $device.$agent->browser();
 
+        $token->accessToken->device = $device;
+        $token->accessToken->ip = request()->ip();
+        $token->accessToken->save();
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
@@ -22,6 +23,6 @@ class AppServiceProvider extends ServiceProvider
 //            return true;
 //        });
 //
-//        Paginator::defaultView('dashboard.layout.vendor.vuexy_pagination');
+        Paginator::defaultView('dashboard.layout.vendor.vuexy_pagination');
     }
 }
