@@ -5,7 +5,9 @@ use App\Http\Controllers\Admin\InquiryController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\StudentAccountController;
 use App\Http\Controllers\Admin\SelectsApiController;
+use App\Http\Controllers\Admin\StudentTokenController;
 use App\Http\Controllers\Admin\TransactionController;
+use App\Http\Controllers\Admin\TransactionReportController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\CouponController;
 use App\Http\Controllers\Admin\CouponRangeController;
@@ -79,6 +81,10 @@ Route::post('/students/{student}/edit_support_sms', [StudentController::class, '
 Route::patch('/students/{student}/update_support', [StudentController::class, 'updateSupport'])->name('student.update-support')->can('student.edit-support');
 Route::patch('students/{student}/verify', [StudentController::class, 'verifyStudent'])->name('student.verify')->can('student.verify');
 
+Route::get('/students/{student}/tokens',                  [StudentTokenController::class, 'index'])  ->name('student.token.index') ->can('student.edit');
+Route::patch('/students/{student}/tokens/{token}/revoke', [StudentTokenController::class, 'revoke']) ->name('student.token.revoke')->can('student.edit');
+
+
 Route::get('/user_support', [UserSupportController::class, 'index'])->name('user_support.get')->can('student.support.history');
 
 Route::get('/referral-codes', [ReferralCodeController::class, 'index'])->name('referral_code.index')->can('referral_code.index');
@@ -87,9 +93,10 @@ Route::post('/referral-codes', [ReferralCodeController::class, 'store'])->name('
 Route::get('/referral-codes/{referral_code}/edit', [ReferralCodeController::class, 'edit'])->name('referral_code.edit')->can('referral_code.edit');
 Route::patch('/referral-codes/{referral_code}', [ReferralCodeController::class, 'update'])->name('referral_code.update')->can('referral_code.edit');
 
-Route::get('/orders',           [OrderController::class, 'index'])          ->name('orders.index')          ->can('order.index');
-Route::get('/transactions',     [TransactionController::class, 'index'])    ->name('transaction.index')     ->can('transaction.index');
+Route::get('/orders',           [OrderController::class, 'index'])            ->name('orders.index')          ->can('order.index');
+Route::get('/transactions',     [TransactionController::class, 'index'])      ->name('transaction.index')     ->can('transaction.index');
 
+Route::get('/reports/transaction',    [TransactionReportController::class, 'index']) ->name('transaction.report.index');
 
 Route::get('/debit-cards', [DebitCardTransactionController::class, 'index'])->name('debit-card.index')->can('debit-card.index');
 Route::get('/debit-cards/create', [DebitCardTransactionController::class, 'create'])->name('debit-card.create')->can('debit-card.create');

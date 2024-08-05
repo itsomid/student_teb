@@ -58,7 +58,7 @@ class SendOTPController extends Controller
 
         $this->sendSmsKaveNegar($verifyUser);
 
-        return response(['code'=>$code,'opt_result' => true ], Response::HTTP_CREATED);
+        return response(['opt_result' => true ], Response::HTTP_CREATED);
     }
 
 

@@ -11,6 +11,7 @@ use App\Models\VerificationCode;
 use App\Services\JWT;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Jenssegers\Agent\Agent;
 
 class OTPLoginVerifyController extends Controller
 {
@@ -41,9 +42,18 @@ class OTPLoginVerifyController extends Controller
 
         VerificationCode::query()->where('receptor', $user->mobile)->delete();
 
+        if ($user->tokens()->count() >= User::MAX_TOKENS) {
+            return response()->json([
+                'message' => 'شما نمیتوانید با بیش از ' . User::MAX_TOKENS . ' دستگاه وارد شوید.'
+            ], 403);
+        }
+
+        $token = $user->createToken((new Agent)->isMobile() ? 'Mobile' : 'Desktop');
+        $user->setDetailOnToken($token);
+
         //Give JWT
         return response([
-            'token' => JWT::new()->payload(VerificationCode::getPayload($user->id))->encode(),
+            'token' =>  $token->plainTextToken,
             'user'  => new UserResource($user)
         ]);
     }

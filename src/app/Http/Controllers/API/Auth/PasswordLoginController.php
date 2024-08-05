@@ -9,12 +9,14 @@ use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Models\VerificationCode;
 use App\Services\JWT;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
+use Jenssegers\Agent\Agent;
 
 class PasswordLoginController extends Controller
 {
-    public function __invoke(PasswordLoginRequest $request)
+    public function __invoke(Request $request)
     {
         $user = User::where('mobile', $request->mobile)->first();
 
@@ -26,13 +28,18 @@ class PasswordLoginController extends Controller
             ], Response::HTTP_FORBIDDEN);
         }
 
-        $user->save();
+        if ($user->tokens()->count() >= User::MAX_TOKENS) {
+            return response()->json([
+                'message' => 'شما نمیتوانید با بیش از ' . User::MAX_TOKENS . ' دستگاه وارد شوید.'
+            ], 403);
+        }
+
+        $token = $user->createToken((new Agent)->isMobile() ? 'Mobile' : 'Desktop');
+        $user->setDetailOnToken($token);
 
         return response([
-            'token' => JWT::new()
-                ->payload(VerificationCode::getPayload($user->id))
-                ->encode(),
-            'user' => new UserResource($user)
+            'token' => $token->plainTextToken,
+            'user'  => new UserResource($user)
         ]);
     }
 }
