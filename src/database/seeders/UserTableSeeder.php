@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Models\UserHistorySupport;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Arr;
@@ -19,6 +20,7 @@ class UserTableSeeder extends Seeder
         User::factory(2)->create();
         User::factory(1)->unverifiedWithIncompleteRegistration()->create();
         User::factory(1)->unverified()->create();
+        UserHistorySupport::factory(10)->create();
 
     }
 
