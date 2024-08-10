@@ -173,6 +173,14 @@
                 </a>
             </li>
         @endcan
+        @can('commission')
+            <li class="menu-item @if(request()->is('admin/commission*')) active @endif">
+                <a href="{{route('admin.commission.index')}}" class="menu-link">
+                    <i class="menu-icon fa-light fa-user-group fa-sm"></i>
+                    <div data-i18n="Page 1">پورسانت تیم فروش</div>
+                </a>
+            </li>
+        @endcan
         @can('cc_servers')
             <li class="menu-item @if(request()->is('admin/cc_servers*')) active @endif">
                 <a href="{{route('admin.cc_servers.index')}}" class="menu-link">

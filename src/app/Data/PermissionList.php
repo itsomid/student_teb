@@ -75,6 +75,7 @@ class PermissionList {
             ['classes.edit'                         ,'ویرایش کلاس'],
 
             ['cc_servers'                           ,'سرورهای کلاسینو کانکت'],
+            ['commission'                           ,'پورسانت تیم فروش'],
 
 
             ['product_category.index'               ,'مشاهده دسته بندی محصولات'],
