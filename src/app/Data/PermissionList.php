@@ -76,6 +76,7 @@ class PermissionList {
 
             ['cc_servers'                           ,'سرورهای کلاسینو کانکت'],
             ['commission'                           ,'پورسانت تیم فروش'],
+            ['sales_report_by_category'             ,'آمار فروش بر اساس دسته بندی'],
 
 
             ['product_category.index'               ,'مشاهده دسته بندی محصولات'],

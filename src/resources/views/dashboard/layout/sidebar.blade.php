@@ -130,6 +130,22 @@
                 </a>
             </li>
         @endcan
+        @can('commission')
+            <li class="menu-item @if(request()->is('admin/commission*')) active @endif">
+                <a href="{{route('admin.commission.index')}}" class="menu-link">
+                    <i class="menu-icon fa-light fa-user-group fa-sm"></i>
+                    <div data-i18n="Page 1">پورسانت تیم فروش</div>
+                </a>
+            </li>
+        @endcan
+        @can('sales_report_by_category')
+            <li class="menu-item @if(request()->is('admin/sales_report_by_category*')) active @endif">
+                <a href="{{route('admin.sales-report-by-category.form')}}" class="menu-link">
+                    <i class="menu-icon fa-light fa-user-group fa-sm"></i>
+                    <div data-i18n="Page 1">آمار فروش براساس دسته‌بندی</div>
+                </a>
+            </li>
+        @endcan
         @can('student-account.charge')
             <li class="menu-item @if(request()->is(['student-account*'])) active open @endif">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
@@ -170,14 +186,6 @@
                 <a href="{{route('admin.product_type.index')}}" class="menu-link">
                     <i class="menu-icon fa-light fa-user-group fa-sm"></i>
                     <div data-i18n="Page 1">ماهیت محصولات</div>
-                </a>
-            </li>
-        @endcan
-        @can('commission')
-            <li class="menu-item @if(request()->is('admin/commission*')) active @endif">
-                <a href="{{route('admin.commission.index')}}" class="menu-link">
-                    <i class="menu-icon fa-light fa-user-group fa-sm"></i>
-                    <div data-i18n="Page 1">پورسانت تیم فروش</div>
                 </a>
             </li>
         @endcan

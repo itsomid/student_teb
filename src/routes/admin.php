@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\CommissionManagementController;
 use App\Http\Controllers\Admin\CommissionTypeManagementController;
 use App\Http\Controllers\Admin\InquiryController;
 use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\SalesReportByCategory;
 use App\Http\Controllers\Admin\StudentAccountController;
 use App\Http\Controllers\Admin\SelectsApiController;
 use App\Http\Controllers\Admin\StudentTokenController;
@@ -188,6 +189,8 @@ Route::get('cc_servers/{cc_server}/edit', [CcServerController::class, 'edit'])  
 Route::put('cc_servers/{cc_server}',      [CcServerController::class, 'update'])    ->name('cc_servers.update')       ->can('cc_servers');
 Route::delete('cc_servers/{cc_server}',   [CcServerController::class, 'destroy'])   ->name('cc_servers.destroy')      ->can('cc_servers');
 
+
+Route::get('/sales_report_by_category',                         [SalesReportByCategory::class, 'index'])                     ->name('sales-report-by-category.form')     ->can('sales_report_by_category');
 
 Route::get('/commission/',                                      [CommissionManagementController::class, 'index'])            ->name('commission.index')  ->can('commission');
 Route::post('/commission/',                                     [CommissionManagementController::class, 'store'])            ->name('commission.store')  ->can('commission');
