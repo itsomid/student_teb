@@ -23,10 +23,13 @@ class DateFormatter
         $moment= str_replace('۹', 9, $moment);
 
         $date= explode( ' ' ,$moment)[0];
-        $time= explode( ' ' ,$moment)[1];
+        $time= str_contains($moment, ' ')
+            ?  explode( ' ' ,$moment)[1] : null;
 
         $date = explode("/" ,$date);
-        $time= explode(":" ,$time);
+        $time= $time
+            ? explode(":" ,$time)
+            : ['00', '00'];
 
         $date=  CalendarUtils::toGregorian($date[0] , $date[1] , $date[2]);
         $date=  Carbon::create($date[0], $date[1] , $date[2] , $time[0] , $time[1]);

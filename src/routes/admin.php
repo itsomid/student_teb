@@ -1,8 +1,12 @@
 <?php
 
 use App\Http\Controllers\Admin\CcServerController;
+use App\Http\Controllers\Admin\CommissionHistoryManagementController;
+use App\Http\Controllers\Admin\CommissionManagementController;
+use App\Http\Controllers\Admin\CommissionTypeManagementController;
 use App\Http\Controllers\Admin\InquiryController;
 use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\SalesReportByCategory;
 use App\Http\Controllers\Admin\StudentAccountController;
 use App\Http\Controllers\Admin\SelectsApiController;
 use App\Http\Controllers\Admin\StudentTokenController;
@@ -184,3 +188,24 @@ Route::post('cc_servers',                 [CcServerController::class, 'store']) 
 Route::get('cc_servers/{cc_server}/edit', [CcServerController::class, 'edit'])      ->name('cc_servers.edit')         ->can('cc_servers');
 Route::put('cc_servers/{cc_server}',      [CcServerController::class, 'update'])    ->name('cc_servers.update')       ->can('cc_servers');
 Route::delete('cc_servers/{cc_server}',   [CcServerController::class, 'destroy'])   ->name('cc_servers.destroy')      ->can('cc_servers');
+
+
+Route::get('/sales_report_by_category',                         [SalesReportByCategory::class, 'index'])                     ->name('sales-report-by-category.form')     ->can('sales_report_by_category');
+
+Route::get('/commission/',                                      [CommissionManagementController::class, 'index'])            ->name('commission.index')  ->can('commission');
+Route::post('/commission/',                                     [CommissionManagementController::class, 'store'])            ->name('commission.store')  ->can('commission');
+Route::get('/commission/{commission}/edit',                     [CommissionManagementController::class, 'edit'])             ->name('commission.edit')   ->can('commission');
+Route::patch('/commission/{commission}',                        [CommissionManagementController::class, 'update'])           ->name('commission.update') ->can('commission');
+Route::delete('/commission/{commission}',                       [CommissionManagementController::class, 'destroy'])          ->name('commission.destroy')->can('commission');
+
+Route::get('/commission/{commission}/history',                  [CommissionHistoryManagementController::class, 'index'])     ->name('commission.history.index') ->can('commission');
+Route::get('/commission/{commission}/history/create',           [CommissionHistoryManagementController::class, 'create'])    ->name('commission.history.create')->can('commission');
+Route::post('/commission/{commission}/history',                 [CommissionHistoryManagementController::class, 'store'])     ->name('commission.history.store') ->can('commission');
+Route::get('/commission/{commission}/history/{history}/edit',   [CommissionHistoryManagementController::class, 'edit'])      ->name('commission.history.edit')  ->can('commission');
+Route::patch('/commission/{commission}/history/{history}',      [CommissionHistoryManagementController::class, 'update'])    ->name('commission.history.update')->can('commission');
+
+Route::get('/commission_type',                                  [CommissionTypeManagementController::class, 'index'])        ->name('commission_type.index')  ->can('commission');
+Route::post('/commission_type',                                 [CommissionTypeManagementController::class, 'store'])        ->name('commission_type.store')  ->can('commission');
+Route::get('/commission_type/{commission_type}/edit',           [CommissionTypeManagementController::class, 'edit'])         ->name('commission_type.edit')   ->can('commission');
+Route::patch('/commission_type/{commission_type}',              [CommissionTypeManagementController::class, 'update'])       ->name('commission_type.update') ->can('commission');
+Route::delete('/commission_type/{commission_type}',             [CommissionTypeManagementController::class, 'destroy'])      ->name('commission_type.destroy')->can('commission');

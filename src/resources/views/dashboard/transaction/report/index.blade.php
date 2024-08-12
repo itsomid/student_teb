@@ -12,7 +12,7 @@
                     </div>
                     <div class="card-body">
                         <form action="{{route('admin.transaction.report.index')}}" method="get">
-                            <div class="row">
+                            <div class="row justify-content-center">
                                 <div class="col-md-3">
                                     <div class="form-group mt-3">
                                         <label for="type">نوع تراکنش:</label>
@@ -38,8 +38,16 @@
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group mt-3">
-                                        <label for="time_span">چند روز اخیر:</label>
-                                        <input type="number" step="1" min="6" max="31" value="{{request()->input('time_span',7) }}" name="time_span" class="form-control" id="time_span">
+                                        <label class="form-label" for="from_date">از تاریخ:</label>
+                                        <input name="from_date" type="text" id="from_date" class="form-control" placeholder="از تاریخ" value="{{old('from_date') ?? request()->input('from_date')}}" data-jdp autocomplete="off">
+                                        @error('from_date')<small class="text-danger">{{$message}}</small>@enderror
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group mt-3">
+                                        <label class="form-label" for="to_date">تا تاریخ:</label>
+                                        <input name="to_date" type="text" id="to_date" class="form-control" placeholder="تا تاریخ" value="{{old('to_date') ?? request()->input('to_date')}}" data-jdp autocomplete="off">
+                                        @error('to_date')<small class="text-danger">{{$message}}</small>@enderror
                                     </div>
                                 </div>
                                 <div class="col-md-2">
@@ -79,7 +87,8 @@
 @endsection
 @section('vendor-script')
     @vite(['resources/assets/vendor/css/apex-charts.css',
-            'resources/assets/vendor/js/apexcharts.js'])
+           'resources/assets/vendor/js/apexcharts.js',
+           'resources/assets/js/jalalidatepicker.js',])
 @endsection
 
 @section('scripts')
