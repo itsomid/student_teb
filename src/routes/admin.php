@@ -160,8 +160,9 @@ Route::post('/courses/{course}/classes', [ClassController::class, 'store'])->nam
 Route::get('/courses/{course}/classes/{classes}/edit', [ClassController::class, 'edit'])->name('classes.edit')->can('classes.edit');
 Route::patch('/courses/{course}/classes/{classes}', [ClassController::class, 'update'])->name('classes.update')->can('classes.edit');
 
-Route::get('/class/block', [\App\Http\Controllers\Admin\ClassBlockController::class, 'index'])->name('class-block.index')->can('class-block.index');
-Route::get('/class/create', [\App\Http\Controllers\Admin\ClassBlockController::class, 'create'])->name('class-block.create')->can('class-block.create');
+Route::get('/classes/block', [\App\Http\Controllers\Admin\ClassBlockController::class, 'index'])->name('class-block.index')->can('class-block.index');
+Route::get('/classes/create', [\App\Http\Controllers\Admin\ClassBlockController::class, 'create'])->name('class-block.create')->can('class-block.create');
+Route::post('/classes', [\App\Http\Controllers\Admin\ClassBlockController::class, 'store'])->name('class-block.store')->can('class-block.create');
 
 Route::get('/product_categories', [ProductCategoryController::class, 'index'])->name('product_category.index')->can('product_category.index');
 Route::get('/product_categories/create', [ProductCategoryController::class, 'create'])->name('product_category.create')->can('product_category.create');

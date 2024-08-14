@@ -23,7 +23,7 @@ class ClassBlock extends Model
         return $q->whereDate('expired_at', '<', now());
     }
     protected $fillable = [
-        'student_id', 'product_id', 'description'
+        'student_id', 'product_id', 'description', 'expired_at'
     ];
     public $filterNameSpace = 'App\Filters\ClassBlockFilters';
 

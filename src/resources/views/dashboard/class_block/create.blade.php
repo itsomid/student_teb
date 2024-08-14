@@ -1,18 +1,18 @@
 @extends('dashboard.layout.master')
-@section('title', 'افزایش اعتبار')
+@section('title', 'بلاک کاربر از کلاس')
 @section('content')
     <section class="form-control-repeater">
         <div class="card">
 
             <div class="card-body">
                 <h5 class="card-title">بلاک کاربر از کلاس</h5>
-                <form class="row" method="post" action="{{route('admin.student-account.charge')}}">
+                <form class="row" method="post" action="{{route('admin.class-block.store')}}">
                     @csrf
 
                     <div class="col-md-6">
                         <label for="selectStudent" class="form-label mb-0">کلاس:
                         </label>
-                        <class-selection-component input-name="product_id" default-value='{"product_id": 1, "product_name": "mehdi"}' ></class-selection-component>
+                        <class-selection-component input-name="product_id"></class-selection-component>
                     </div>
                     <div class="col-md-12">
                         <label for="selectStudent" class="form-label mb-0">لیست کاربران بلاکی:
@@ -28,15 +28,15 @@
                         </div>
                     </div>
                     <div class="col-md-12">
-                        <label for="numeral-mask" class="form-label mb-0">توضیحات:</label>
+                        <label for="numeral-mask" class="form-label mb-0">توضیحات بلاک (اختیاری):</label>
                         <textarea name="description" cols="50" rows="10" class="form-control"></textarea>
                         @error('description')<small class="text-danger">{{$message}}</small>@enderror
                     </div>
 
                     <div class="col-md-6 user_role mt-3">
-                        <label class="form-label" for="user_description">توضیحات بلاک (اختیاری):</label>
-                        <textarea class="form-control" id="user_description" name="user_description" placeholder="توضیحات..."></textarea>
-
+                        <label class="form-label" for="user_description">تا چه زمانی بلاک باشد؟:</label>
+                        <input class="form-control" data-jdp id="expired_at" name="expired_at" placeholder="توضیحات...">
+                        @error('expired_at')<small class="text-danger">{{$message}}</small>@enderror
                     </div>
                     <div class="row align-items-center g-2 mt-2">
                         <div class="col text-center">
@@ -55,6 +55,7 @@
     @vite([
             'resources/assets/vendor/libs/select2/select2.js',
             'resources/assets/vendor/libs/cleavejs/cleave.js',
+            'resources/assets/js/jalalidatepicker.js',
             'resources/assets/vendor/js/forms-selects.js',
             'resources/assets/js/student.js',
             'resources/assets/js/forms-extras.js'
