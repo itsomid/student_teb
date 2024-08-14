@@ -228,6 +228,12 @@
                                 </a>
                             </li>
                         @endcan
+                        <li class="menu-item @if(request()->is('admin/class/block*')) active @endif">
+                            <a href="{{route('admin.class-block.index')}}" class="menu-link">
+                                <i class="menu-icon fa-light fa-user-lock fa-sm"></i>
+                                <div data-i18n="Page 1"> بلاک کاربر از کلاس</div>
+                            </a>
+                        </li>
                 </ul>
             </li>
         @endcan

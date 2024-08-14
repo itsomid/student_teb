@@ -160,6 +160,9 @@ Route::post('/courses/{course}/classes', [ClassController::class, 'store'])->nam
 Route::get('/courses/{course}/classes/{classes}/edit', [ClassController::class, 'edit'])->name('classes.edit')->can('classes.edit');
 Route::patch('/courses/{course}/classes/{classes}', [ClassController::class, 'update'])->name('classes.update')->can('classes.edit');
 
+Route::get('/class/block', [\App\Http\Controllers\Admin\ClassBlockController::class, 'index'])->name('class-block.index')->can('class-block.index');
+Route::get('/class/create', [\App\Http\Controllers\Admin\ClassBlockController::class, 'create'])->name('class-block.create')->can('class-block.create');
+
 Route::get('/product_categories', [ProductCategoryController::class, 'index'])->name('product_category.index')->can('product_category.index');
 Route::get('/product_categories/create', [ProductCategoryController::class, 'create'])->name('product_category.create')->can('product_category.create');
 Route::post('/product_categories', [ProductCategoryController::class, 'store'])->name('product_category.store')->can('product_category.create');
@@ -209,3 +212,5 @@ Route::post('/commission_type',                                 [CommissionTypeM
 Route::get('/commission_type/{commission_type}/edit',           [CommissionTypeManagementController::class, 'edit'])         ->name('commission_type.edit')   ->can('commission');
 Route::patch('/commission_type/{commission_type}',              [CommissionTypeManagementController::class, 'update'])       ->name('commission_type.update') ->can('commission');
 Route::delete('/commission_type/{commission_type}',             [CommissionTypeManagementController::class, 'destroy'])      ->name('commission_type.destroy')->can('commission');
+
+Route::get('/course/search/{name}', [\App\Http\Controllers\Admin\CourseSearchController::class, '__invoke']);

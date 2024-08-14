@@ -70,7 +70,7 @@
                                     {{$userSupport->end_time}}
                                 </td>
                                 <td>
-                                    {!! $userSupport->description !!}
+                                    {{$userSupport->description}}
                                 </td>
                             </tr>
                         @endforeach

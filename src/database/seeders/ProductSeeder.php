@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\ClassBlock;
 use App\Models\Classes;
 use App\Models\Course;
 use App\Models\CustomPackage;
@@ -36,5 +37,6 @@ class ProductSeeder extends Seeder
         foreach ($products as $product)
             Product::factory(10)->class()->state(['parent_id' => $product->id])->classname()->has(Classes::factory(1)->course_id($product->course))->create();
 
+        ClassBlock::factory(10)->create();
     }
 }
