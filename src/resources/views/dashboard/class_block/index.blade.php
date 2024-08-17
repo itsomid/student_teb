@@ -70,7 +70,7 @@
                                         </button>
                                         <div class="dropdown-menu">
                                             @can('class-block.edit')
-                                                <a class="dropdown-item"  href="{{route('admin.course.edit', ['course' => 1])}}">
+                                                <a class="dropdown-item"  href="{{route('admin.class-block.edit',  $block->id)}}">
                                                     <i class="fa-regular fa-pen mx-1"></i>
                                                     ویرایش
                                                 </a>

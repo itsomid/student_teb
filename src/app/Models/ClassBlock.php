@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Morilog\Jalali\Jalalian;
 
 class ClassBlock extends Model
 {
@@ -38,5 +39,9 @@ class ClassBlock extends Model
     public function student(): BelongsTo
     {
         return $this->belongsTo(User::class, 'student_id');
+    }
+    public function expired_at(): string
+    {
+        return Jalalian::forge($this->expired_at)->format('%Y/%m/%d H:i:s');
     }
 }

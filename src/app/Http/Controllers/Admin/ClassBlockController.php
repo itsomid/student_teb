@@ -5,10 +5,13 @@ namespace App\Http\Controllers\Admin;
 use App\Functions\FlashMessages\Toast;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ClassBlock\CreateRequest;
+use App\Http\Requests\ClassBlock\UpdateRequest;
 use App\Models\ClassBlock;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Validation\ValidationException;
 
 class ClassBlockController extends Controller
 {
@@ -62,6 +65,21 @@ class ClassBlockController extends Controller
         }
 
         Toast::message('بلاک کاربر با موفقیت انجام شد.')->success()->notify();
+        return redirect()->route('admin.class-block.index');
+    }
+
+    public function edit(ClassBlock $classBlock): View
+    {
+        return view('dashboard.class_block.edit', compact('classBlock'));
+    }
+
+    public function update(ClassBlock $classBlock, UpdateRequest $request)
+    {
+        $input = $request->all();
+
+       $classBlock->update($input);
+
+        Toast::message('بلاک کاربر با موفقیت ویرایش شد.')->success()->notify();
         return redirect()->route('admin.class-block.index');
     }
 }
