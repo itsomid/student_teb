@@ -61,7 +61,7 @@
                                     {{ $block->description }}
                                 </td>
                                 <td>
-                                    {{ $block->expired_at }}
+                                    {{ $block->expired_at() }}
                                 </td>
                                 <td >
                                     <div class="dropdown">
