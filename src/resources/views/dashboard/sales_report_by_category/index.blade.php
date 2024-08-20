@@ -60,7 +60,7 @@
                     </div>
                 </div>
                 @if(request()->has('categories'))
-                <div class="card">
+                <div class="card mt-5">
                     <div class="card-body">
                         <div class="card-title header-elements">
                             <h5 class="m-0 me-2"> آمار فروش براساس دسته بندی </h5>
@@ -72,6 +72,7 @@
                                         <th>شناسه محصول</th>
                                         <th>نام محصول</th>
                                         <th>مجموع مبلغ فروش</th>
+                                        <th>تعداد سفارش</th>
                                     </thead>
                                     <tbody>
                                     @foreach($totalPaidAmountByProduct as $amount)
@@ -81,6 +82,9 @@
                                             <th>
                                                 {{$amount->total_price}}
                                                 تومان
+                                            </th>
+                                            <th>
+                                                {{$amount->order_count}}
                                             </th>
                                         </tr>
                                     @endforeach()

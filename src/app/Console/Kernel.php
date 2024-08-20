@@ -2,11 +2,16 @@
 
 namespace App\Console;
 
+use App\Legacy\Commands\ConsumeFromLegacy;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
 {
+    protected $commands = [
+        ConsumeFromLegacy::class,
+    ];
+
     /**
      * Define the application's command schedule.
      */
