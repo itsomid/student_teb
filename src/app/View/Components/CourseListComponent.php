@@ -9,12 +9,14 @@ use Illuminate\View\Component;
 
 class CourseListComponent extends Component
 {
+    public $selected= [];
+
     /**
      * Create a new component instance.
      */
-    public function __construct(public string $inputName)
+    public function __construct(public string $name, public $multiple, $selected)
     {
-        //
+        $this->selected =  json_decode($selected);
     }
 
     /**
@@ -22,7 +24,7 @@ class CourseListComponent extends Component
      */
     public function render(): View|Closure|string
     {
-        $courses = Course::query()->with('product:name')->select('product_id')->get();
+        $courses = Course::query()->with('product')->select('id','product_id')->get();
         return view('components.course-list-component', compact('courses'));
     }
 }

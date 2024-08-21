@@ -13,6 +13,7 @@ class InstallmentManagementController extends Controller
         $installments= InstallmentRepayment::query()
             ->with('user')
             ->with('order_item')
+            ->filterBy(request()->all())
             ->latest()
             ->paginate(50);
 

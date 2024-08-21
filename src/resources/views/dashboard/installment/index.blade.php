@@ -6,24 +6,39 @@
                 <div class="card-title header-elements">
                     <h5 class="m-0 me-2">مدیریت اقساط</h5>
                 </div>
-               <form class="row">
-                   <div class="col-md-3">
+               <form class="row" action="{{route('admin.installment.index')}}">
+                   <div class="col-md-5">
                        <div class="form-group">
-                            
+                           <x-course-list-component
+                               name="product_id[]"
+                               multiple="1"
+                               selected="{{request()->has('product_id') ? json_encode(request()->input('product_id'),JSON_NUMERIC_CHECK) : '[]' }}"
+                           >
+                           </x-course-list-component>
                        </div>
                    </div>
-                   <div class="col-md-3">
-                       <div class="form-group">
-                       </div>
-                   </div>
-                   <div class="col-md-3">
-                       <div class="form-group">
 
-                       </div>
-                   </div>
                    <div class="col-md-3">
                        <div class="form-group">
-
+                           <x-student-selection-component
+                               name="user_id[]"
+                               multiple="1"
+                               selected="{{request()->has('user_id') ? json_encode(request()->input('user_id'),JSON_NUMERIC_CHECK) : '[]' }}">
+                           </x-student-selection-component>
+                       </div>
+                   </div>
+                   <div class="col-md-2">
+                       <div class="form-group">
+                           <label for="statusSelect" class="text-muted">انتخاب وضعیت</label>
+                           <select name="status" class="form-control" id="statusSelect">
+                               <option {{request()->input('status') == 'paid'     ? 'selected' : ''}} value="paid"   >پرداخت شده</option>
+                               <option {{request()->input('status') == 'pending'  ? 'selected' : ''}} value="pending">در انتظار پرداخت</option>
+                           </select>
+                       </div>
+                   </div>
+                   <div class="col-md-2 align-content-end">
+                       <div class="form-group">
+                           <button type="submit" class="btn btn-primary text-white w-100">جست و جو</button>
                        </div>
                    </div>
                </form>

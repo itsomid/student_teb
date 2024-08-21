@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\CommissionHistoryManagementController;
 use App\Http\Controllers\Admin\CommissionManagementController;
 use App\Http\Controllers\Admin\CommissionTypeManagementController;
 use App\Http\Controllers\Admin\InquiryController;
+use App\Http\Controllers\Admin\InstallmentManagementController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\SalesReportByCategory;
 use App\Http\Controllers\Admin\StudentAccountController;
@@ -217,3 +218,6 @@ Route::patch('/commission_type/{commission_type}',              [CommissionTypeM
 Route::delete('/commission_type/{commission_type}',             [CommissionTypeManagementController::class, 'destroy'])      ->name('commission_type.destroy')->can('commission');
 
 Route::get('/course/search/{name}', [\App\Http\Controllers\Admin\CourseSearchController::class, '__invoke']);
+
+
+Route::get('/installments',                                     [InstallmentManagementController::class, 'index'])           ->name('installment.index')      ->can('installment.index');

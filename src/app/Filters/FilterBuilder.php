@@ -31,7 +31,7 @@ class FilterBuilder
 
             $instance = new $class($this->query);
 
-            if (strlen($value)) {
+            if ((is_string($value) && strlen($value)) || (is_array($value) && count($value))) {
                 $instance->handle($value);
             } else {
                 $instance->handle();

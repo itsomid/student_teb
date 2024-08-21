@@ -8,12 +8,18 @@ use Illuminate\View\Component;
 
 class StudentSelectionComponent extends Component
 {
+    public string $name;
+    public bool $multiple=false;
+    public $selected;
+
     /**
      * Create a new component instance.
      */
-    public function __construct(public string $inputName, public ?int $defaultValue = null)
+    public function __construct( $name, $multiple,$selected)
     {
-        //
+        $this->name = $name;
+        $this->multiple = $multiple;
+        $this->selected = $selected;
     }
 
     /**
@@ -24,3 +30,4 @@ class StudentSelectionComponent extends Component
         return view('components.student-selection-component');
     }
 }
+

@@ -3,14 +3,15 @@
 namespace App\Models;
 
 use App\Enums\InstallmentStatusEnum;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Filters\Filterable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Morilog\Jalali\Jalalian;
 
 class InstallmentRepayment extends Model
 {
-    use HasFactory;
+    use Filterable;
+    public $filterNameSpace = "App\Filters\InstallmentFilters";
 
     protected $fillable = [
         'amount', 'expired_at', 'user_id', 'order_item_id', 'status'
