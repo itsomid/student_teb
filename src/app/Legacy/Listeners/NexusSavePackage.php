@@ -7,7 +7,7 @@ use App\Legacy\Listeners\Contract\LegacyContract;
 class NexusSavePackage implements LegacyContract
 {
 
-    public function handle($data)
+    public function handle(array $data): void
     {
 
     }
