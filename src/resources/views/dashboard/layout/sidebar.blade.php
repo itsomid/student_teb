@@ -142,7 +142,17 @@
             <li class="menu-item @if(request()->is('admin/sales_report_by_category*')) active @endif">
                 <a href="{{route('admin.sales-report-by-category.form')}}" class="menu-link">
                     <i class="menu-icon fa-light fa-user-group fa-sm"></i>
-                    <div data-i18n="Page 1">آمار فروش براساس دسته‌بندی</div>
+                    <div data-i18n="Page 1">آمار فروش
+                    <small>(براساس دسته بندی)</small>
+                    </div>
+                </a>
+            </li>
+        @endcan
+        @can('installment.index')
+            <li class="menu-item @if(request()->is('admin/installments*')) active @endif">
+                <a href="{{route('admin.installment.index')}}" class="menu-link">
+                    <i class="menu-icon fa-light fa-user-group fa-sm"></i>
+                    <div data-i18n="Page 1">مدیریت اقساط</div>
                 </a>
             </li>
         @endcan

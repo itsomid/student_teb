@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\CommissionHistoryManagementController;
 use App\Http\Controllers\Admin\CommissionManagementController;
 use App\Http\Controllers\Admin\CommissionTypeManagementController;
 use App\Http\Controllers\Admin\InquiryController;
+use App\Http\Controllers\Admin\InstallmentManagementController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\SalesReportByCategory;
 use App\Http\Controllers\Admin\StudentAccountController;
@@ -209,3 +210,5 @@ Route::post('/commission_type',                                 [CommissionTypeM
 Route::get('/commission_type/{commission_type}/edit',           [CommissionTypeManagementController::class, 'edit'])         ->name('commission_type.edit')   ->can('commission');
 Route::patch('/commission_type/{commission_type}',              [CommissionTypeManagementController::class, 'update'])       ->name('commission_type.update') ->can('commission');
 Route::delete('/commission_type/{commission_type}',             [CommissionTypeManagementController::class, 'destroy'])      ->name('commission_type.destroy')->can('commission');
+
+Route::get('/installments',                                     [InstallmentManagementController::class, 'index'])           ->name('installment.index')      ->can('installment.index');

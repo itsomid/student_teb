@@ -100,6 +100,7 @@ class PermissionList {
             ['report.registered_users'              ,'آمار ثبت نام نماینده های فروش'],
 
             ['student-account.charge'               ,'افزایش اعتبار دانش آموز'],
+            ['installment.index'                    ,'مشاهده اقساط'],
 
 
         ];
