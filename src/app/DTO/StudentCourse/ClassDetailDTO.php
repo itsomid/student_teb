@@ -20,7 +20,8 @@ class ClassDetailDTO
     private string $teacherImage;
     private ClassStatusEnum $classStatus;
     private string $courseName;
-
+    private bool $isStudentBlock;
+    private ?string $studentBlockDescription;
     public function setName(string $name): self
     {
         $this->name = $name;
@@ -162,6 +163,28 @@ class ClassDetailDTO
     public function getHoldingDate(): ?Carbon
     {
         return $this->holdingDate;
+    }
+
+    public function setIsStudentBlock(bool $isStudentBlock): self
+    {
+        $this->isStudentBlock = $isStudentBlock;
+        return $this;
+    }
+
+    public function getIsStudentBlock(): bool
+    {
+        return $this->isStudentBlock;
+    }
+
+    public function setStudentBlockDescription(?string $studentBlockDescription): self
+    {
+        $this->studentBlockDescription = $studentBlockDescription;
+        return $this;
+    }
+
+    public function getStudentBlockDescription(): ?string
+    {
+        return $this->studentBlockDescription;
     }
 
 }

@@ -29,7 +29,7 @@ class ClassController extends Controller
         }
 
         return new ClassDetailResource(
-            $this->courseService->getSingleClass($productId)
+            $this->courseService->getSingleClass($userId, $productId)
         );
     }
 }

@@ -16,8 +16,10 @@ return new class extends Migration
         Schema::create('class_blocks', function (Blueprint $table) {
             $table->id();
             $table->foreignId('student_id')->constrained(table: 'users')->cascadeOnDelete();
-            $table->foreignId('class_id')->constrained(table: 'classes')->cascadeOnDelete();
+            $table->foreignId('product_id')->constrained(table: 'classes', column: 'product_id')->cascadeOnDelete();
             $table->text('description')->nullable();
+            $table->timestamp('expired_at');
+            $table->index(['student_id', 'product_id', 'expired_at']);
             $table->timestamps();
         });
     }
