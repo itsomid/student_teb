@@ -2,25 +2,18 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Functions\Filter;
 use App\Http\Controllers\Controller;
-use App\Models\User;
-use App\Services\UserSupport;
+use App\Models\Admin;
+use App\Models\UserHistorySupport;
+use Illuminate\Contracts\View\View;
 
 class UserSupportController extends Controller
 {
-    public function index()
+    public function index(): View
     {
-        $filters= Filter::filter()
-            ->add('user.name', request()->input('user_name'))
-            ->add('end_time', request()->input('end_time'))
-            ->add('start_time', request()->input('start_time'));
-
-        $userSupports= UserSupport::index($filters->get());
-        $admins= User::query()->with('roles')->get();
+        $userSupports= UserHistorySupport::query()->with('student', 'supporter')->filterBy(request()->only(['student_name']))->paginate(50);
 
         return view('dashboard.user_support.index')
-            ->with(['admins' => $admins])
             ->with(['userSupports' => $userSupports]);
     }
 }

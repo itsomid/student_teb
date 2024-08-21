@@ -8,7 +8,7 @@
                     <div class="col-md-12">
                         <div class="form- mb-5">
                             <label for="username">نام دانش آموز:</label>
-                            <input class="form-control" id="username" type="text" name="user.name" value="{{request()->input('fields')['user.name'] ?? ''}}">
+                            <input class="form-control" id="username" type="text" name="student_name" value="{{request()->input('fields')['user.name'] ?? ''}}">
                         </div>
                     </div>
 
@@ -48,30 +48,38 @@
                             <th>نقش پشتیبان</th>
                             <th>زمان آغاز</th>
                             <th>زمان پایان</th>
+                            <th>توضیحات</th>
                         </tr>
                         </thead>
                         <tbody class="table-border-bottom-0">
                         @foreach($userSupports as $userSupport)
-                            <tr>
+                            <tr
+                                @if(($userSupport->expired_at && $userSupport->expired_at->isPast()) || ($userSupport->end_time && $userSupport->end_time->isPast()))
+                                    class="table-danger"
+                                @endif>
                                 <td>{{$userSupport->id}}</td>
-                                <td>{{$userSupport->user_name}}</td>
-                                <td>{{$admins->where('id', $userSupport->user_support_id)->first()->fullname()}}</td>
+                                <td>{{$userSupport->student->name}}</td>
+                                <td>{{$userSupport->supporter->fullname()}}</td>
                                 <td>
-                                    @foreach($admins->where('id', $userSupport->user_support_id)->first()->roles as $role)
-                                        {{$role->name}}
-                                    @endforeach
+                                    {{$userSupport->support_role}}
                                 </td>
                                 <td>
-                                    {{$userSupport->start_time()}}
+                                    {{$userSupport->start_time}}
                                 </td>
                                 <td>
-                                    {{$userSupport->end_time()}}
+                                    {{$userSupport->end_time}}
+                                </td>
+                                <td>
+                                    {{$userSupport->description}}
                                 </td>
                             </tr>
                         @endforeach
                         </tbody>
                     </table>
                 </div>
+            </div>
+            <div class="row justify-content-center">
+                {{$userSupports->links()}}
             </div>
         </div>
     </div>

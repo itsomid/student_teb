@@ -67,7 +67,7 @@ class CourseItem implements CartItemInterface
      */
     public function save(): void
     {
-        $this->addModel(CartItemModel::query()->create([
+        $this->setModel(CartItemModel::query()->create([
             'product_id' => $this->product_id,
             'coupon_name' => $this->coupon_name,
             'user_id' => $this->user_id,
@@ -92,7 +92,7 @@ class CourseItem implements CartItemInterface
      * @param Model $model The Eloquent model to set.
      * @return void
      */
-    public function addModel(Model $model): void
+    public function setModel(Model $model): void
     {
         $this->model = $model;
         $this->hasInstallmentMethod = $model->product->has_installment;
@@ -172,21 +172,11 @@ class CourseItem implements CartItemInterface
      */
     public function getPriceWithDiscount(): int
     {
-        $final_price = $this->model->product->price;
-
-        if ($this->model->coupon) {
-            $coupon = $this->model->coupon;
-            if ($coupon->discount_amount) {
-                $final_price -= $coupon->discount_amount;
-            } elseif ($coupon->discount_percentage) {
-                $final_price -= ($final_price * ($coupon->discount_percentage / 100));
-            }
+        $finalPrice = $this->model->product->price;
+        if ($coupon = $this->model->coupon) {
+            $finalPrice -= $coupon->discount_amount ?: ($finalPrice * ($coupon->discount_percentage / 100));
         }
-
-        if ($this->is_installment) {
-            $final_price *= (config('shoppingcart.installment')+1);
-        }
-        return $final_price;
+        return $this->is_installment ? $finalPrice * (config('shoppingcart.installment') + 1) : $finalPrice;
     }
 
     /**
@@ -224,14 +214,9 @@ class CourseItem implements CartItemInterface
 
     public function getCouponDiscountAmount(): int
     {
-        if ($this->model->coupon) {
-            $coupon = $this->model->coupon;
-            if ($coupon->discount_amount) {
-                return $coupon->discount_amount;
-            } elseif ($coupon->discount_percentage) {
-                $originalPrice = $this->getOriginalPrice();
-                return $originalPrice * ($coupon->discount_percentage / 100);
-            }
+        $coupon = $this->model->coupon;
+        if ($coupon) {
+            return $coupon->discount_amount ?: ($this->getOriginalPrice() * ($coupon->discount_percentage / 100));
         }
         return 0;
     }

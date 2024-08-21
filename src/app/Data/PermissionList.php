@@ -79,6 +79,10 @@ class PermissionList {
             ['sales_report_by_category'             ,'آمار فروش بر اساس دسته بندی'],
 
 
+            ['class-block.index'                        ,'مشاهده لیست کاربران بلاک شده از کلاس'],
+            ['class-block.create'                       ,'بلاک کاربر از کلاس'],
+            ['class-block.edit'                         ,'ویرایش کلاس'],
+
             ['product_category.index'               ,'مشاهده دسته بندی محصولات'],
             ['product_category.create'              ,'افزودن دسته بندی محصولات جدید'],
             ['product_category.edit'                ,'ویرایش دسته بندی محصولات'],
@@ -101,7 +105,6 @@ class PermissionList {
 
             ['student-account.charge'               ,'افزایش اعتبار دانش آموز'],
             ['installment.index'                    ,'مشاهده اقساط'],
-
 
         ];
 

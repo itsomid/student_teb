@@ -95,6 +95,14 @@ class Product extends Model
         return $this->hasOne(Classes::class, 'product_id');
     }
 
+    /**
+     * @return HasMany
+     */
+    public function children(): HasMany
+    {
+        return $this->hasMany(self::class, 'parent_id', 'id');
+    }
+
     public function categories(): BelongsToMany
     {
         return $this->belongsToMany(Category::class);
