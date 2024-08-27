@@ -18,7 +18,8 @@ class Order extends Model
         'total_payable_price',
         'total_discount',
         'repayment_count',
-        'status'
+        'status',
+        'user_id'
     ];
 
     /**

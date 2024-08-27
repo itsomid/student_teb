@@ -136,6 +136,11 @@ return [
             'path' => storage_path('logs/payment.log'),
             'level' => 'error',
         ],
+        'legacy' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/legacy.log'),
+            'level' => 'error'
+        ]
     ],
 
 ];

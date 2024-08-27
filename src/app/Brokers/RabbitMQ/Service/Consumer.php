@@ -3,9 +3,11 @@
 namespace App\Brokers\RabbitMQ\Service;
 
 use App\Brokers\RabbitMQ\Connector;
+use Illuminate\Support\Facades\Log;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
+use Throwable;
 
 class Consumer
 {
@@ -47,8 +49,13 @@ class Consumer
             $resolver= 'App\Legacy\Listeners\\' . $data->event;
             if (class_exists($resolver))
             {
-                $resolverObject= new $resolver();
-                $resolverObject->handle($data);
+                try{
+                    $resolverObject= new $resolver();
+                    $resolverObject->handle($data->data);
+                }catch (Throwable $e) {
+                    Log::channel('legacy')->error($e);
+                }
+
             }
         }
     }
