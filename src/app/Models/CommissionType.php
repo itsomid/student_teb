@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class CommissionType extends Model
 {
     use SoftDeletes;
+    const string ELEMENTARY_TYPE= 'ELEMENTARY';
 
     protected $fillable=['title', 'percentage'];
 
@@ -28,5 +29,11 @@ class CommissionType extends Model
                 'description' => Commission::ACTIONS['PERCENTAGE_CHANGED']['description'],
                 'theme'       => Commission::ACTIONS['PERCENTAGE_CHANGED']['theme'],
             ]);
+    }
+
+    public static function getElementarySupports()
+    {
+        $elementary_type_id= static::query()->where('specification',static::ELEMENTARY_TYPE)->first()->id;
+        return Commission::query()->select('support_id')->where('type_id',$elementary_type_id)->get();
     }
 }

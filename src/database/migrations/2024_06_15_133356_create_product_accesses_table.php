@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\InstallmentRepayment;
 use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\User;
@@ -25,6 +26,9 @@ return new class extends Migration
             $table->foreignIdFor(Product::class)
                 ->constrained()
                 ->cascadeOnDelete();
+
+            $table->boolean('access_blocked_on_overdue_installment')->default(false);
+
             $table->timestamp('effective_from_datetime')->nullable();
             $table->timestamp('effective_to_datetime')->nullable();
             $table->string('access_reason_type');//FREE BOUGHT

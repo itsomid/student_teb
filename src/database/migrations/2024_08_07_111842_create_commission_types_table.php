@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('commission_types', function (Blueprint $table) {
             $table->increments('id');
             $table->string('title', 25);
-            $table->double('percentage',6,5);
+            $table->double('percentage');
+            $table->string('specification')->default('ALL');
             $table->softDeletes();
             $table->timestamps();
         });

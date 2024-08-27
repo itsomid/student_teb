@@ -18,7 +18,7 @@ class CommissionManagementController extends Controller
             ->withTrashed()->get();
 
         $supports=    Admin::query()->select(['id', 'first_name', 'last_name', 'mobile'])
-//            ->role(['sales_support', 'sales_supervisor'])
+            ->role('sales_support')
             ->get();
 
         $types=CommissionType::query()->orderBy('percentage', 'DESC')->get();
@@ -41,7 +41,7 @@ class CommissionManagementController extends Controller
 
         Admin::query()
             ->where('id', $request->support_id)
-//            ->role(['sales_support', 'sales_supervisor'])
+            ->role('sales_support')
             ->firstOrFail();
 
         $type= CommissionType::query()->findOrFail($request->type_id);

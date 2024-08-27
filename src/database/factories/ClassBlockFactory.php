@@ -23,7 +23,7 @@ class ClassBlockFactory extends Factory
             'student_id' => User::query()->inRandomOrder()->first()->id,
             'product_id' => Product::query()->where('product_type_id', ProductTypeEnum::CLASSES)->inRandomOrder()->first()->id,
             'description' => $this->faker->sentence,
-            'expired_at' => $this->faker->randomElement([null, $this->faker->dateTime])
+            'expired_at' => $this->faker->dateTime
         ];
     }
 }
