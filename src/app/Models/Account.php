@@ -10,7 +10,7 @@ class Account extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 'balance', 'gift_amount', 'withdrawal_amount'
+        'user_id', 'cash_balance', 'gift_balance'
     ];
 
     /**
@@ -23,13 +23,11 @@ class Account extends Model
     {
         $account = static::query()
             ->firstOrCreate(['user_id' => $userId], [
-                'balance' => 0,
-                'gift_amount' => 0,
-                'withdrawal_amount' => 0
+                'cash_balance' => 0,
+                'gift_balance' => 0,
             ]);
 
-        $account->balance += $amount;
-        $account->withdrawal_amount = $account->balance - $account->gift_amount;
+        $account->cash_balance += $amount;
         $account->save();
     }
 
@@ -44,14 +42,11 @@ class Account extends Model
     {
         $account = static::query()
             ->firstOrCreate(['user_id' => $userId], [
-                'balance' => 0,
-                'gift_amount' => 0,
-                'withdrawal_amount' => 0
+                'cash_balance' => 0,
+                'gift_balance' => 0,
             ]);
 
-        $account->balance += $amount;
-        $account->gift_amount = $amount;
-        $account->withdrawal_amount = $account->balance - $account->gift_amount;
+        $account->gift_balance = $amount;
         $account->save();
     }
 
@@ -59,15 +54,14 @@ class Account extends Model
      * @param int $userId
      * @return int
      */
-
     public static function getStudentBalance(int $userId): int
     {
 
         $account = Account::firstOrCreate(
             ['user_id' => $userId],
-            ['balance' => 0, 'withdrawal_amount' => 0]
+            ['cash_balance' => 0]
         );
 
-        return $account->balance;
+        return $account->cash_balance + $account->gift_balance;
     }
 }

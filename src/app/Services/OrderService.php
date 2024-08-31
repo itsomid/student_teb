@@ -35,8 +35,7 @@ class OrderService
             $this->processCartItem($order, $item);
         });
 
-        $user->account->balance = 0; // This line might need to be revisited
-        $user->account->withdrawal_amount = 0;
+        $user->account->cash_balance = 0; // This line might need to be revisited
         $user->account->save();
 
         return $order;
@@ -58,8 +57,7 @@ class OrderService
             $this->processCartItem($order, $item);
         });
 
-        $user->account->balance -= $order->total_payable_price;
-        $user->account->withdrawal_amount -= $order->total_payable_price;
+        $user->account->cash_balance -= $order->total_payable_price;
         $user->account->save();
 
         return $order;
