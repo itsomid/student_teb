@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class OrderItem extends Model
 {
@@ -19,16 +20,37 @@ class OrderItem extends Model
     {
         return $this->belongsTo(Order::class);
     }
+
+    /**
+     * @return BelongsTo
+     */
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
     }
+
+    /**
+     * @return HasMany
+     */
     public function installment_repayment(): HasMany
     {
         return $this->hasMany(InstallmentRepayment::class);
     }
-    public function product_access(): hasMany //Maybe HasOne
+
+    /**
+     * @return HasMany
+     */
+    public function product_access(): HasMany //Maybe HasOne
     {
         return $this->hasMany(ProductAccess::class, 'order_item_id');
+    }
+
+    /**
+     * this relation for get cash amount and agent commission for every order items
+     * @return HasOne
+     */
+    public function cash_amount(): HasOne
+    {
+        return $this->hasOne(CashAmount::class);
     }
 }
