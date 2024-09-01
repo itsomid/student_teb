@@ -36,4 +36,10 @@ class CommissionType extends Model
         $elementary_type_id= static::query()->where('specification',static::ELEMENTARY_TYPE)->first()->id;
         return Commission::query()->select('support_id')->where('type_id',$elementary_type_id)->get();
     }
+
+    public static function getNoneElementarySupports()
+    {
+        $elementary_type_id= static::query()->where('specification','!=',static::ELEMENTARY_TYPE)->get()->pluck('id')->toArray();
+        return Commission::query()->select('support_id')->whereIn('type_id',$elementary_type_id)->get();
+    }
 }
