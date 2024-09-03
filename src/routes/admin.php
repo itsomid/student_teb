@@ -4,9 +4,13 @@ use App\Http\Controllers\Admin\CcServerController;
 use App\Http\Controllers\Admin\CommissionHistoryManagementController;
 use App\Http\Controllers\Admin\CommissionManagementController;
 use App\Http\Controllers\Admin\CommissionTypeManagementController;
+use App\Http\Controllers\Admin\DistributeStudentsController;
+use App\Http\Controllers\Admin\HomeworkController;
 use App\Http\Controllers\Admin\InquiryController;
 use App\Http\Controllers\Admin\InstallmentManagementController;
 use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\RandomStudentsDistributionController;
+use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\SalesReportByCategory;
 use App\Http\Controllers\Admin\StudentAccountController;
 use App\Http\Controllers\Admin\SelectsApiController;
@@ -219,5 +223,16 @@ Route::delete('/commission_type/{commission_type}',             [CommissionTypeM
 
 Route::get('/course/search/{name}', [\App\Http\Controllers\Admin\CourseSearchController::class, '__invoke']);
 
+Route::get('/installments',                                     [InstallmentManagementController::class, 'index'])           ->name('installment.index')          ->can('installment.index');
 
-Route::get('/installments',                                     [InstallmentManagementController::class, 'index'])           ->name('installment.index')      ->can('installment.index');
+Route::get('/random_students_distribution',                     [RandomStudentsDistributionController::class, 'index'])              ->name('random.students.distribution.index')       ->can('random-students-distribution');
+Route::post('/random_students_distribution',                    [RandomStudentsDistributionController::class, 'distribute'])         ->name('random.students.distribution.distribute')  ->can('random-students-distribution');
+
+
+Route::get('/homeworks',                    [HomeworkController::class, 'index'])       ->name('homework.index')     ->can('homework');
+Route::patch('/homeworks/{id}/set_score',   [HomeworkController::class, 'setScore'])    ->name('homework.set_score') ->can('homework');
+Route::delete('/homeworks/{id}',            [HomeworkController::class, 'destroy'])     ->name('homework.destroy')   ->can('homework');
+
+Route::get('/reports',                      [ReportController::class, 'index'])         ->name('reports.index')      ->can('report');;
+Route::patch('/reports/{id}/set_score',     [ReportController::class, 'setScore'])      ->name('reports.set_score')  ->can('report');;
+Route::delete('/reports/{id}',              [ReportController::class, 'destroy'])       ->name('reports.destroy')    ->can('report');;

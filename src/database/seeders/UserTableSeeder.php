@@ -17,9 +17,9 @@ class UserTableSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory(2)->create();
-        User::factory(1)->unverifiedWithIncompleteRegistration()->create();
-        User::factory(1)->unverified()->create();
+        User::factory(80)->create();
+        User::factory(10)->unverifiedWithIncompleteRegistration()->create();
+        User::factory(10)->unverified()->create();
         UserHistorySupport::factory(10)->create();
 
     }

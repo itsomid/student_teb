@@ -23,5 +23,12 @@ class Setting extends Model
             ? cache()->get('setting.kavenegarKey')
             : static::query()->where('key', 'kavenegar_key')->first()->value;
     }
+
+    public static function ReworkServiceAddress()
+    {
+        return cache()->has('setting.rework.service.address')
+            ? cache()->get('setting.rework.service.address')
+            : static::query()->where('key', 'rework_service_address')->first()->value;
+    }
 }
 
