@@ -90,12 +90,13 @@ class OrderService
     }
     private function createOrder(User $user): Model|Order
     {
+        $repaymentCount = CartAdaptor::getInstallmentCount() > 0 ? CartAdaptor::getInstallmentCount() - 1 : 0;
         return $user->orders()->create([
             'vat_tax' => CartAdaptor::getTotalTax(),
             'total_payable_price' => CartAdaptor::getPayableAmount(),
             'total_discount' => CartAdaptor::getAppliedCouponAmount() ,
             'final_price' =>  CartAdaptor::getFinalPrice() + CartAdaptor::getAppliedCouponAmount(),
-            'repayment_count' => CartAdaptor::getInstallmentCount() - 1, // always one of them are paid
+            'repayment_count' => $repaymentCount, // always one of them are paid
             'status' => OrderStatusEnum::PAID,
             'sales_support_id' => $user->sale_support_id
         ]);
