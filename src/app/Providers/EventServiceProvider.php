@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Events\OrderCreated;
+use App\Listeners\CalcCashAmountListener;
 use App\Listeners\CalculateUserBalanceListener;
 use App\Listeners\ChargeStudentAccountOnPaymentSuccessListener;
 use App\Listeners\OrderTransactionListener;
@@ -25,6 +26,7 @@ class EventServiceProvider extends ServiceProvider
         ],
         OrderCreated::class => [
             OrderTransactionListener::class,
+            CalcCashAmountListener::class,
 //            CalculateUserBalanceListener::class
         ],
         PaymentTransactionSuccessEvent::class => [

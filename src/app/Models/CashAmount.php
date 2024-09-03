@@ -15,7 +15,6 @@ class CashAmount extends Model
         'product_id',
         'cash_amount',
         'agent_commission_amount',
-        'order_item_id',
     ];
 
     /**
