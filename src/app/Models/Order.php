@@ -19,7 +19,8 @@ class Order extends Model
         'total_discount',
         'repayment_count',
         'status',
-        'user_id'
+        'user_id',
+        'sales_support_id'
     ];
 
     /**

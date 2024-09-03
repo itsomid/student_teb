@@ -96,7 +96,8 @@ class OrderService
             'total_discount' => CartAdaptor::getAppliedCouponAmount() ,
             'final_price' =>  CartAdaptor::getFinalPrice() + CartAdaptor::getAppliedCouponAmount(),
             'repayment_count' => CartAdaptor::getInstallmentCount() - 1, // always one of them are paid
-            'status' => OrderStatusEnum::PAID
+            'status' => OrderStatusEnum::PAID,
+            'sales_support_id' => $user->sale_support_id
         ]);
     }
 
