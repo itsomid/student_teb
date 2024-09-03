@@ -64,4 +64,12 @@ class Account extends Model
 
         return $account->cash_balance + $account->gift_balance;
     }
+
+    /** Calculate amount payable price
+     * @return int
+     */
+    public function getBalanceAttribute(): int
+    {
+        return $this->cash_balance + $this->gift_balance;
+    }
 }
