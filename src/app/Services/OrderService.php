@@ -12,6 +12,7 @@ use App\Models\ProductAccess;
 use App\Models\User;
 use App\ShoppingCart\CartAdaptor;
 use App\ShoppingCart\Contract\CartItemInterface;
+use Exception;
 use Illuminate\Database\Eloquent\Model;
 
 class OrderService
@@ -34,7 +35,7 @@ class OrderService
         $this->processItems($order, function (CartItemInterface $item) use ($order) {
             $this->processCartItem($order, $item);
         });
-
+        $user->account->gift_balance = 0;
         $user->account->cash_balance = 0; // This line might need to be revisited
         $user->account->save();
 
@@ -56,8 +57,15 @@ class OrderService
         $this->processItems($order, function (CartItemInterface $item) use ($order) {
             $this->processCartItem($order, $item);
         });
-
-        $user->account->cash_balance -= $order->total_payable_price;
+        if($user->account->cash_balance < $order->final_price){
+            $user->account->cash_balance = 0;
+            $user->account->gift_balance -= ($order->final_price - $user->account->cash_balance);
+        }else{
+            $user->account->cash_balance -= $order->final_price;
+        }
+        if ($user->account->gift_balance < 0){
+            throw new Exception("Student balance can not be negative");
+        }
         $user->account->save();
 
         return $order;
