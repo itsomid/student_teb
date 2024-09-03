@@ -12,7 +12,7 @@ class OrderItem extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['product_id', 'final_price', 'product_price', 'discount_price'];
+    protected $fillable = ['product_id', 'final_price', 'product_price', 'discount_price', 'user_gift_amount'];
     /**
      * @return BelongsTo
      */
