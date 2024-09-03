@@ -21,6 +21,7 @@ return new class extends Migration
                 ->constrained()
                 ->cascadeOnDelete();
             $table->foreignId('sales_support_id')
+                ->nullable()
                 ->constrained('admins')
                 ->restrictOnDelete();
             $table->unsignedInteger('vat_tax');
