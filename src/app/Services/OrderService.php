@@ -86,7 +86,7 @@ class OrderService
         if ($giftAmount === 0){
             return 0;
         }
-        return (int)($giftAmount / $itemSize);
+        return floor($giftAmount / $itemSize);
     }
     private function createOrder(User $user): Model|Order
     {
