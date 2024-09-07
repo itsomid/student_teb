@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests\API\Auth;
 
-use App\Rules\RequestValidRule;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;

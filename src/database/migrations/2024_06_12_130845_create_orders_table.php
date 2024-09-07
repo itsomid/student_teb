@@ -20,6 +20,10 @@ return new class extends Migration
             $table->foreignIdFor(User::class)
                 ->constrained()
                 ->cascadeOnDelete();
+            $table->foreignId('sales_support_id')
+                ->nullable()
+                ->constrained('admins')
+                ->restrictOnDelete();
             $table->unsignedInteger('vat_tax');
             $table->unsignedInteger('total_payable_price');
             $table->unsignedInteger('final_price');
@@ -45,8 +49,9 @@ return new class extends Migration
             $table->unsignedInteger('final_price');
             $table->unsignedInteger('product_price');
             $table->unsignedInteger('discount_price');
+            $table->unsignedInteger('user_gift_amount')->default(0);
             $table->timestamps();
-;        });
+        });
     }
 
     /**

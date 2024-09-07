@@ -34,6 +34,8 @@ return new class extends Migration
             $table->string('access_reason_type');//FREE BOUGHT
             $table->timestamps();
             $table->softDeletes();
+
+            $table->unique(['user_id', 'product_id']);
         });
     }
 

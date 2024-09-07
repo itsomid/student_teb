@@ -12,12 +12,14 @@ use App\Models\ProductAccess;
 use App\Models\User;
 use App\ShoppingCart\CartAdaptor;
 use App\ShoppingCart\Contract\CartItemInterface;
+use Exception;
 use Illuminate\Database\Eloquent\Model;
 
 class OrderService
 {
     private int $userId;
     private array $installments = [];
+    private int $giftAmountPerItem = 0;
     public function buy(int $userId) : Order
     {
         CartAdaptor::init($userId);
@@ -34,9 +36,9 @@ class OrderService
         $this->processItems($order, function (CartItemInterface $item) use ($order) {
             $this->processCartItem($order, $item);
         });
-
-        $user->account->balance = 0; // This line might need to be revisited
-        $user->account->withdrawal_amount = 0;
+        $this->giftAmountPerItem = $this->calculateItemGiftAmount($user->account->gift_balance, count(CartAdaptor::getItems()));
+        $user->account->gift_balance = 0;
+        $user->account->cash_balance = 0; // This line might need to be revisited
         $user->account->save();
 
         return $order;
@@ -57,24 +59,46 @@ class OrderService
         $this->processItems($order, function (CartItemInterface $item) use ($order) {
             $this->processCartItem($order, $item);
         });
-
-        $user->account->balance -= $order->total_payable_price;
-        $user->account->withdrawal_amount -= $order->total_payable_price;
+        if($user->account->cash_balance < $order->final_price){
+            $user->account->cash_balance = 0;
+            $user->account->gift_balance -= $giftAmountUsage = ($order->final_price - $user->account->cash_balance);
+            $this->giftAmountPerItem = $this->calculateItemGiftAmount($giftAmountUsage, count(CartAdaptor::getItems()));
+        }else{
+            $user->account->cash_balance -= $order->final_price;
+            $this->giftAmountPerItem = 0; // it's not use gift amount, final_price is enough
+        }
+        if ($user->account->gift_balance < 0){
+            throw new Exception("Student balance can not be negative");
+        }
         $user->account->save();
 
         return $order;
     }
 
-    private function createOrder(User $user): Model|Order
-
+    /**
+     * Calculate amount usage from gift amount in every order items
+     * @param int $giftAmount
+     * @param int $itemSize
+     * @return int
+     */
+    private function calculateItemGiftAmount(int $giftAmount, int $itemSize): int
     {
+        if ($giftAmount === 0){
+            return 0;
+        }
+        return (int)($giftAmount / $itemSize);
+    }
+    private function createOrder(User $user): Model|Order
+    {
+        $repaymentCount = CartAdaptor::getInstallmentCount() > 0 ? CartAdaptor::getInstallmentCount() - 1 : 0;
         return $user->orders()->create([
             'vat_tax' => CartAdaptor::getTotalTax(),
             'total_payable_price' => CartAdaptor::getPayableAmount(),
             'total_discount' => CartAdaptor::getAppliedCouponAmount() ,
             'final_price' =>  CartAdaptor::getFinalPrice() + CartAdaptor::getAppliedCouponAmount(),
-            'repayment_count' => CartAdaptor::getInstallmentCount() - 1, // always one of them are paid
-            'status' => OrderStatusEnum::PAID
+            'repayment_count' => $repaymentCount, // always one of them are paid
+            'status' => OrderStatusEnum::PAID,
+            'sales_support_id' => $user->sale_support_id
         ]);
     }
 
@@ -108,19 +132,23 @@ class OrderService
             'product_id' => $item->product_id,
             'final_price' => $amount,
             'product_price' => $item->getModel()->product->price,
-            'discount_price' => $item->getCouponDiscountAmount()
+            'discount_price' => $item->getCouponDiscountAmount(),
+            'user_gift_amount' => $this->giftAmountPerItem
         ]);
 
         if (array_key_exists($item->product_id, $this->installments)) {
             $this->generateInstallments($item->product_id, $itemModel->id);
         }
-        $item->getModel()->packages->each(function ($pkg) use ($order, $amount, $sum) {
+        // Divides  giftAmountPerItem to package items
+        $packageItemGiftAmount = $this->calculateItemGiftAmount($this->giftAmountPerItem, count($item->getModel()->packages));
+        $item->getModel()->packages->each(function ($pkg) use ($order, $amount, $sum, $packageItemGiftAmount) {
             $amount_temp = (int)(($pkg->getModel()->product->price * $amount) / $sum);
             $itemModel = $order->items()->create([
                 'product_id' => $pkg->product_id,
                 'final_price' => $amount_temp,
                 'product_price' => $pkg->getModel()->product->original_price,
-                'discount_price' => 0
+                'discount_price' => 0,
+                'user_gift_amount' => $packageItemGiftAmount
             ]);
             $this->accessProduct($pkg->product_id, $itemModel->id);
         });
@@ -134,7 +162,8 @@ class OrderService
             'product_id' => $item->product_id,
             'final_price' => $item->getCalcPrice(),
             'product_price' => $price,
-            'discount_price' => $item->getCouponDiscountAmount()
+            'discount_price' => $item->getCouponDiscountAmount(),
+            'user_gift_amount' => $this->giftAmountPerItem
         ]);
         if (array_key_exists($item->product_id, $this->installments)) {
             $this->generateInstallments($item->product_id, $itemModel->id);

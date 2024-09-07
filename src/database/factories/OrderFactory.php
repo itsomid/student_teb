@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Enums\OrderStatusEnum;
+use App\Models\Admin;
 use App\Models\Order;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -17,6 +18,7 @@ class OrderFactory extends Factory
     {
         return [
             'user_id' => $this->faker->numberBetween(1, 4), // Assume 50 users
+            'sales_support_id' => Admin::query()->role('sales_support')->first()->id,
             'vat_tax' => $vat = $this->faker->numberBetween(1,3)* 1000, // VAT as a percentage
             'total_payable_price' => $price = $this->faker->numberBetween(1,3) * 100000,
             'final_price' => $vat+$price,

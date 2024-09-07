@@ -22,6 +22,7 @@ class OrderItemFactory extends Factory
             'final_price' => $this->faker->randomFloat(2, 10, 500),
             'product_price' => $this->faker->randomFloat(2, 10, 500),
             'discount_price' => $this->faker->randomFloat(2, 0, 100),
+            'user_gift_amount' => $this->faker->randomElement([10000, 500000, 0, 300000, 0]),
         ];
     }
 }

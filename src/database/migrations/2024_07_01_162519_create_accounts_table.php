@@ -18,9 +18,8 @@ return new class extends Migration
                 ->unique()
                 ->constrained()
                 ->restrictOnDelete();
-            $table->unsignedInteger('balance');
-            $table->unsignedInteger('gift_amount')->default(0);
-            $table->unsignedInteger('withdrawal_amount'); // withdrawal_amount = balance - gift_amount
+            $table->unsignedInteger('cash_balance');
+            $table->unsignedInteger('gift_balance')->default(0);
             $table->timestamps();
         });
     }

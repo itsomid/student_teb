@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Enums\TransactionTypeEnum;
+use App\Models\Account;
 use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -24,21 +25,20 @@ class CalculateUserBalanceListener
     public function handle(object $event): void
     {
 
-        $user = User::find($event->order->user_id);
+        $user = User::query()->find($event->order->user_id);
 
         // Calculate the sum of the balance
-        $sumOfBuy = Transaction::where('user_id', $user->id)
+        $sumOfBuy = Transaction::query()->where('user_id', $user->id)
             ->where('transactionType', TransactionTypeEnum::BUY)
             ->sum('balance');
 
-        $account = static::query()
+        $account = Account::query()
             ->firstOrCreate(['user_id' => $user->id], [
-                'balance' => 0,
-                'gift_amount' => 0,
-                'withdrawal_amount' => 0
+                'cash_balance' => 0,
+                'gift_balance' => 0,
             ]);
 
-        $account->balance -= $sumOfBuy;
+        $account->cash_balance -= $sumOfBuy;
         $account->save();
 
     }

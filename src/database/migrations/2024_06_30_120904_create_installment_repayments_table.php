@@ -19,7 +19,7 @@ return new class extends Migration
             $table->unsignedInteger('amount');
             $table->timestamp('expired_at');
             $table->foreignIdFor(User::class)->constrained()->restrictOnDelete();
-            $table->foreignIdFor(OrderItem::class)->constrained()->restrictOnDelete();
+            $table->foreignIdFor(OrderItem::class)->nullable()->constrained()->restrictOnDelete();
             $table->string('status'); // paid  pending
             $table->timestamps();
         });

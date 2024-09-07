@@ -4,5 +4,5 @@ namespace App\Legacy\Listeners\Contract;
 
 interface LegacyContract
 {
-    public function handle($data);
+    public function handle(object $data): void;
 }
