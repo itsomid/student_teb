@@ -10,12 +10,35 @@ use App\Models\User;
 class DistributeStudents
 {
     private ?int $support_id;
+    private array $distributeAmong;
+    private $description;
 
-    public function distribute(int|null $support_id= null)
+    public function owner(int|null $support_id= null)
     {
         $this->support_id = $support_id;
-
+        return $this;
     }
+
+    public function among(array $support_ids)
+    {
+        $this->distributeAmong = $support_ids;
+        return $this;
+    }
+
+    public function description($description)
+    {
+        $this->description = $description;
+        return $this;
+    }
+
+
+    public function do()
+    {
+        $this->distributeElementaryStudents();
+        $this->distributeNoneElementaryStudents();
+        $this->makeRemainStudentsAssignable();
+    }
+
 
     protected function distributeElementaryStudents()
     {
@@ -26,11 +49,14 @@ class DistributeStudents
             return $support->allocationRate->last()->allocation_rate;
         });
 
+        if(count($ElementarySalesSupports) == 0 || count($ElementaryStudents) == 0){
+            return;
+        }
 
         $remaining_count = $ElementaryStudents->count() % $totalRate;
         $chunk_size = ($ElementaryStudents->count()>=$totalRate)?($ElementaryStudents->count()-$remaining_count):0;
 
-        $ElementaryStudents = $ElementaryStudents->take($chunk_size)->get();
+        $ElementaryStudents = $this->getElementaryStudents($chunk_size);
 
         $allocation = [];
         foreach ($ElementarySalesSupports as $support) {
@@ -41,14 +67,6 @@ class DistributeStudents
             ];
         }
 
-        $allocatedStudents = array_sum(array_column($allocation, 'students_count'));
-        $leftoverStudents = count($ElementaryStudents) - $allocatedStudents;
-
-        foreach ($ElementarySalesSupports as $support) {
-            if ($leftoverStudents <= 0) break;
-            $allocation[$support->id]['students_count'] += 1;
-            $leftoverStudents--;
-        }
 
         $studentIndex = 0;
         foreach ($allocation as $alloc) {
@@ -57,28 +75,29 @@ class DistributeStudents
             $assignedStudents = $ElementaryStudents->slice($studentIndex, $ElementaryStudentsCount);
 
             foreach ($assignedStudents as $student) {
-                $student->sale_support_id = $support->id;
-                $student->save();
+                $student->updateSupport( $support->id, $this->description);
             }
 
             $studentIndex += $ElementaryStudentsCount;
         }
     }
 
-
     protected function distributeNoneElementaryStudents(){
         $noneElementarySalesSupports = $this->getNonElementarySalesSupport();
-        $noneElementaryStudents = $this->getNonElementarySalesSupport();
+        $noneElementaryStudents = $this->getNoneElementaryStudents();
 
         $totalRate = $noneElementarySalesSupports->sum(function ($support) {
             return $support->allocationRate->last()->allocation_rate;
         });
 
+        if(count($noneElementaryStudents) == 0 || count($noneElementarySalesSupports) == 0){
+            return;
+        }
 
         $remaining_count = $noneElementaryStudents->count() % $totalRate;
         $chunk_size = ($noneElementaryStudents->count()>=$totalRate)?($noneElementaryStudents->count()-$remaining_count):0;
 
-        $noneElementaryStudents = $noneElementaryStudents->take($chunk_size)->get();
+        $noneElementaryStudents = $this->getNoneElementaryStudents($chunk_size);
 
         $allocation = [];
         foreach ($noneElementarySalesSupports as $support) {
@@ -89,15 +108,6 @@ class DistributeStudents
             ];
         }
 
-        $allocatedStudents = array_sum(array_column($allocation, 'students_count'));
-        $leftoverStudents = count($noneElementaryStudents) - $allocatedStudents;
-
-        foreach ($noneElementarySalesSupports as $support) {
-            if ($leftoverStudents <= 0) break;
-            $allocation[$support->id]['students_count'] += 1;
-            $leftoverStudents--;
-        }
-
         $studentIndex = 0;
         foreach ($allocation as $alloc) {
             $support = $alloc['support'];
@@ -105,8 +115,7 @@ class DistributeStudents
             $assignedStudents = $noneElementaryStudents->slice($studentIndex, $noneElementaryStudentsCount);
 
             foreach ($assignedStudents as $student) {
-                $student->sale_support_id = $support->id;
-                $student->save();
+                $student->updateSupport( $support->id, $this->description);
             }
 
             $studentIndex += $noneElementaryStudentsCount;
@@ -114,42 +123,72 @@ class DistributeStudents
     }
 
 
-
-
     protected function getElementarySalesSupport()
     {
         return Admin::query()->role('sales_support')
             ->whereIn('id', CommissionType::getElementarySupports()->pluck('support_id')->toArray())
             ->with('allocationRate')
+            ->when(!is_null($this->support_id), function ($query) {
+                $query->where('id', '<>', $this->support_id);
+            })
+            ->when(count($this->distributeAmong) > 0, function ($query) {
+                $query->whereIn('id', $this->distributeAmong);
+            })
             ->whereHas('allocationRate', function($q){
                 $q->where('is_active', true);
             })->get();
     }
+
+
 
     protected function getNonElementarySalesSupport()
     {
         return Admin::query()->role('sales_support')
             ->whereNotIn('id', CommissionType::getElementarySupports()->pluck('support_id')->toArray())
             ->with('allocationRate')
+            ->when(!is_null($this->support_id), function ($query) {
+                $query->where('id', '<>', $this->support_id);
+            })
+            ->when(count($this->distributeAmong) > 0, function ($query) {
+                $query->whereIn('id', $this->distributeAmong);
+            })
             ->whereHas('allocationRate', function($q){
                 $q->where('is_active', true);
             })->get();
     }
 
 
-    protected function getElementaryStudents($support_id)
+
+
+    protected function getElementaryStudents($chunk_size=null)
     {
         return User::query()
             ->where('sale_support_id', $this->support_id)
+            ->when(!is_null($chunk_size),function($q) use ($chunk_size){
+                return $q->take($chunk_size);
+            })
             ->whereIn('grade', array_keys(Grades::getElementaryGrades()))
             ->get();
     }
 
-    protected function getNoneElementaryStudents($support_id)
+
+
+    protected function getNoneElementaryStudents($chunk_size=null)
     {
         return User::query()
-            ->where('sale_support_id', $support_id)
+            ->where('sale_support_id', $this->support_id)
+            ->when(!is_null($chunk_size),function($q) use ($chunk_size){
+                return $q->take($chunk_size);
+            })
             ->whereNotIn('grade', array_keys(Grades::getElementaryGrades()))
             ->get();
+    }
+
+    protected function makeRemainStudentsAssignable()
+    {
+        if(!is_null($this->support_id))
+            return User::query()
+                ->where('sale_support_id', $this->support_id)
+                ->update(['sale_support_id' => null]);
     }
 }

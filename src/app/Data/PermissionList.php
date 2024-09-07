@@ -105,7 +105,9 @@ class PermissionList {
             ['setting.ext.index'                    ,'مشاهده تنظیمات خارجی'],
 
             ['report.registered_users'              ,'آمار ثبت نام نماینده های فروش'],
+
             ['random-students-distribution'         ,'پخش تصادفی دانش‌آموزها'],
+            ['selective-students-distribution'      ,'پخش انتخابی دانش‌آموزها'],
 
             ['student-account.charge'               ,'افزایش اعتبار دانش آموز'],
             ['installment.index'                    ,'مشاهده اقساط'],

@@ -108,8 +108,6 @@ class User extends Authenticatable
         return $admin->can('student.manage-all-user')
             ? $query
             : User::where('sale_support_id', $admin->id);
-
-
     }
 
     public function scopeCheckPermissionToGetRefferalUser(Builder $query, Admin $admin,ReferralCode $referral_code=null)
@@ -158,5 +156,17 @@ class User extends Authenticatable
         $token->accessToken->device = $device;
         $token->accessToken->ip = request()->ip();
         $token->accessToken->save();
+    }
+
+    public function updateSupport($support_id, $description)
+    {
+        UserHistorySupport::query()->create([
+            'user_id'         => $this->id,
+            'user_support_id' => $support_id,
+            'description'     => $description,
+        ]);
+
+        $this->sale_support_id = $support_id;
+        $this->save();
     }
 }

@@ -15,16 +15,8 @@ return new class extends Migration
             $table->id();
             $table->unsignedInteger('user_id')->index();
             $table->unsignedInteger('user_support_id');
-            $table->string('support_role');
             $table->text('description')->nullable();
-
-            $table->timestamp('start_time')->nullable();
-            $table->timestamp('end_time')->nullable();
-            $table->timestamp('expired_at')->nullable()->index();
-
             $table->timestamps();
-
-            $table->index(['start_time', 'end_time']);
         });
     }
 

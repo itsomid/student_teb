@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\RandomStudentsDistributionController;
 use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\SalesReportByCategory;
+use App\Http\Controllers\Admin\SelectiveStudentsDistributionController;
 use App\Http\Controllers\Admin\StudentAccountController;
 use App\Http\Controllers\Admin\SelectsApiController;
 use App\Http\Controllers\Admin\StudentTokenController;
@@ -225,8 +226,11 @@ Route::get('/course/search/{name}', [\App\Http\Controllers\Admin\CourseSearchCon
 
 Route::get('/installments',                                     [InstallmentManagementController::class, 'index'])           ->name('installment.index')          ->can('installment.index');
 
-Route::get('/random_students_distribution',                     [RandomStudentsDistributionController::class, 'index'])              ->name('random.students.distribution.index')       ->can('random-students-distribution');
-Route::post('/random_students_distribution',                    [RandomStudentsDistributionController::class, 'distribute'])         ->name('random.students.distribution.distribute')  ->can('random-students-distribution');
+Route::get('/students_random_distribution',                     [RandomStudentsDistributionController::class, 'index'])              ->name('random.students.distribution.index')       ->can('random-students-distribution');
+Route::post('/students_random_distribution',                    [RandomStudentsDistributionController::class, 'distribute'])         ->name('random.students.distribution.distribute')  ->can('random-students-distribution');
+
+Route::get('/students_selective_distribution',                  [SelectiveStudentsDistributionController::class, 'index'])           ->name('selective.students.distribution.index')     ->can('selective-students-distribution');
+Route::post('/students_selective_distribution',                 [SelectiveStudentsDistributionController::class, 'distribute'])      ->name('selective.students.distribution.distribute')->can('selective-students-distribution');
 
 
 Route::get('/homeworks',                    [HomeworkController::class, 'index'])       ->name('homework.index')     ->can('homework');
