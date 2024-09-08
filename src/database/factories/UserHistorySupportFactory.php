@@ -24,11 +24,7 @@ class UserHistorySupportFactory extends Factory
         return [
             'user_id' => User::query()->inRandomOrder()->first()->id,
             'user_support_id' => Admin::query()->inRandomOrder()->first()->id,
-            'support_role' => Role::query()->inRandomOrder()->first()->id,
             'description' => null,
-            'start_time' => $startTime = $this->faker->dateTime,
-            'end_time' => $endTime = Carbon::parse($startTime)->addDays(rand(1, 30)),
-            'expired_at' => $this->faker->randomElement([null, $endTime->addDays(rand(1, 5))])
         ];
     }
 }
