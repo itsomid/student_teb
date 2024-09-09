@@ -28,6 +28,8 @@ class RoleSeeder extends Seeder
             ['admin', 'مدیر ارشد'],
             ['sales_support', 'پشتیبان فروش'],
             ['sales_supervisor', 'سرپرست فروش'],
+            ['sales_onsite' , 'نماینده فروش'],
+            ['sales_offsite', 'نماینده فروش'],
             ['sales_representative', 'نماینده فروش'],
             ['sales_manager', 'مدیر فروش'],
             ['studio_support', 'پشتیبان استودیو'],

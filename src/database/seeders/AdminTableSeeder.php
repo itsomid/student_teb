@@ -35,7 +35,7 @@ class AdminTableSeeder extends Seeder
                 'gender' => 'female',
             ]));
 
-            $admin->assignRole('sales_support');
+            $admin->assignRole('sales_support', 'sales_onsite');
         }
 
     }
