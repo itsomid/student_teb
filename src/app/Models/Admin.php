@@ -72,7 +72,13 @@ class Admin extends Authenticatable
         return $this->hasMany(SupportsAllocationRate::class, 'sale_support_id');
     }
 
-
+    /**
+     * @return HasMany
+     */
+    public function products(): HasMany
+    {
+        return $this->hasMany(Product::class);
+    }
 
     //-----------------------------------------------------------------------------------------------------//
     //------------------------------------------    #Scopes      ------------------------------------------//
