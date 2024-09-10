@@ -20,6 +20,7 @@ class OrderItemSeeder extends Seeder
                     ->count(1)
                     ->state(fn(array $attributes, OrderItem $orderItem) => [
                         'cash_amount' => $orderItem->final_price,
+                        'product_id' => $orderItem->product_id,
                         'agent_commission_amount' => 0
                     ]),
                 'cash_amount'
