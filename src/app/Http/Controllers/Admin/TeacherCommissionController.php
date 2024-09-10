@@ -10,6 +10,7 @@ use App\Models\Product;
 use App\Models\TeacherPayments;
 use App\Models\TeacherProductCommission;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
@@ -53,7 +54,7 @@ class TeacherCommissionController extends Controller
         return view('dashboard.teacher_commission.calculate', compact('products', 'teacher', 'teacherSoldProducts', 'payments', 'teacherPaymentsSettings'));
     }
 
-    public function saveCommissionPercentage(Admin $admin, SaveCommissionPercentageRequest $request)
+    public function saveCommissionPercentage(Admin $admin, SaveCommissionPercentageRequest $request): RedirectResponse
     {
         //We Get All The Settings That Has Stored In Cache
         $teacher_payments_settings = Cache::store('database')->get('teacher_payments_settings');
