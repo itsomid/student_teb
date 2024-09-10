@@ -91,6 +91,8 @@ class PermissionList {
             ['report'                               ,'مدیریت کارنامه ها'],
             ['homework'                             ,'مدیریت تکالیف'],
 
+            ['support_map'                          ,'پایه بندی پشتیبان ها'],
+
             ['coupons.index'                        ,'مشاهده لیست کدهای تخفیف'],
             ['coupons.excel'                        ,'دانلود خروجی اکسل از کدهای تخفیف'],
             ['coupons.create'                       ,'افزودن کدهای تخفیف'],

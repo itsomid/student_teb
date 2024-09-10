@@ -125,6 +125,14 @@
             </a>
         </li>
         @endcan
+        @can('support_map')
+            <li class="menu-item @if(request()->is('admin/support_map*')) active @endif">
+                <a href="{{route('admin.support_map.index')}}" class="menu-link">
+                    <i class="menu-icon fa-regular fa-split"></i>
+                    <div>پایه بندی پشتیبان ها</div>
+                </a>
+            </li>
+        @endcan
         @can('supports.allocation-rate-management')
             <li class="menu-item @if(request()->is('admin/supports_allocation_rate*')) active @endif">
                 <a href="{{route('admin.supports-allocation-rate.edit')}}" class="menu-link">

@@ -16,6 +16,7 @@ use App\Http\Controllers\Admin\SelectiveStudentsDistributionController;
 use App\Http\Controllers\Admin\StudentAccountController;
 use App\Http\Controllers\Admin\SelectsApiController;
 use App\Http\Controllers\Admin\StudentTokenController;
+use App\Http\Controllers\Admin\SupportMapController;
 use App\Http\Controllers\Admin\TransactionController;
 use App\Http\Controllers\Admin\TransactionReportController;
 use Illuminate\Support\Facades\Route;
@@ -240,3 +241,9 @@ Route::delete('/homeworks/{id}',            [HomeworkController::class, 'destroy
 Route::get('/reports',                      [ReportController::class, 'index'])         ->name('reports.index')      ->can('report');;
 Route::patch('/reports/{id}/set_score',     [ReportController::class, 'setScore'])      ->name('reports.set_score')  ->can('report');;
 Route::delete('/reports/{id}',              [ReportController::class, 'destroy'])       ->name('reports.destroy')    ->can('report');;
+
+Route::get('support_map',                    [SupportMapController::class, 'index'])     ->name('support_map.index')        ->can('support_map');
+Route::post('support_map',                   [SupportMapController::class, 'store'])     ->name('support_map.store')        ->can('support_map');
+Route::get('support_map/{support_map}/edit', [SupportMapController::class, 'edit'])      ->name('support_map.edit')         ->can('support_map');
+Route::patch('support_map/{support_map}',      [SupportMapController::class, 'update'])    ->name('support_map.update')       ->can('support_map');
+Route::delete('support_map/{support_map}',   [SupportMapController::class, 'destroy'])   ->name('support_map.destroy')      ->can('support_map');

@@ -7,6 +7,7 @@ use App\Functions\Jalali;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -72,6 +73,10 @@ class Admin extends Authenticatable
         return $this->hasMany(SupportsAllocationRate::class, 'sale_support_id');
     }
 
+    public function supportMaps(): BelongsToMany
+    {
+        return $this->belongsToMany(SupportMap::class);
+    }
 
 
     //-----------------------------------------------------------------------------------------------------//
