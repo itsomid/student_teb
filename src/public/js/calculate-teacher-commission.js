@@ -38,7 +38,7 @@ const calculateSum = (productsArraySold) => {
             sumNeedsToBePaid += userPercentageTmp * myCashTmp;
 
             if (paymentElement) {
-                paymentElement.style.display = 'block';
+                paymentElement.style.display = 'table-row';
             }
         } else {
             if (paymentElement) {
