@@ -127,7 +127,8 @@
     <div class="content">
         <div class="card">
             <div class="card-body">
-{{--                form begin --}}
+                <form method="post" action="{{ route('admin.teacher-commission.save-percentage', $teacher->id) }}">
+                    @csrf
                 <table class="table table-responsive table-striped table-hover" id="productQuizzes-table">
                     <thead>
                     <tr>
@@ -147,9 +148,9 @@
                             <td>
                                 <input type="hidden" value="{{$teacher->id}}" name="teacher_id">
                                 <input type="checkbox" name="product_checked[{{$product->id}}]" value="{{$product->id}}" class="sum_checkbox"
-{{--                                       @if(in_array($product->id, $teacher_payments_settings['product_checked']))--}}
-{{--                                           checked--}}
-{{--                                    @endif--}}
+                                       @if(in_array($product->id, $teacherPaymentsSettings['product_checked']))
+                                           checked
+                                    @endif
                                 >
                                 <input type="hidden" name="product_checkbox_all[{{$product->id}}]" value="{{$product->id}}">
                             </td>
@@ -162,7 +163,6 @@
                                        id="product_percentage_{{$product->id}}">
                                 %
                             </td>
-
                             <td>
                                 <input type="text"
                                        class="calcSum border"
@@ -189,18 +189,55 @@
 
                     <tr style="font-weight: bold;">
                         <td colspan="4">
-{{--                            begin form --}}
+                            <button class="btn btn-primary text-white" type="submit">ذخیره درصدها و انتخاب ها</button>
                         </td>
                         <td><div id="sum_students"></div></td>
                         <td><div id="sum_buy_amount"></div></td>
                         <td><div class="sum_cash_amount"></div></td>
                     </tr>
-
                     </tbody>
                 </table>
-{{--                end form--}}
+                </form>
             </div>
         </div>
+    </div>
+
+    <section class="content-header mt-3">
+        <h1>
+            پرداختی های استاد {{ $teacher->fullname() }}
+        </h1>
+    </section>
+    <div class="content">
+        <div class="card">
+            <div class="card-body">
+                <table class="table table-responsive" id="productQuizzes-table">
+                    <thead>
+                    <tr>
+                        <th>آیدی محصول</th>
+                        <th>نام محصول</th>
+                        <th>مجموع پرداختی</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach($payments as $payment)
+                        <tr id="payment_{{$payment->product_id}}">
+                            <td>{{ $payment->product_id }}</td>
+                            <td>
+                                @if(!$payment->product)
+                                    <span class="text-danger">درس دستخوش تغییراتی همچون حذف یا آرشیو شده است</span>
+                                @else
+                                    {{ $payment->product->name }}
+                                @endif
+                            </td>
+                            <td>{{ number_format($payment->sum_amount) }}</td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+
     </div>
 
 
@@ -209,7 +246,7 @@
     <script src="{{ asset('/js/calculate-teacher-commission.js') }}"></script>
     <script type="text/javascript">
         document.addEventListener("DOMContentLoaded", function () {
-            const mySumArr = JSON.parse('@json($my_sum_arr)'); // Replace with the actual data if you have it
+            const mySumArr = JSON.parse('@json($teacherSoldProducts)'); // Replace with the actual data if you have it
             calculateSum(mySumArr);
 
             document.querySelectorAll('.sum_checkbox, .calcSum').forEach((element) => {

@@ -135,6 +135,15 @@ class Product extends Model
             ->select('teacher_product_commissions.*')
             ->whereColumn('teacher_id', 'products.user_id');
     }
+
+    /**
+     * Teacher Paid Lists
+     * @return HasMany
+     */
+    public function teacher_payments(): HasMany
+    {
+        return $this->hasMany(TeacherPayments::class, 'product_id', 'id');
+    }
     public function scopeCategoriesWithType(Builder $query, $type)
     {
         return $query->categories->where('type', $type);
