@@ -27,7 +27,8 @@ class TeacherCommissionController extends Controller
             ->withSum('teacher_payments', 'amount')
             ->withSum('order_items', 'final_price')
             ->withCount('order_items')
-            ->withSum('cash_amounts', 'cash_amount')
+            ->withSum('cash_amounts', DB::raw('`cash_amount` - `agent_commission_amount`'))
+            ->withSum('cash_amounts', 'agent_commission_amount')
             ->get();
 
         $payments = TeacherPayments::query()
@@ -47,9 +48,9 @@ class TeacherCommissionController extends Controller
             $teacherSoldProducts[$product->id] = [
                 'students' => $product->order_items_count,
                 'buy_amount' => $product->order_items_sum_final_price,
-                'cash_amount' => $product->cash_amounts_sum_cash_amount,
+                'cash_amount' => $product->cash_amounts_sum_cash_amount_agent_commission_amount,
                 'payments_amount' => $product->teacher_payments_sum_amount,
-                'tax_blocked' => ((int)$product->cash_amounts_sum_cash_amount ? $product->cash_amounts_sum_cash_amount / 100: 0) * ($product->teacher_commission->tax_block_percentage ?? 30),
+                'tax_blocked' => ((int)$product->cash_amounts_sum_cash_amount_agent_commission_amount ? $product->cash_amounts_sum_cash_amount_agent_commission_amount / 100: 0) * ($product->teacher_commission->tax_block_percentage ?? 30),
             ];
         }
 

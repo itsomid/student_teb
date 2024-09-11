@@ -183,7 +183,7 @@
                             </td>
                             <td>{{ $product->order_items_count }} نفر</td>
                             <td>{{ number_format((int)$product->order_items_sum_final_price) }} ریال </td>
-                            <td>{{ number_format((int)$product->cash_amounts_sum_cash_amount) }} ریال </td>
+                            <td>{{ number_format((int)$product->cash_amounts_sum_cash_amount_agent_commission_amount) }} ریال </td>
                         </tr>
                     @endforeach
 
