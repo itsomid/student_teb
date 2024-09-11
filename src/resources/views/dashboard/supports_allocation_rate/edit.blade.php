@@ -13,104 +13,55 @@
     <form class="row my-5" action="{{route('admin.supports-allocation-rate.update')}}" method="post" >
         @csrf
         @method('PATCH')
-        <div class="col-md-12">
-            👈
-            پشتیبان های پایه
-        </div>
-        @foreach($sale_supports as $support)
-            @if(in_array($support->id, $elementary_supports))
+        @foreach($maps as $map)
+            <div class="col-md-12">
+                <h6> 👈 پشتیبان های{{$map->title}}</h6>
+            </div>
+            @foreach($map->admins as $support)
                 <div class="col-md-4 my-5">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="row ">
-                            <div class="col-6">
-                                <label class="switch switch-primary">
-                                    <input type="checkbox"
-                                           class="switch-input"
-                                           data-input_id="allocation_rate_{{$support->id}}"
-                                           data-label_id="label_for_{{$support->id}}"
-                                           name="is_active[{{$support->id}}]"
-                                        {{  $support->allocationRate->last()?->is_active ? 'checked' : ''}}
-                                    />
-                                    <span class="switch-toggle-slider">
-                                            <span class="switch-on">
-                                              <i class="ti ti-check"></i>
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row ">
+                                <div class="col-6">
+                                    <label class="switch switch-primary">
+                                        <input type="checkbox"
+                                               class="switch-input"
+                                               data-input_id="allocation_rate_{{$support->id}}"
+                                               data-label_id="label_for_{{$support->id}}"
+                                               name="is_active[{{$support->id}}]"
+                                               {{  $support->allocationRate->last()?->is_active ? 'checked' : ''}}
+                                        />
+                                        <span class="switch-toggle-slider">
+                                                <span class="switch-on">
+                                                  <i class="ti ti-check"></i>
+                                                </span>
+                                                <span class="switch-off">
+                                                  <i class="ti ti-x"></i>
+                                                </span>
                                             </span>
-                                            <span class="switch-off">
-                                              <i class="ti ti-x"></i>
-                                            </span>
-                                        </span>
-                                    <span class="switch-label" id="label_for_{{$support->id}}"> {{$support->fullname()}}</span>
-                                </label>
-                            </div>
-                            <div class="col-6">
-                                <div class="form-group">
-                                    <label for="allocation_rate_{{$support->id}}"> نرخ تخصیص</label>
-                                    <input id="allocation_rate_{{$support->id}}"
-                                           class="form-control"
-                                           type="number"
-                                           step="1"
-                                           name="allocation_rate[{{$support->id}}]"
-                                           value="{{$support->allocationRate->last()->allocation_rate ?? 1 }}"
-                                        {{  $support->allocationRate->last()?->is_active ? '' : 'disabled'}}
-                                    />
+                                        <span class="switch-label" id="label_for_{{$support->id}}"> {{$support->fullname()}}</span>
+                                    </label>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label for="allocation_rate_{{$support->id}}"> نرخ تخصیص</label>
+                                        <input id="allocation_rate_{{$support->id}}"
+                                               class="form-control"
+                                               type="number"
+                                               step="1"
+                                               name="allocation_rate[{{$support->id}}]"
+                                               value="{{$support->allocationRate->last()->allocation_rate ?? 1 }}"
+                                            {{  $support->allocationRate->last()?->is_active ? '' : 'disabled'}}
+                                        />
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            @endif
+            @endforeach
         @endforeach
-        <div class="col-md-12">
-            👈
-            پشتیبان های کنکور
-        </div>
-        @foreach($sale_supports as $support)
-            @if(!in_array($support->id, $elementary_supports))
-                <div class="col-md-4 my-5">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="row ">
-                            <div class="col-6">
-                                <label class="switch switch-primary">
-                                    <input type="checkbox"
-                                           class="switch-input"
-                                           data-input_id="allocation_rate_{{$support->id}}"
-                                           data-label_id="label_for_{{$support->id}}"
-                                           name="is_active[{{$support->id}}]"
-                                        {{  $support->allocationRate->last()?->is_active ? 'checked' : ''}}
-                                    />
-                                    <span class="switch-toggle-slider">
-                                            <span class="switch-on">
-                                              <i class="ti ti-check"></i>
-                                            </span>
-                                            <span class="switch-off">
-                                              <i class="ti ti-x"></i>
-                                            </span>
-                                        </span>
-                                    <span class="switch-label" id="label_for_{{$support->id}}"> {{$support->fullname()}}</span>
-                                </label>
-                            </div>
-                            <div class="col-6">
-                                <div class="form-group">
-                                    <label for="allocation_rate_{{$support->id}}"> نرخ تخصیص</label>
-                                    <input id="allocation_rate_{{$support->id}}"
-                                           class="form-control"
-                                           type="number"
-                                           step="1"
-                                           name="allocation_rate[{{$support->id}}]"
-                                           value="{{$support->allocationRate->last()->allocation_rate ?? 1 }}"
-                                        {{  $support->allocationRate->last()?->is_active ? '' : 'disabled'}}
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            @endif
-        @endforeach
+
         <div class="col-12 text-center">
             <button type="submit" class="btn btn-primary text-white">ثبت تغییرات</button>
         </div>

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('user_history_supports', function (Blueprint $table) {
             $table->id();
             $table->unsignedInteger('user_id')->index();
-            $table->unsignedInteger('user_support_id');
+            $table->unsignedInteger('user_support_id')->nullable();
             $table->text('description')->nullable();
             $table->timestamps();
         });

@@ -182,7 +182,8 @@ Route::delete('/product_categories/{product_category}', [ProductCategoryControll
 
 Route::get('/internal-settings', [InternalSettingController::class, 'index'])->name('internal.setting.index')->can('setting.int.index');
 Route::post('/internal-settings/update-permissions', [InternalSettingController::class, 'updatePermissions'])->name('setting.int.update-permissions')->can('setting.int.index');
-Route::get('/supports_allocation_rate', [SupportsAllocationRateController::class, 'edit'])->name('supports-allocation-rate.edit')->can('supports.allocation-rate-management');
+
+Route::get('/supports_allocation_rate',   [SupportsAllocationRateController::class, 'edit'])->name('supports-allocation-rate.edit')->can('supports.allocation-rate-management');
 Route::patch('/supports_allocation_rate', [SupportsAllocationRateController::class, 'update'])->name('supports-allocation-rate.update')->can('supports.allocation-rate-management');
 
 Route::get('/external-settings', [ExternalSettingController::class, 'index'])->name('external-setting.index')->can('setting.ext.index');
