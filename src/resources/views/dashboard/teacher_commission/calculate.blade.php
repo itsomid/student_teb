@@ -129,7 +129,7 @@
             <div class="card-body">
                 <form method="post" action="{{ route('admin.teacher-commission.save-percentage', $teacher->id) }}">
                     @csrf
-                <table class="table table-responsive table-striped table-hover" id="productQuizzes-table">
+                <table class="table table-responsive table-striped table-hover">
                     <thead>
                     <tr>
                         <th></th>
@@ -210,7 +210,7 @@
     <div class="content">
         <div class="card">
             <div class="card-body">
-                <table class="table table-responsive" id="productQuizzes-table">
+                <table class="table table-responsive table-striped table-hover">
                     <thead>
                     <tr>
                         <th>آیدی محصول</th>
@@ -232,6 +232,52 @@
                             <td>{{ number_format($payment->sum_amount) }}</td>
                         </tr>
                     @endforeach
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+
+    </div>
+
+
+    <section class="content-header mt-3">
+        <h1>
+            تاریخچه تغییر کمیسیون {{ $teacher->fullname() }}
+        </h1>
+    </section>
+    <div class="content mt-3">
+        <div class="card">
+            <div class="card-body">
+                <table class="table table-responsive table-striped table-hover">
+                    <thead>
+                    <tr>
+                        <th>نام محصول</th>
+                        <th>درصد استاد</th>
+                        <th>درصد بلاک مالیات</th>
+                        <th>تغییر توسط</th>
+                        <th>تاریخ</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach($historyChanged as $changed)
+                        <tr>
+                            <td>
+                                @if($changed->product)
+                                    {{ $changed->product->name }}
+                                @else
+                                    <span class="text-danger">درس دستخوش تغییراتی همچون حذف یا آرشیو شده است</span>
+                                @endif
+                            </td>
+                            <td>{{ $changed->product_percentage }}</td>
+                            <td>{{ $changed->tax_block_percentage }}</td>
+                            <td>{{ $changed->admin_changed_by->fullname() }}</td>
+                            <td>{{ $changed->created_at() }}</td>
+
+                        </tr>
+                    @endforeach
+
+
                     </tbody>
                 </table>
 

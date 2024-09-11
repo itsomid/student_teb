@@ -11,6 +11,10 @@ class TeacherProductCommission extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'product_id', 'teacher_id', 'product_percentage', 'tax_block_percentage'
+    ];
+
     /**
      * @return BelongsTo
      */
