@@ -28,7 +28,6 @@ class TeacherCommissionController extends Controller
             ->withSum('order_items', 'final_price')
             ->withCount('order_items')
             ->withSum('cash_amounts', DB::raw('`cash_amount` - `agent_commission_amount`'))
-            ->withSum('cash_amounts', 'agent_commission_amount')
             ->get();
 
         $payments = TeacherPayments::query()
