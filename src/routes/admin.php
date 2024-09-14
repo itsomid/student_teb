@@ -43,6 +43,9 @@ use App\Http\Controllers\Admin\SupportsAllocationRateController;
 use App\Http\Controllers\Admin\ThemeController;
 use App\Http\Controllers\Admin\ClassController;
 
+Route::get('/teacher-commission/{teacher}', [\App\Http\Controllers\Admin\TeacherCommissionController::class, 'calculate']);
+Route::post('/teacher-commission-percentage/{teacher}', [\App\Http\Controllers\Admin\TeacherCommissionController::class, 'saveCommissionPercentage'])->name('teacher-commission.save-percentage');
+
 Route::get('/students_select' ,[SelectsApiController::class, 'students'])->name('students.select.index');
 Route::get('/admins_select' ,[SelectsApiController::class, 'admins'])->name('admins.select.index');
 

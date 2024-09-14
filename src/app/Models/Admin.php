@@ -78,6 +78,13 @@ class Admin extends Authenticatable
         return $this->belongsToMany(SupportMap::class);
     }
 
+    /**
+     * @return HasMany
+     */
+    public function products(): HasMany
+    {
+        return $this->hasMany(Product::class);
+    }
 
     //-----------------------------------------------------------------------------------------------------//
     //------------------------------------------    #Scopes      ------------------------------------------//

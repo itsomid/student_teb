@@ -5,15 +5,21 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class TeacherProductCommission extends Model
+class TeacherPayments extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'product_id', 'teacher_id', 'product_percentage', 'tax_block_percentage'
+        'amount', 'teacher_id', 'product_id', 'description', 'receipt_image', 'transaction_time'
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'transaction_time' => 'datetime'
+        ];
+    }
 
     /**
      * @return BelongsTo
@@ -29,14 +35,5 @@ class TeacherProductCommission extends Model
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
-    }
-
-    /**
-     * Teacher Paid Lists
-     * @return HasMany
-     */
-    public function payments(): HasMany
-    {
-        return $this->hasMany(TeacherPayments::class, 'product_id', 'product_id');
     }
 }

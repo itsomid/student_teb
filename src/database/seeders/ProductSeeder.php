@@ -9,6 +9,7 @@ use App\Models\CustomPackage;
 use App\Models\CustomPackageItem;
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\TeacherPayments;
 use App\Models\TeacherProductCommission;
 use Illuminate\Database\Seeder;
 
@@ -25,7 +26,13 @@ class ProductSeeder extends Seeder
             Course::factory()->count(1)
         )
             ->has(
-                TeacherProductCommission::factory()->count(1),
+                TeacherProductCommission::factory()
+                    ->count(1)->has(
+                        TeacherPayments::factory()->count(1)->state(fn(array $attributes, TeacherProductCommission $teacherProductCommission) => [
+                            'teacher_id' => $teacherProductCommission->teacher_id,
+                            'product_id' => $teacherProductCommission->product_id
+                        ])
+                    , 'payments'),
                 'teacherCommission'
             )->create();
 
