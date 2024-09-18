@@ -6,7 +6,10 @@ use App\Enums\CategoryKeyEnum;
 use App\Enums\CommissionSpecificationTypeEnum;
 use App\Models\Commission;
 use App\Models\Order;
+use App\Models\OrderItem;
 use Illuminate\Console\Command;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\DB;
 
 class CalculateAgentCommission extends Command
 {
@@ -22,51 +25,125 @@ class CalculateAgentCommission extends Command
      *
      * @var string
      */
-    protected $description = 'calculate agent commission';
+    protected $description = 'Calculate agent commission';
 
     /**
      * Execute the console command.
      */
     public function handle(): void
     {
-        $commissions = Commission::query()
+        DB::transaction(function () {
+            $commissions = $this->getCommissions();
+            $orders = $this->getRelatedSupportOrders($commissions->pluck('support_id')->toArray());
+
+            foreach ($orders as $order) {
+                $this->processOrderItems($order, $commissions);
+                $this->markOrderAsProcessed($order);
+            }
+        });
+    }
+
+    /**
+     * Retrieve commissions with related types.
+     */
+    private function getCommissions(): Collection
+    {
+        return Commission::query()
             ->with('type:id,percentage')
             ->select('support_id', 'type_id')
             ->whereHas('type', fn($q) => $q->where('specification', CommissionSpecificationTypeEnum::NonCapital))
             ->get()
             ->keyBy('support_id');
-        $orders = Order::query()
+    }
+
+    /**
+     * Retrieve orders that need commission processing.
+     */
+    private function getRelatedSupportOrders(array $supportIds): Collection
+    {
+        return Order::query()
             ->select('id', 'sales_support_id')
-            ->whereIn('sales_support_id', $commissions->pluck('support_id'))
+            ->whereIn('sales_support_id', $supportIds)
             ->where('is_agent_commission_processed', false)
             ->with('items', 'user', 'items.cash_amount', 'items.product', 'items.product.categories')
             ->get();
+    }
 
-        foreach ($orders as $order) {
-            foreach ($order->items as $orderItem) {
-                $commissionPercentage = $commissions[$order->sales_support_id]->type->percentage;
-                $isConsulting = !! $orderItem->product->categories->where('key', CategoryKeyEnum::CONSULTING_PLANNING)->count();
-                if ($isConsulting) {
-                    $commissionPercentage = 0.1;
-                }else {
-                    $discount = 1 - ($orderItem->final_price_without_vat/$orderItem->product->original_price);
-                    if ($discount>0 && $discount<$commissionPercentage){
-                        //calculate new commission based on discount
-                        $alpha = $orderItem->product->original_price - $orderItem->final_price_without_vat;
-                        $com = $commissionPercentage*$orderItem->product->original_price-$alpha;
-                        $newCommission = $com/$orderItem->final_price_without_vat;
-                        $commissionPercentage = $newCommission;
-                    }elseif ($discount>=$commissionPercentage){
-                        $commissionPercentage = 0.1;
-                    }
-                }
-                $orderItem->cash_amount()->update([
-                    'agent_commission_amount' => (int) ($orderItem->cash_amount->cash_amount * $commissionPercentage)
-                ]);
-            }
-            $order->update([
-                'is_agent_commission_processed' => true //Mark as processed
-            ]);
+    /**
+     * Process commission for each item in the order.
+     */
+    private function processOrderItems(Order $order, Collection $commissions): void
+    {
+        foreach ($order->items as $orderItem) {
+            $commissionPercentage = $this->calculateCommissionPercentage($orderItem, $commissions[$order->sales_support_id]->type->percentage);
+            $this->updateItemCommission($orderItem, $commissionPercentage);
         }
+    }
+
+    /**
+     * Calculate the appropriate commission percentage.
+     */
+    private function calculateCommissionPercentage(OrderItem $orderItem, float $baseCommissionPercentage): float
+    {
+        $isConsultingProduct = $this->isConsultingProduct($orderItem);
+
+        if ($isConsultingProduct) {
+            return 0.1;
+        }
+
+        $discount = $this->calculateDiscount($orderItem);
+        return $this->adjustCommissionForDiscount($baseCommissionPercentage, $discount, $orderItem);
+    }
+
+    /**
+     * Check if the product is a consulting product.
+     */
+    private function isConsultingProduct(OrderItem $orderItem): bool
+    {
+        return !! $orderItem->product->categories->where('key', CategoryKeyEnum::CONSULTING_PLANNING)->count();
+    }
+
+    /**
+     * Calculate the discount for the item.
+     */
+    private function calculateDiscount(OrderItem $orderItem): float
+    {
+        return 1 - ($orderItem->final_price_without_vat / $orderItem->product->original_price);
+    }
+
+    /**
+     * Adjust the commission percentage based on the discount.
+     */
+    private function adjustCommissionForDiscount(float $commissionPercentage, float $discount, OrderItem $orderItem): float
+    {
+        if ($discount > 0 && $discount < $commissionPercentage) {
+            $alpha = $orderItem->product->original_price - $orderItem->final_price_without_vat;
+            $com = $commissionPercentage * $orderItem->product->original_price - $alpha;
+            return $com / $orderItem->final_price_without_vat;
+        } elseif ($discount >= $commissionPercentage) {
+            return 0.1;
+        }
+
+        return $commissionPercentage;
+    }
+
+    /**
+     * Update the item's commission amount.
+     */
+    private function updateItemCommission(OrderItem $orderItem, float $commissionPercentage): void
+    {
+        $orderItem->cash_amount()->update([
+            'agent_commission_amount' => (int)($orderItem->cash_amount->cash_amount * $commissionPercentage)
+        ]);
+    }
+
+    /**
+     * Mark the order as processed.
+     */
+    private function markOrderAsProcessed(Order $order): void
+    {
+        $order->update([
+            'is_agent_commission_processed' => true
+        ]);
     }
 }
