@@ -5,12 +5,8 @@ namespace App\Console\Commands;
 use App\Enums\CategoryKeyEnum;
 use App\Enums\CommissionSpecificationTypeEnum;
 use App\Models\Commission;
-use App\Models\CommissionType;
 use App\Models\Order;
-use App\Models\Product;
-use App\Models\Products;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
 
 class CalculateAgentCommission extends Command
 {
