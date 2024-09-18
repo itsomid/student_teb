@@ -2,8 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Enums\CommissionSpecificationTypeEnum;
+use App\Models\Admin;
 use App\Models\CommissionType;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class CommissionSeeder extends Seeder
@@ -13,48 +14,51 @@ class CommissionSeeder extends Seeder
             [
                 'title' => 'سرپرست',
                 'percentage' => 0.0413,
-                'specification' => 'ALL',
+                'specification' => CommissionSpecificationTypeEnum::ALL,
             ],
             [
                 'title' => 'فروشنده پایه',
                 'percentage' => 0.0375	,
-                'specification' => 'ELEMENTARY',
+                'specification' => CommissionSpecificationTypeEnum::ELEMENTARY,
             ],
             [
                 'title' => 'فروشنده شهرستان',
                 'percentage' => 0.4,
-                'specification' => 'ALL',
+                'specification' => CommissionSpecificationTypeEnum::NonCapital,
             ],
             [
                 'title' => 'فروشنده شهرستان',
                 'percentage' => 0.3,
-                'specification' => 'ALL',
+                'specification' => CommissionSpecificationTypeEnum::NonCapital,
             ],
             [
                 'title' => 'فروشنده دورکار',
                 'percentage' => 0.0318	,
-                'specification' => 'ALL',
+                'specification' => CommissionSpecificationTypeEnum::ALL,
             ],
             [
                 'title' => 'فروشنده هیبرید',
                 'percentage' => 0.035,
-                'specification' => 'ALL',
+                'specification' => CommissionSpecificationTypeEnum::ALL,
             ],
             [
                 'title' => 'فروشنده حضوری',
                 'percentage' => 0.0375,
-                'specification' => 'ALL',
+                'specification' => CommissionSpecificationTypeEnum::ALL,
             ],
             [
                 'title' => 'قطع همکاری',
                 'percentage' => 0,
-                'specification' => 'ALL',
+                'specification' => CommissionSpecificationTypeEnum::ALL,
             ],
         ];
     public function run(): void
     {
         foreach($this->commission_types as $commission_type){
-            CommissionType::query()->create($commission_type);
+            $type = CommissionType::query()->create($commission_type);
+            $type->commissions()->create([
+                'support_id' => Admin::query()->inRandomOrder()->first()->id,
+            ]);
         }
     }
 }

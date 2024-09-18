@@ -19,7 +19,8 @@ class CategoryFactory extends Factory
     {
         return [
             'name'      => fake()->word(),
-            'type'      => Arr::random(['course', 'lesson', 'grade']),
+            'type'      => fake()->randomElement(['course', 'lesson', 'grade']),
+            'key'       => fake()->randomElement([fake()->word(), 'consulting_planning']),
             'archived'  => fake()->boolean()
         ];
     }

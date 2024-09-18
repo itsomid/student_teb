@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\CommissionSpecificationTypeEnum;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -12,6 +13,13 @@ class CommissionType extends Model
     const string ELEMENTARY_TYPE= 'ELEMENTARY';
 
     protected $fillable=['title', 'percentage'];
+
+    protected function casts(): array
+    {
+        return [
+            'specification' => CommissionSpecificationTypeEnum::class,
+        ];
+    }
 
     public function commissions() : HasMany
     {

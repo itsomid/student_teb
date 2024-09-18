@@ -30,6 +30,7 @@ return new class extends Migration
             $table->unsignedInteger('total_discount');
             $table->unsignedInteger('repayment_count');
             $table->string('status');
+            $table->boolean('is_agent_commission_processed')->default(false);
             $table->timestamps();
         });
 

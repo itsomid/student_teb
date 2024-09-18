@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('type');
+            $table->string('key');
             $table->boolean('archived')->default(false);
             $table->softDeletes();
             $table->timestamps();
