@@ -47,6 +47,7 @@ return new class extends Migration
                 ->restrictOnDelete();
 
             $table->unsignedInteger('final_price');
+            $table->unsignedInteger('final_price_without_vat');
             $table->unsignedInteger('product_price');
             $table->unsignedInteger('discount_price');
             $table->unsignedInteger('user_gift_amount')->default(0);

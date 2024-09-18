@@ -25,9 +25,9 @@ class CalcCashAmountListener
         $orderItems = $event->order->items;
         foreach ($orderItems as  $item) {
             $item->cash_amount()->create([
-                'student_id' => $item->user_id,
+                'student_id' => $event->order->user_id,
                 'product_id' => $item->product_id,
-                'cash_amount' => $item->final_price - $item->user_gift_amount,
+                'cash_amount' => $item->final_price_without_vat - $item->user_gift_amount,
                 'agent_commission_amount' => 0,
             ]);
         }
