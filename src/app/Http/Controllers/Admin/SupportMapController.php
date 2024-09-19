@@ -39,8 +39,8 @@ class SupportMapController extends Controller
             ->where('id', '<>', $support_map->id)
             ->get()
             ->pluck('grades')
-            ->unique()
             ->flatten()
+            ->unique()
             ->toArray();
 
         $selectedAdmins= SupportMap::query()

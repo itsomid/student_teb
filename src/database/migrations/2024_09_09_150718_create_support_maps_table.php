@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Query\Expression;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -14,7 +15,7 @@ return new class extends Migration
         Schema::create('support_maps', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->json('grades')->nullable();
+            $table->json('grades')->default(new Expression('(JSON_ARRAY())'))->nullable();
             $table->timestamps();
         });
     }

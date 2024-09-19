@@ -92,6 +92,7 @@ class PermissionList {
             ['homework'                             ,'مدیریت تکالیف'],
 
             ['support_map'                          ,'پایه بندی پشتیبان ها'],
+            ['schedule-weekly.index'                ,'مشاهده برنامه هفتگی'],
 
             ['coupons.index'                        ,'مشاهده لیست کدهای تخفیف'],
             ['coupons.excel'                        ,'دانلود خروجی اکسل از کدهای تخفیف'],

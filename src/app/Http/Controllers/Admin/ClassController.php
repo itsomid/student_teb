@@ -99,4 +99,29 @@ class ClassController extends Controller
         Toast::message('کلاس با موفقیت ویرایش شد')->notify();
         return redirect()->route('admin.classes.index', ['course' => $course->id]);
     }
+
+    public function updateStudioDescription(Course $course, Classes $classes, Request $request)
+    {
+        // Validate the input
+        $request->validate([
+            'studio_description' => 'nullable|string|max:1000',
+        ]);
+
+
+        $classes->update([
+            'studio_description' => $request->studio_description,
+        ]);
+
+        return response()->json(['message' => 'Studio description updated successfully.'], 200);
+    }
+
+    public function updateStatus(Course $course, Classes $classes, Request $request)
+    {
+        $classes->update([
+            'status' => $request->status,
+        ]);
+
+        return response()->json(['message' => 'status updated successfully.'], 200);
+    }
+
 }

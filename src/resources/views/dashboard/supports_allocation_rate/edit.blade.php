@@ -15,7 +15,7 @@
         @method('PATCH')
         @foreach($maps as $map)
             <div class="col-md-12">
-                <h6> 👈 پشتیبان های{{$map->title}}</h6>
+                <h6> 👈 پشتیبان های {{$map->title}} </h6>
             </div>
             @foreach($map->admins as $support)
                 <div class="col-md-4 my-5">
