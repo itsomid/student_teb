@@ -124,6 +124,7 @@ class OrderService
     private function processPackageItem(Order $order, CartItemInterface $item): void
     {
         $amount = $item->getCalcPrice();
+        $amountWithoutVat = $item->getPriceWithDiscount();
 
         $sum = $item->getModel()->packages->sum(function ($pkg) {
             return $pkg->getModel()->product->price;
@@ -131,6 +132,7 @@ class OrderService
         $itemModel = $order->items()->create([
             'product_id' => $item->product_id,
             'final_price' => $amount,
+            'final_price_without_vat' => $amountWithoutVat,
             'product_price' => $item->getModel()->product->price,
             'discount_price' => $item->getCouponDiscountAmount(),
             'user_gift_amount' => $this->giftAmountPerItem
@@ -141,11 +143,14 @@ class OrderService
         }
         // Divides  giftAmountPerItem to package items
         $packageItemGiftAmount = $this->calculateItemGiftAmount($this->giftAmountPerItem, count($item->getModel()->packages));
-        $item->getModel()->packages->each(function ($pkg) use ($order, $amount, $sum, $packageItemGiftAmount) {
-            $amount_temp = (int)(($pkg->getModel()->product->price * $amount) / $sum);
+        $item->getModel()->packages->each(function ($pkg) use ($order, $amount, $sum, $packageItemGiftAmount, $amountWithoutVat) {
+            $finalPrice = (int)(($pkg->getModel()->product->price * $amount) / $sum);
+            $finalPriceWithoutVat = (int)(($pkg->getModel()->product->price * $amountWithoutVat) / $sum);
+
             $itemModel = $order->items()->create([
                 'product_id' => $pkg->product_id,
-                'final_price' => $amount_temp,
+                'final_price' => $finalPrice,
+                'final_price_without_vat' => $finalPriceWithoutVat,
                 'product_price' => $pkg->getModel()->product->original_price,
                 'discount_price' => 0,
                 'user_gift_amount' => $packageItemGiftAmount
@@ -161,6 +166,7 @@ class OrderService
         $itemModel = $order->items()->create([
             'product_id' => $item->product_id,
             'final_price' => $item->getCalcPrice(),
+            'final_price_without_vat' => $item->getPriceWithDiscount(),
             'product_price' => $price,
             'discount_price' => $item->getCouponDiscountAmount(),
             'user_gift_amount' => $this->giftAmountPerItem

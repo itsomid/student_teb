@@ -20,7 +20,8 @@ class Order extends Model
         'repayment_count',
         'status',
         'user_id',
-        'sales_support_id'
+        'sales_support_id',
+        'is_agent_commission_processed'
     ];
 
     /**
@@ -30,7 +31,8 @@ class Order extends Model
     protected function casts(): array
     {
         return [
-            'status' => OrderStatusEnum::class
+            'status' => OrderStatusEnum::class,
+            'is_agent_commission_processed' => 'boolean'
         ];
     }
 

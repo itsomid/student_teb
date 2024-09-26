@@ -18,6 +18,7 @@ class Category extends Model
     public $fillable = [
         'name',
         'type',
+        'key',
         'archived'
     ];
 

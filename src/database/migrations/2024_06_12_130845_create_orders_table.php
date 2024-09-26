@@ -30,6 +30,7 @@ return new class extends Migration
             $table->unsignedInteger('total_discount');
             $table->unsignedInteger('repayment_count');
             $table->string('status');
+            $table->boolean('is_agent_commission_processed')->default(false);
             $table->timestamps();
         });
 
@@ -47,6 +48,7 @@ return new class extends Migration
                 ->restrictOnDelete();
 
             $table->unsignedInteger('final_price');
+            $table->unsignedInteger('final_price_without_vat');
             $table->unsignedInteger('product_price');
             $table->unsignedInteger('discount_price');
             $table->unsignedInteger('user_gift_amount')->default(0);
