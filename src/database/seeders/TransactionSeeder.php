@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Enums\DepositTypeEnum;
+use App\Models\CardTransaction;
 use App\Models\Deposit;
 use App\Models\Transaction;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -24,5 +25,7 @@ class TransactionSeeder extends Seeder
                 'transaction_id' => $transaction->id,
             ]);
         }
+
+        CardTransaction::factory(10)->create();
     }
 }
