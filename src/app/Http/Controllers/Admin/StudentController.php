@@ -148,8 +148,7 @@ class StudentController extends Controller
         if (!$is_verified)
             return redirect()->back()->withErrors(['code' => 'کد وارد شده صحیح نمیباشد']);
 
-        $student->sale_support_id = $new_support->id;
-        $student->save();
+        $student->updateSupport($new_support->id, 'manually assigned by '. auth()->id());
 
         Toast::message('پشتیبان با موفقیت تغییر کرد')->success()->notify();
         return redirect()->route('admin.student.index');

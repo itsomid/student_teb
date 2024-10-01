@@ -6,6 +6,7 @@ use App\Functions\FlashMessages\Toast;
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
 use App\Models\CommissionType;
+use App\Models\SupportMap;
 use App\Models\SupportsAllocationRate;
 use Illuminate\Http\Request;
 
@@ -13,12 +14,8 @@ class SupportsAllocationRateController extends Controller
 {
     public function edit()
     {
-        $elementary_supports= CommissionType::getElementarySupports()->pluck('support_id')->toArray();
-
-        $sale_supports= Admin::query()->role('sales_support')->with('roles')->with('allocationRate')->get();
-        return view('dashboard.supports_allocation_rate.edit')
-            ->with('elementary_supports', $elementary_supports)
-            ->with('sale_supports', $sale_supports);
+        $maps= SupportMap::query()->get();
+        return view('dashboard.supports_allocation_rate.edit')->with('maps', $maps);
     }
 
     public function update(Request $request)

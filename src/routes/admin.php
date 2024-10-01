@@ -12,11 +12,14 @@ use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\RandomStudentsDistributionController;
 use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\SalesReportByCategory;
+use App\Http\Controllers\Admin\SelectiveStudentsDistributionController;
 use App\Http\Controllers\Admin\StudentAccountController;
 use App\Http\Controllers\Admin\SelectsApiController;
 use App\Http\Controllers\Admin\StudentTokenController;
+use App\Http\Controllers\Admin\SupportMapController;
 use App\Http\Controllers\Admin\TransactionController;
 use App\Http\Controllers\Admin\TransactionReportController;
+use App\Http\Controllers\WeeklyScheduleController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\CouponController;
 use App\Http\Controllers\Admin\CouponRangeController;
@@ -167,6 +170,8 @@ Route::get('/courses/{course}/classes/create', [ClassController::class, 'create'
 Route::post('/courses/{course}/classes', [ClassController::class, 'store'])->name('classes.store')->can('classes.create');
 Route::get('/courses/{course}/classes/{classes}/edit', [ClassController::class, 'edit'])->name('classes.edit')->can('classes.edit');
 Route::patch('/courses/{course}/classes/{classes}', [ClassController::class, 'update'])->name('classes.update')->can('classes.edit');
+Route::patch('/courses/{course}/classes/{classes}/update_studio_description', [ClassController::class, 'updateStudioDescription'])->name('classes.update-studio-description')->can('classes.edit');
+Route::patch('/courses/{course}/classes/{classes}/update_status', [ClassController::class, 'updateStatus'])->name('classes.update-status')->can('classes.edit');
 
 Route::get('/classes-block/block', [\App\Http\Controllers\Admin\ClassBlockController::class, 'index'])->name('class-block.index')->can('class-block.index');
 Route::get('/classes-block/create', [\App\Http\Controllers\Admin\ClassBlockController::class, 'create'])->name('class-block.create')->can('class-block.create');
@@ -183,7 +188,8 @@ Route::delete('/product_categories/{product_category}', [ProductCategoryControll
 
 Route::get('/internal-settings', [InternalSettingController::class, 'index'])->name('internal.setting.index')->can('setting.int.index');
 Route::post('/internal-settings/update-permissions', [InternalSettingController::class, 'updatePermissions'])->name('setting.int.update-permissions')->can('setting.int.index');
-Route::get('/supports_allocation_rate', [SupportsAllocationRateController::class, 'edit'])->name('supports-allocation-rate.edit')->can('supports.allocation-rate-management');
+
+Route::get('/supports_allocation_rate',   [SupportsAllocationRateController::class, 'edit'])->name('supports-allocation-rate.edit')->can('supports.allocation-rate-management');
 Route::patch('/supports_allocation_rate', [SupportsAllocationRateController::class, 'update'])->name('supports-allocation-rate.update')->can('supports.allocation-rate-management');
 
 Route::get('/external-settings', [ExternalSettingController::class, 'index'])->name('external-setting.index')->can('setting.ext.index');
@@ -227,9 +233,13 @@ Route::delete('/commission_type/{commission_type}',             [CommissionTypeM
 Route::get('/course/search/{name}', [\App\Http\Controllers\Admin\CourseSearchController::class, '__invoke']);
 
 Route::get('/installments',                                     [InstallmentManagementController::class, 'index'])           ->name('installment.index')          ->can('installment.index');
+Route::get('/weekly-schedule',                                  [WeeklyScheduleController::class, 'index'])                  ->name('schedule-weekly.index')      ->can('schedule-weekly.index');
 
-Route::get('/random_students_distribution',                     [RandomStudentsDistributionController::class, 'index'])              ->name('random.students.distribution.index')       ->can('random-students-distribution');
-Route::post('/random_students_distribution',                    [RandomStudentsDistributionController::class, 'distribute'])         ->name('random.students.distribution.distribute')  ->can('random-students-distribution');
+Route::get('/students_random_distribution',                     [RandomStudentsDistributionController::class, 'index'])              ->name('random.students.distribution.index')       ->can('random-students-distribution');
+Route::post('/students_random_distribution',                    [RandomStudentsDistributionController::class, 'distribute'])         ->name('random.students.distribution.distribute')  ->can('random-students-distribution');
+
+Route::get('/students_selective_distribution',                  [SelectiveStudentsDistributionController::class, 'index'])           ->name('selective.students.distribution.index')     ->can('selective-students-distribution');
+Route::post('/students_selective_distribution',                 [SelectiveStudentsDistributionController::class, 'distribute'])      ->name('selective.students.distribution.distribute')->can('selective-students-distribution');
 
 
 Route::get('/homeworks',                    [HomeworkController::class, 'index'])       ->name('homework.index')     ->can('homework');
@@ -239,3 +249,9 @@ Route::delete('/homeworks/{id}',            [HomeworkController::class, 'destroy
 Route::get('/reports',                      [ReportController::class, 'index'])         ->name('reports.index')      ->can('report');;
 Route::patch('/reports/{id}/set_score',     [ReportController::class, 'setScore'])      ->name('reports.set_score')  ->can('report');;
 Route::delete('/reports/{id}',              [ReportController::class, 'destroy'])       ->name('reports.destroy')    ->can('report');;
+
+Route::get('support_map',                    [SupportMapController::class, 'index'])     ->name('support_map.index')        ->can('support_map');
+Route::post('support_map',                   [SupportMapController::class, 'store'])     ->name('support_map.store')        ->can('support_map');
+Route::get('support_map/{support_map}/edit', [SupportMapController::class, 'edit'])      ->name('support_map.edit')         ->can('support_map');
+Route::patch('support_map/{support_map}',      [SupportMapController::class, 'update'])    ->name('support_map.update')       ->can('support_map');
+Route::delete('support_map/{support_map}',   [SupportMapController::class, 'destroy'])   ->name('support_map.destroy')      ->can('support_map');

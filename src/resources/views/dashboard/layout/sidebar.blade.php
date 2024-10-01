@@ -94,6 +94,28 @@
         <li class="menu-header small text-uppercase">
             <span class="menu-header-text">بخش مدیریت فروش</span>
         </li>
+        @can('random-students-distribution')
+            <li class="menu-item @if(request()->is(['admin/students_random_distribution*'])) active open @endif">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon fa-light fa-user-group fa-sm"></i>
+                    <div>جابجایی پشتیبان</div>
+                </a>
+                <ul class="menu-sub">
+                    <li class="menu-item @if(request()->is('admin/random_students_distribution*')) active @endif">
+                        <a href="{{route('admin.random.students.distribution.index')}}" class="menu-link">
+                            <i class="menu-icon fa-light fa-user-group fa-sm"></i>
+                            <div data-i18n="Page 1">انتقال به صورت رندوم</div>
+                        </a>
+                    </li>
+                    <li class="menu-item @if(request()->is('admin/students_selective_distribution*')) active @endif">
+                        <a href="{{route('admin.selective.students.distribution.index')}}" class="menu-link">
+                            <i class="menu-icon fa-light fa-key fa-sm"></i>
+                            <div data-i18n="Page 1"> انتقال به پشتیبان‌های دلخواه</div>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        @endcan
         @can('report.registered_users')
         <li class="menu-item @if(request()->is('admin/report/registered_users*')) active @endif">
             <a href="{{route('admin.report.registered_users')}}" class="menu-link">
@@ -102,6 +124,14 @@
                 <div data-i18n="Page 1">گزارش ثبت نامی ها</div>
             </a>
         </li>
+        @endcan
+        @can('support_map')
+            <li class="menu-item @if(request()->is('admin/support_map*')) active @endif">
+                <a href="{{route('admin.support_map.index')}}" class="menu-link">
+                    <i class="menu-icon fa-regular fa-split"></i>
+                    <div>پایه بندی پشتیبان ها</div>
+                </a>
+            </li>
         @endcan
         @can('supports.allocation-rate-management')
             <li class="menu-item @if(request()->is('admin/supports_allocation_rate*')) active @endif">

@@ -9,6 +9,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Morilog\Jalali\Jalalian;
 
+/**
+ * @property mixed|null $product_id
+ * @property mixed|null $start_date
+ * @property mixed|null $about_course
+ * @property mixed|null $introduce_video
+ * @property mixed|null $qa_status
+ */
 class Course extends Model
 {
     use HasFactory, Filterable;

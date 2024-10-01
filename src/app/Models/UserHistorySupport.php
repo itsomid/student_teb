@@ -12,23 +12,10 @@ class UserHistorySupport extends Model
     use HasFactory, Filterable;
     public $filterNameSpace = 'App\Filters\UserHistorySupportFilters';
 
-    protected function casts(): array
-    {
-        return [
-            'start_time' => 'datetime',
-            'end_time' => 'datetime',
-            'expired_at' => 'datetime'
-        ];
-    }
-
     public $fillable = [
         'user_id',
         'user_support_id',
-        'support_role',
         'description',
-        'start_time',
-        'end_time',
-        'expired_at',
         'created_at'
     ];
 

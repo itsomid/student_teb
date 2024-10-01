@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Query\Expression;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -11,11 +12,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_history_supports', function (Blueprint $table) {
+        Schema::create('support_maps', function (Blueprint $table) {
             $table->id();
-            $table->unsignedInteger('user_id')->index();
-            $table->unsignedInteger('user_support_id')->nullable();
-            $table->text('description')->nullable();
+            $table->string('title');
+            $table->json('grades')->default(new Expression('(JSON_ARRAY())'))->nullable();
             $table->timestamps();
         });
     }
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_history_supports');
+        Schema::dropIfExists('support_maps');
     }
 };

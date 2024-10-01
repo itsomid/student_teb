@@ -91,6 +91,9 @@ class PermissionList {
             ['report'                               ,'مدیریت کارنامه ها'],
             ['homework'                             ,'مدیریت تکالیف'],
 
+            ['support_map'                          ,'پایه بندی پشتیبان ها'],
+            ['schedule-weekly.index'                ,'مشاهده برنامه هفتگی'],
+
             ['coupons.index'                        ,'مشاهده لیست کدهای تخفیف'],
             ['coupons.excel'                        ,'دانلود خروجی اکسل از کدهای تخفیف'],
             ['coupons.create'                       ,'افزودن کدهای تخفیف'],
@@ -105,7 +108,9 @@ class PermissionList {
             ['setting.ext.index'                    ,'مشاهده تنظیمات خارجی'],
 
             ['report.registered_users'              ,'آمار ثبت نام نماینده های فروش'],
+
             ['random-students-distribution'         ,'پخش تصادفی دانش‌آموزها'],
+            ['selective-students-distribution'      ,'پخش انتخابی دانش‌آموزها'],
 
             ['student-account.charge'               ,'افزایش اعتبار دانش آموز'],
             ['installment.index'                    ,'مشاهده اقساط'],
