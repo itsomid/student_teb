@@ -136,5 +136,9 @@ return array(
         "token"                               =>       "کد",
         'coupon_name'                         =>       'کد تخفیف',
         "expired_at"                          =>        "زمان انقضا",
+        "tracking_code"                       =>        "شماره پیگیری",
+        "paid_date"                           =>        "تاریخ پرداخت",
+        "filename"                            =>        "فایل",
+        "student_id"                          =>        "دانش آموز",
     ),
 );

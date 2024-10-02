@@ -14,40 +14,38 @@
     <div class="card">
         <div class="card-body">
             <h5 class="card-title">فرم افزودن تراکنش کارت به کارت</h5>
-            <form action="{{route('admin.debit-card.update', ['debit_card' => $debitCard->id])}}" method="post" enctype="multipart/form-data">
+            <form action="{{route('admin.card-transaction.update', $cardTransaction->id)}}" method="post" enctype="multipart/form-data">
                 @method('PATCH')
                 @csrf
                 <div class="row">
                     <div class="col-md-6 user_role">
                         <label class="form-label" for="tracking_code">شماره پیگیری تراکنش :</label>
-                        <input type="text" id="tracking_code" class="form-control" name="tracking_code"  placeholder="شماره پیگیری را وارد کنید" value="{{old('tracking_code') ?? $debitCard->tracking_code}}">
+                        <input type="text" id="tracking_code" class="form-control" name="tracking_code"  placeholder="شماره پیگیری را وارد کنید" value="{{old('tracking_code') ?? $cardTransaction->tracking_code}}">
                         @error('tracking_code') <small class="text-danger">{{$message}}</small> @enderror
                     </div>
                     <div class="col-md-6 user_role">
                         <label class="form-label" for="amount">مبلغ (ریال) :</label>
-                        <input type="number" id="amount" class="form-control" name="amount"  placeholder="مبلغ را وارد کنید" value="{{old('amount') ?? $debitCard->amount}}">
+                        <input type="number" id="amount" class="form-control" name="amount"  placeholder="مبلغ را وارد کنید" value="{{old('amount') ?? $cardTransaction->amount}}">
                         @error('amount') <small class="text-danger">{{$message}}</small> @enderror
                     </div>
                     <div class="col-md-6 user_role  mt-3">
-                        <label class="form-label" for="transaction_date">تاریخ تراکنش :</label>
-                        <input type="text" class="form-control" name="transaction_date"  placeholder="تاریخ تراکنش را وارد کنید" value="{{old('transaction_date') ?? $debitCard->transaction_date()}}" data-jdp>
-                        @error('transaction_date') <small class="text-danger">{{$message}}</small> @enderror
+                        <label class="form-label" for="paid_date">تاریخ تراکنش :</label>
+                        <input type="text" class="form-control" name="paid_date"  placeholder="تاریخ تراکنش را وارد کنید" value="{{old('paid_date') ?? $cardTransaction->paid_date()}}" data-jdp>
+                        @error('paid_date') <small class="text-danger">{{$message}}</small> @enderror
                     </div>
                     <div class="col-md-6 user_role mt-3">
                         <label class="form-label" for="key">کاربر :</label>
-                        <dynamic-select
-                            url="{{route('api.student.index')}}"
-                            label="اننتخاب دانش آموز"
-                            input_name="user_id"
-                            default_selected="{{$debitCard->user_id}}"
-                            option_title="name"
-                            option_value="id"
-                        ></dynamic-select>
-                        @error('user_id') <small class="text-danger">{{$message}}</small> @enderror
+                        <x-student-selection-component
+                            name="student_id"
+                            multiple="0"
+                            selected="{{ $cardTransaction->student_id}}"
+                            selected-label="{{ $cardTransaction->student->name }}">
+                        </x-student-selection-component>
+                        @error('student_id') <small class="text-danger">{{$message}}</small> @enderror
                     </div>
                     <div class="col-md-6 mt-2 user_role">
                         <label class="form-label" for="description">توضیحات تراکنش :</label>
-                        <textarea class="form-control" name="description" id="description">{{old('description')  ?? $debitCard->description}}</textarea>
+                        <textarea class="form-control" name="description" id="description">{{old('description')  ?? $cardTransaction->description}}</textarea>
                         @error('description') <small class="text-danger">{{$message}}</small> @enderror
                     </div>
                     <div class="col-md-6 mt-2 user_role">
@@ -55,7 +53,7 @@
                         <input class="form-control-file form-control" name="filename" type="file" id="filename">
                         @error('filename') <small class="text-danger">{{$message}}</small> @enderror
                         <div class="text-center">
-                            <img src="{{$debitCard->image()}}" class="img-fluid w-50" >
+                            <img src="{{$cardTransaction->getImageUrl()}}" class="img-fluid w-50" >
                         </div>
                     </div>
                 </div>

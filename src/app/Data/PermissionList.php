@@ -51,11 +51,11 @@ class PermissionList {
             ['referral_code.create'                 ,'افزودن کد معرف'],
             ['referral_code.edit'                   ,'ویرایش کد معرف'],
 
-            ['debit-card.index'                     ,'مشاهده لیست کارت به کارت ها'],
-            ['debit-card.index.access-all'          ,'مشاهده ی لیست همه ی کارت به کارت ها'],
-            ['debit-card.create'                    ,'افزودن کارت به کارت'],
-            ['debit-card.edit'                      ,'ویرایش کارت به کارت'],
-            ['debit-card.delete'                    ,'حذف کارت به کارت'],
+            ['card-transaction.index'                     ,'مشاهده لیست کارت به کارت ها'],
+            ['card-transaction.index.access-all'          ,'مشاهده ی لیست همه ی کارت به کارت ها'],
+            ['card-transaction.create'                    ,'افزودن کارت به کارت'],
+            ['card-transaction.edit'                      ,'ویرایش کارت به کارت'],
+            ['card-transaction.delete'                    ,'حذف کارت به کارت'],
 
             ['product_type.index'                   ,'مشاهده لیست ماهیت محصولات'],
             ['product_type.create'                  ,'افزودن ماهیت محصولات'],

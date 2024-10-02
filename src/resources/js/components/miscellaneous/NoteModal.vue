@@ -53,21 +53,19 @@ export default {
         }
     },
     mounted() {
-        console.log(this.sales_description)
         this.noteText = this.sales_description
     },
     methods: {
         sendNote() {
             this.loading = true
             axios.patch(this.url, {
-                sales_description: this.noteText
+                description: this.noteText
             }).then(res => {
                 this.loading = false
                 this.completed = true
                 setTimeout(()=>{
                     this.completed = false
                 },2000)
-                console.log('DONE!', res)
             }).catch()
 
         }

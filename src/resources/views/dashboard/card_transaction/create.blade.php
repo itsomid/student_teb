@@ -14,7 +14,7 @@
     <div class="card">
         <div class="card-body">
             <h5 class="card-title">فرم افزودن تراکنش کارت به کارت</h5>
-            <form action="{{route('admin.debit-card.store')}}" method="post" enctype="multipart/form-data">@csrf
+            <form action="{{route('admin.card-transaction.store')}}" method="post" enctype="multipart/form-data">@csrf
                 <div class="row">
                     <div class="col-md-6 user_role">
                         <label class="form-label" for="tracking_code">شماره پیگیری تراکنش :</label>
@@ -27,21 +27,18 @@
                         @error('amount') <small class="text-danger">{{$message}}</small> @enderror
                     </div>
                     <div class="col-md-6 user_role  mt-3">
-                        <label class="form-label" for="transaction_date">تاریخ تراکنش :</label>
-                        <input type="text" class="form-control" name="transaction_date"  placeholder="تاریخ تراکنش را وارد کنید" data-jdp value="{{old('transaction_date')}}">
-                        @error('transaction_date') <small class="text-danger">{{$message}}</small> @enderror
+                        <label class="form-label" for="paid_date">تاریخ تراکنش :</label>
+                        <input type="text" class="form-control" id="paid_date" name="paid_date"  placeholder="تاریخ تراکنش را وارد کنید" data-jdp value="{{old('paid_date')}}">
+                        @error('paid_date') <small class="text-danger">{{$message}}</small> @enderror
                     </div>
                     <div class="col-md-6 user_role mt-3">
-                        <label class="form-label" for="key">کاربر :</label>
-                        <dynamic-select
-                            url="{{route('api.student.index')}}"
-                            label="اننتخاب دانش آموز"
-                            input_name="user_id"
-                            default_selected="{{request()->input('user_id' , null)}}"
-                            option_title="name"
-                            option_value="id"
-                        ></dynamic-select>
-                        @error('user_id') <small class="text-danger">{{$message}}</small> @enderror
+                        <label for="selectStudent" class="text-muted">کاربر:</label>
+                        <x-student-selection-component
+                            name="student_id"
+                            multiple="0"
+                            selected="{{ request()->input('student_id', null)}}">
+                        </x-student-selection-component>
+                        @error('student_id') <small class="text-danger">{{$message}}</small> @enderror
                     </div>
                     <div class="col-md-6 mt-2 user_role">
                         <label class="form-label" for="description">توضیحات تراکنش :</label>
@@ -66,4 +63,10 @@
         </div>
     </div>
 
+@endsection
+
+@section('vendor-script')
+    @vite([
+            'resources/assets/js/jalalidatepicker.js',
+          ])
 @endsection

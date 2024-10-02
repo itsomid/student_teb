@@ -204,7 +204,7 @@
         @endcan
         @can('debit-card.index')
             <li class="menu-item @if(request()->is('admin/debit-cards*')) active @endif">
-                <a href="{{route('admin.debit-card.index')}}" class="menu-link">
+                <a href="{{route('admin.card-transaction.index')}}" class="menu-link">
                     <i class="menu-icon fa-regular fa-money-bill fa-sm"></i>
                     <div data-i18n="Page 1">مدیریت کارت به کارت ها</div>
                 </a>

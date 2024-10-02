@@ -24,7 +24,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\CouponController;
 use App\Http\Controllers\Admin\CouponRangeController;
 use App\Http\Controllers\Admin\CourseController;
-use App\Http\Controllers\Admin\DebitCardTransactionController;
+use App\Http\Controllers\Admin\CardTransactionController;
 use App\Http\Controllers\Admin\ExternalSettingController;
 use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\InternalSettingController;
@@ -113,12 +113,14 @@ Route::get('/transactions',     [TransactionController::class, 'index'])      ->
 
 Route::get('/reports/transaction',    [TransactionReportController::class, 'index']) ->name('transaction.report.index');
 
-Route::get('/debit-cards', [DebitCardTransactionController::class, 'index'])->name('debit-card.index')->can('debit-card.index');
-Route::get('/debit-cards/create', [DebitCardTransactionController::class, 'create'])->name('debit-card.create')->can('debit-card.create');
-Route::post('/debit-cards', [DebitCardTransactionController::class, 'store'])->name('debit-card.store')->can('debit-card.create');
-Route::get('/debit-cards/{debit_card}/edit', [DebitCardTransactionController::class, 'edit'])->name('debit-card.edit')->can('debit-card.edit');
-Route::patch('/debit-cards/{debit_card}', [DebitCardTransactionController::class, 'update'])->name('debit-card.update')->can('debit-card.edit');
-Route::delete('/debit-cards/{debit_card}', [DebitCardTransactionController::class, 'destroy'])->name('debit-card.destroy')->can('debit-card.delete');
+Route::get('/card-transactions', [CardTransactionController::class, 'index'])->name('card-transaction.index')->can('card-transaction.index');
+Route::get('/card-transactions/create', [CardTransactionController::class, 'create'])->name('card-transaction.create')->can('card-transaction.create');
+Route::post('/card-transactions', [CardTransactionController::class, 'store'])->name('card-transaction.store')->can('card-transaction.create');
+Route::get('/card-transactions/{cardTransaction}/edit', [CardTransactionController::class, 'edit'])->name('card-transaction.edit')->can('card-transaction.edit');
+Route::patch('/card-transactions/{cardTransaction}', [CardTransactionController::class, 'update'])->name('card-transaction.update')->can('card-transaction.edit');
+Route::delete('/card-transactions/{cardTransaction}', [CardTransactionController::class, 'destroy'])->name('card-transaction.destroy')->can('card-transaction.delete');
+Route::patch('/card-transactions/change-status/{cardTransaction}', [CardTransactionController::class, 'changeStatus'])->name('card-transaction.change-status');
+Route::patch('/card-transactions/update-description/{cardTransaction}',  [CardTransactionController::class, 'updateDescription'])->name('card-transaction.update-description');
 
 Route::get('/product_types', [ProductTypeController::class, 'index'])->name('product_type.index')->can('product_type.index');
 Route::get('/product_types/create', [ProductTypeController::class, 'create'])->name('product_type.create')->can('product_type.create');

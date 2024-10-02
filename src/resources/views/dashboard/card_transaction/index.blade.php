@@ -5,29 +5,26 @@
         <div class="card mb-3">
             <div class="card-body">
                 <h5 class="card-title">جست و جو</h5>
-                <form class="row" action="{{route('admin.debit-card.index')}}" method="get">
+                <form class="row" action="{{route('admin.card-transaction.index')}}" method="get">
                     <div class="col-md-6 user_role">
                         <label class="form-label" for="id">شناسه یکتا :</label>
                         <input type="text" class="form-control" name="id" id="id"  placeholder="شناسه یکتا را وارد کنید" value="{{request()->input('id') ?? '' }}">
                     </div>
                     <div class="col-md-6 user_role">
-                        <label class="form-label" for="key">کاربر :</label>
-                        <dynamic-select
-                            url="{{route('api.student.index')}}"
-                            label="اننتخاب دانش آموز"
-                            input_name="user_id"
-                            default_selected="{{ request()->input('user_id', null) }}"
-                            option_title="name"
-                            option_value="id"
-                        ></dynamic-select>
+                        <label for="selectStudent">کاربر:</label>
+                        <x-student-selection-component
+                            name="user_id"
+                            multiple="0"
+                            selected="{{ request()->input('user_id', null)}}">
+                        </x-student-selection-component>
                     </div>
                     <div class="col-md-6 user_role">
                         <label class="form-label" for="statusSelect">وضعیت تراکنش :</label>
                         <select class="form-select" name="status" id="statusSelect">
-                            <option value="1" {{request()->input('status') == 1 ?'selected': ''}}>در حال بررسی</option>
-                            <option value="2" {{request()->input('status') == 2 ?'selected': ''}}>تایید شده</option>
-                            <option value="3" {{request()->input('status') == 3 ?'selected': ''}}>تایید نشده</option>
-                            <option value="4" {{request()->input('status') == 4 ?'selected': ''}}>پردازش مدیریت</option>
+                            <option value="1" {{request()->input('status') == \App\Enums\CardTransactionStatusEnum::Pending->value ?'selected': ''}}>در حال بررسی</option>
+                            <option value="2" {{request()->input('status') == \App\Enums\CardTransactionStatusEnum::Approved->value ?'selected': ''}}>تایید شده</option>
+                            <option value="3" {{request()->input('status') == \App\Enums\CardTransactionStatusEnum::Rejected->value ?'selected': ''}}>تایید نشده</option>
+                            <option value="4" {{request()->input('status') == \App\Enums\CardTransactionStatusEnum::ManagementReview->value ?'selected': ''}}>پردازش مدیریت</option>
                         </select>
                     </div>
                     <div class="col-md-6 user_role">
@@ -58,9 +55,9 @@
         <div class="card">
             <div class="card-body">
                 <div class="card-title header-elements">
-                    <h5 class="m-0 me-2">لیست تراکنش ها</h5>
+                    <h5 class="m-0 me-2">لیست کارت به کارت ها</h5>
                         <div class="card-title-elements ms-auto">
-                            <a class="btn btn-primary text-white" href="{{route('admin.debit-card.create')}}">
+                            <a class="btn btn-primary text-white" href="{{route('admin.card-transaction.create')}}">
                                 <i class="fa fa-plus mx-2"></i>
                                 افزودن تراکنش جدید
                             </a>
@@ -82,45 +79,45 @@
                         </tr>
                         </thead>
                         <tbody class="table-border-bottom-0">
-                        @foreach($transactions as $transaction)
+                        @foreach($cardTransactions as $transaction)
                             <tr>
                                 <td>
                                     {{$transaction->id}}
                                 </td>
 
                                 <td>
-                                    {{$transaction->user->name}}
+                                    {{$transaction->student->name}}
                                 </td>
                                 <td>
                                     {{$transaction->tracking_code}}
                                 </td>
                                 <td>
-                                    {{$transaction->amount()}}
+                                    {{number_format($transaction->amount)}}
                                     ریال
                                 </td>
                                 <td>
-                                    <debit-card-transaction-select
-                                        url="{{ route('api.debit-card.update-status', ['debit_card' => $transaction->id] )}}"
+                                    <card-transaction-select
+                                        url="{{ route('admin.card-transaction.change-status', $transaction->id) }}"
                                         selected_option="{{$transaction->status}}"
-                                    ></debit-card-transaction-select>
+                                    ></card-transaction-select>
                                 </td>
                                 <td>
-                                    <a href="{{$transaction->image()}}" target="_blank">
-                                        <img src="{{$transaction->image()}}" class="img-fluid" width="50">
+                                    <a href="{{$transaction->getImageUrl()}}" target="_blank">
+                                        <img src="{{$transaction->getImageUrl()}}" class="img-fluid" width="50">
                                     </a>
 
                                 </td>
 
                                 <td>
                                     <a class="btn  btn-warning btn-block p-2 dropdown-item text-white"
-                                       href="#"  data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">
+                                       href="#"  data-bs-toggle="modal" data-bs-target="#modal-{{ $transaction->id }}" data-bs-whatever="@mdo">
                                         <i class="fa-sharp fa-regular fa-book"></i>
                                     </a>
 
-                                    <note-modal></note-modal>
+                                    <note-modal id="modal-{{ $transaction->id }}" sales_description="{{ $transaction->description }}" url="{{ route('admin.card-transaction.update-description', $transaction->id) }}"></note-modal>
                                 </td>
                                 <td>
-                                    {{$transaction->transaction_date()}}
+                                    {{$transaction->paid_date()}}
                                 </td>
                                 <td>
                                     <div class="dropdown">
@@ -128,7 +125,7 @@
                                             <i class="fa-solid fa-ellipsis-vertical"></i>
                                         </button>
                                         <div class="dropdown-menu">
-                                            <a class="dropdown-item"  href="{{route('admin.debit-card.edit', ['debit_card' => $transaction->id])}}">
+                                            <a class="dropdown-item"  href="{{route('admin.card-transaction.edit', [$transaction->id])}}">
                                                 <i class="fa-regular fa-user-pen mx-1"></i>
                                                 ویرایش تراکنش
                                             </a>
@@ -153,7 +150,7 @@
                                                     </div>
                                                     <div class="modal-footer">
                                                         <button type="button" class="btn btn-secondary text-white" data-bs-dismiss="modal">بستن</button>
-                                                        <form action="{{route('admin.debit-card.destroy' , ['debit_card' => $transaction->id])}}" method="post">
+                                                        <form action="{{route('admin.card-transaction.destroy' , [$transaction->id])}}" method="post">
                                                             @csrf
                                                             @method('DELETE')
                                                             <button type="submit" class="btn btn-danger text-white" data-bs-dismiss="modal">بله</button>
@@ -170,6 +167,9 @@
                     </table>
                 </div>
             </div>
+        </div>
+        <div class="text-center mt-3">
+            {{$cardTransactions->render()}}
         </div>
     </div>
 @endsection

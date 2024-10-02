@@ -10,16 +10,18 @@ class StudentSelectionComponent extends Component
 {
     public string $name;
     public bool $multiple=false;
-    public $selected;
+    public string|int $selected;
+    public ?string $selectedLabel = null;
 
     /**
      * Create a new component instance.
      */
-    public function __construct( $name, $multiple,$selected)
+    public function __construct(string $name, bool $multiple, string|int $selected, ?string $selectedLabel = null)
     {
         $this->name = $name;
         $this->multiple = $multiple;
         $this->selected = $selected;
+        $this->selectedLabel = $selectedLabel;
     }
 
     /**
