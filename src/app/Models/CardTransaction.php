@@ -75,8 +75,9 @@ class CardTransaction extends Model
      */
     public function scopeOwnCards(Builder $query, int $userId): Builder
     {
-        return $query
-            ->whereHas('student', fn ($query) => $query->where('sale_support_id', $userId))
-            ->orWhere('student_id', $userId);
+        return $query->where(function(Builder $query){ // Wrap to function to prevent conflict. eg: (student_id = 1 or sub query)
+            $query->whereHas('student', fn ($query) => $query->where('sale_support_id', $userId))
+                ->orWhere('student_id', $userId);
+        });
     }
 }
