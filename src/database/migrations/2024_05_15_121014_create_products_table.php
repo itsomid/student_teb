@@ -18,7 +18,7 @@ return new class extends Migration
             $table->unsignedInteger('user_id')->default(0)->index();
 
             $table->string('name');
-            $table->text('description');
+            $table->text('description')->nullable();
 
             $table->unsignedInteger('original_price')->default(0);
             $table->unsignedInteger('off_price')->nullable();
