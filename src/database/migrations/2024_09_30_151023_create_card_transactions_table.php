@@ -25,8 +25,8 @@ return new class extends Migration
             $table->string('tracking_code');
             $table->unsignedInteger('amount');
             $table->string('status'); // Enum: App\Enums\CardTransactionStatusEnum
-            $table->timestamp('paid_date');
-            $table->string('filename');
+            $table->timestamp('paid_date')->nullable();
+            $table->string('filename')->nullable();
             $table->text('description')->nullable();
             $table->softDeletes();
             $table->timestamps();
