@@ -32,7 +32,6 @@ services:
             - mysql
             - laravel-queue
             - laravel-cron
-            - phpmyadmin
         #            - mailhog
         networks:
             - laravel
