@@ -35,12 +35,12 @@ services:
         #            - mailhog
         networks:
             - laravel
-    client_view:
-        build: ./student_panel_v3
-        restart: always
-        container_name: student_view_container
-        ports:
-            - 8005:80
+#    client_view:
+#        build: ./student_panel_v3
+#        restart: always
+#        container_name: student_view_container
+#        ports:
+#            - 8005:80
 
     php:
         build:
