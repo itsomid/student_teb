@@ -1,4 +1,4 @@
-FROM composer:latest
+FROM dockerhub.classino.com/composer:latest
 
 # environment arguments
 ARG UID

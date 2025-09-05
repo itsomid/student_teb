@@ -56,7 +56,7 @@ services:
             - laravel
 
     mysql:
-        image: mysql:latest
+        image: dockerhub.classino.com/mysql:latest
         container_name: mysql
         restart: unless-stopped
         tty: true
@@ -98,7 +98,7 @@ services:
         depends_on:
             - mysql
         working_dir: /var/www/html
-        entrypoint: ['php', '/var/www/html/artisan', 'schedule:work']
+        entrypoint: [ 'php', '/var/www/html/artisan', 'schedule:work' ]
         networks:
             - laravel
 
@@ -117,7 +117,7 @@ services:
         depends_on:
             - mysql
         working_dir: /var/www/html
-        entrypoint: ['php', '/var/www/html/artisan', 'queue:work']
+        entrypoint: [ 'php', '/var/www/html/artisan', 'queue:work' ]
         networks:
             - laravel
     #
@@ -131,22 +131,6 @@ services:
     #            - 8025:8025
     #        networks:
     #            - laravel
-
-    phpmyadmin:
-        image: phpmyadmin:5.2.0
-        container_name: phpmyadmin
-        environment:
-            PMA_ARBITRARY: 1
-            PMA_HOST: ${DB_HOST}
-            PMA_USER: ${DB_USERNAME}
-            PMA_PASSWORD: ${DB_PASSWORD}
-            PMA_PORT: ${DB_PORT}
-        depends_on:
-            - mysql
-        ports:
-            - 8888:80
-        networks:
-            - laravel
 
     laravel-migrate-seed:
         build:
@@ -162,13 +146,13 @@ services:
             - .env:/var/www/html/.env
         depends_on:
             - mysql
-        profiles: ["migrate-seed"]
+        profiles: [ "migrate-seed" ]
         working_dir: /var/www/html
-        entrypoint: ["/bin/sh","-c"]
+        entrypoint: [ "/bin/sh", "-c" ]
         command:
             - |
-                php artisan migrate
-                php artisan db:seed
+              php artisan migrate
+              php artisan db:seed
         networks:
             - laravel
 
@@ -188,8 +172,8 @@ services:
         depends_on:
             - php
         user: ${USER:-laravel} #system user
-        profiles: ["composer"]
-        entrypoint: ['composer', '--ignore-platform-reqs']
+        profiles: [ "composer" ]
+        entrypoint: [ 'composer', '--ignore-platform-reqs' ]
         networks:
             - laravel
 
@@ -208,13 +192,13 @@ services:
         depends_on:
             - mysql
         working_dir: /var/www/html
-        profiles: ["artisan"]
-        entrypoint: ['php', '/var/www/html/artisan']
+        profiles: [ "artisan" ]
+        entrypoint: [ 'php', '/var/www/html/artisan' ]
         networks:
             - laravel
 
     npm:
-        image: node:alpine
+        image: dockerhub.classino.com/node:alpine
         container_name: npm
         volumes:
             - ./src:/var/www/html
@@ -223,7 +207,7 @@ services:
             - 3000:3000
             - 3001:3001
         working_dir: /var/www/html
-        profiles: ["npm"]
-        entrypoint: ['npm']
+        profiles: [ "npm" ]
+        entrypoint: [ 'npm' ]
         networks:
             - laravel
