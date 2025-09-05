@@ -81,7 +81,7 @@
 
         <div class="card my-4 my-3">
             <div class="card-body">
-                <h5 class="card-title">شرایط برای دانش آموزان قدیمی</h5>
+                <h5 class="card-title">شرایط برای دانشجوان قدیمی</h5>
                 <div class="row">
 
                     <div class="col-md-3 p-6">
@@ -113,7 +113,7 @@
 
         <div class="card my-4 my-3">
             <div class="card-body">
-                <h5 class="card-title">شرایط برای دانش آموزان فعلی</h5>
+                <h5 class="card-title">شرایط برای دانشجوان فعلی</h5>
                 <div class="row">
                     <div class="col-md-3">
                         <div class="form-group">
@@ -145,7 +145,7 @@
 
         <div class="card my-4 my-3">
             <div class="card-body">
-                <h5 class="card-title">شرایط سبد خرید دانش آموزان</h5>
+                <h5 class="card-title">شرایط سبد خرید دانشجوان</h5>
                 <div class="row">
                     <div class="col-md-4">
                         <div class="form-group ">
@@ -176,7 +176,7 @@
 
         <div class="card my-4 my-3">
             <div class="card-body">
-                <h5 class="card-title">گروه خاصی از دانش آموزان</h5>
+                <h5 class="card-title">گروه خاصی از دانشجوان</h5>
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">

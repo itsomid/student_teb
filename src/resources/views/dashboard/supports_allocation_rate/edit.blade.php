@@ -1,10 +1,10 @@
 @extends('dashboard.layout.master')
-@section('title', 'ویرایش نرخ تخصیص دانش آموز به پشتیبان')
+@section('title', 'ویرایش نرخ تخصیص دانشجو به پشتیبان')
 @section('content')
     <div class="row">
         <div class="card">
             <div class="card-body border-bottom">
-                <h5 class="card-title">ویرایش نرخ تخصیص دانش آموز به پشتیبان</h5>
+                <h5 class="card-title">ویرایش نرخ تخصیص دانشجو به پشتیبان</h5>
             </div>
         </div>
     </div>

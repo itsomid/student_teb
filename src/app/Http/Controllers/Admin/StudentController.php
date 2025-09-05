@@ -70,7 +70,7 @@ class StudentController extends Controller
         $student->block->block = $request->block;
         $student->block->save();
         }
-        Toast::message('افزودن دانش آموز با موفقیت انجام شد')->success()->notify();
+        Toast::message('افزودن دانشجو با موفقیت انجام شد')->success()->notify();
         return redirect()->route('admin.student.index');
     }
 
@@ -104,7 +104,7 @@ class StudentController extends Controller
         $student->block->save();
         }
 
-        Toast::message('ویرایش دانش آموز با موفقیت انجام شد')->success()->notify();
+        Toast::message('ویرایش دانشجو با موفقیت انجام شد')->success()->notify();
         return redirect()->route('admin.student.index');
     }
 
@@ -167,6 +167,29 @@ class StudentController extends Controller
         ]);
 
         return redirect()->back();
+    }
+
+    public function changePasswordForm(User $student)
+    {
+        return view('dashboard.student.change-password', compact('student'));
+    }
+
+    public function changePassword(Request $request, User $student)
+    {
+        $this->validate($request, [
+            'password' => 'required|string|min:8|confirmed',
+        ], [
+            'password.required' => 'رمز عبور الزامی است',
+            'password.min' => 'رمز عبور باید حداقل 8 کاراکتر باشد',
+            'password.confirmed' => 'تکرار رمز عبور مطابقت ندارد',
+        ]);
+
+        $student->update([
+            'password' => Hash::make($request->password)
+        ]);
+
+        Toast::message('رمز عبور با موفقیت تغییر کرد')->success()->notify();
+        return redirect()->route('admin.student.index');
     }
 
 }

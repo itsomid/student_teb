@@ -1,5 +1,5 @@
 @extends('dashboard.layout.master')
-@section('title', 'تکالیف دانش آموزان')
+@section('title', 'تکالیف دانشجوان')
 @section('content')
     <div class="card ">
         <div class="card-header">

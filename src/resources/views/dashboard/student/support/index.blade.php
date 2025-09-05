@@ -1,5 +1,5 @@
 @extends('dashboard.layout.master')
-@section('title', 'تاریخچه ی پشتیبان های دانش آموز')
+@section('title', 'تاریخچه ی پشتیبان های دانشجو')
 @section('content')
     <div class="row">
         <div class="card">
@@ -12,7 +12,7 @@
                         <thead>
                         <tr>
                             <th>ID</th>
-                            <th>نام دانش آموز</th>
+                            <th>نام دانشجو</th>
                             <th>پشتیبان</th>
                             <th>نقش پشتیبان</th>
                             <th>زمان آغاز</th>

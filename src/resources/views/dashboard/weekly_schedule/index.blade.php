@@ -81,10 +81,10 @@
 
                                                         <div class="btn-toolbar mt-3" role="toolbar" aria-label="Toolbar with button groups">
                                                             <div class="btn-group mr-2" role="group" aria-label="First group">
-                                                                <a  class="btn btn-danger text-white btn-sm" title="ورود به درسینو کانکت">
+                                                                <a  class="btn btn-danger text-white btn-sm" title="ورود به شفا‌آموز کانکت">
                                                                     <i class="fas fa-closed-captioning"></i>
                                                                 </a>
-                                                                <a class="btn btn-warning text-white btn-sm" title="ورود به درسینو کانکت ادمین">
+                                                                <a class="btn btn-warning text-white btn-sm" title="ورود به شفا‌آموز کانکت ادمین">
                                                                     <i class="fas fa-user-cog"></i>
                                                                 </a>
                                                                 <a href="{{route('admin.classes.edit', ['course' => $class->course_id, 'classes' => $class->id])}}" target="_blank" class="btn btn-primary text-white btn-sm" title="ویرایش کلاس">

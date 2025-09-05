@@ -1,5 +1,5 @@
 @extends('dashboard.layout.master')
-@section('title', 'مدیریت دانش آموزان')
+@section('title', 'مدیریت دانشجوان')
 @section('content')
     <div class="row g-4 mb-4">
         <div class="col-sm-12 col-xl-6">
@@ -7,7 +7,7 @@
                 <div class="card-body">
                     <div class="d-flex align-items-start justify-content-between">
                         <div class="content-left">
-                            <span>مجموع بدهی دانش آموزان</span>
+                            <span>مجموع بدهی دانشجوان</span>
                             <div class="d-flex align-items-center my-1">
                                 <h4 class="mb-0 me-2">171,068,362 ریال</h4>
                             </div>
@@ -127,7 +127,7 @@
                                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                         </div>
                                                         <div class="modal-body">
-                                                            اعتبار دانش آموز x برابر با y میباشد
+                                                            اعتبار دانشجو x برابر با y میباشد
                                                         </div>
                                                         <div class="modal-footer">
                                                             <button type="button" class="btn btn-secondary text-white" data-bs-dismiss="modal">بستن</button>

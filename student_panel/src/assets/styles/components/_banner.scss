@@ -1,0 +1,55 @@
+/**
+* 18. header-banner
+* ----------------------------------------------------------------------- *
+*/
+@import '../../../../node_modules/vuetify/lib/styles/main.sass';
+
+.header-banner {
+  @media #{map-get($display-breakpoints, 'lg-and-up')} {
+    height: 100px;
+
+  }
+  @media #{map-get($display-breakpoints, 'md-and-down')} {
+    height: 120px
+  }
+
+  .container {
+    width: 100%;
+    @media #{map-get($display-breakpoints, 'lg-and-up')} {
+      width: 75%;
+    }
+  }
+    .alert {
+    margin-bottom: 0;
+    padding: 1.5rem 1.25rem;
+    border: none;
+    border-radius: 0;
+  }
+
+  .alert-warning {
+    color: #47404f;
+    font-size: 1.4rem;
+    font-weight: 500;
+  }
+
+  button {
+    position: relative;
+
+    &.close {
+      float: right;
+      position: relative;
+    }
+
+    i {
+      font-size: 30px;
+      font-weight: 500;
+    }
+  }
+  @keyframes glow {
+    40% {
+      text-shadow: 0 0 15px #fcb8b8;
+    }
+  }
+
+}
+

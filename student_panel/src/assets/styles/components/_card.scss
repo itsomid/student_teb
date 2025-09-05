@@ -1,0 +1,14 @@
+.live-class-card {
+  border: #28CD41 2px solid;
+  background-size: 400% 400%;
+}
+
+.product-card-icon {
+  border-width: 2px!important;
+  padding: 3px!important;
+
+  &_primary {
+    border-color: var(--v-theme-primary)!important;
+  }
+}
+

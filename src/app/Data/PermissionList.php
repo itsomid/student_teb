@@ -18,7 +18,7 @@ class PermissionList {
             ['admin.login_as_admin'                  ,'ورود به عنوان ادمین'],
             ['admin.inquiry'                         ,'استعلام شماره تماس'],
 
-            ['supports.allocation-rate-management'   ,'نرخ تخصیص دانش آموز به پشتیبان'],
+            ['supports.allocation-rate-management'   ,'نرخ تخصیص دانشجو به پشتیبان'],
 
             ['role.admin.edit'                       ,'ویرایش نقش پرسنل'],
             ['role.index'                            ,'لیست نقش ها'],
@@ -36,16 +36,16 @@ class PermissionList {
             ['session.index'                        ,'مشاهده نشست های فعال'],
             ['session.destroy'                      ,'حذف نشست های فعال'],
 
-            ['student.index'                        ,'مشاهده صفحه لیست دانش آموزان'],
-            ['student.manage-all-user'              ,'مشاهده تمام دانش آموزان'],
-            ['student.create'                       ,'افزودن دانش آموز جدید'],
-            ['student.edit'                         ,'ویرایش دانش آموز'],
-            ['student.edit-note'                    ,'ویرایش یادداشت دانش آموز'],
-            ['student.edit-support'                 ,'ویرایش پشتیبان دانش آموز'],
-            ['student.verify'                       ,'تایید شماره دانش آموز'],
-            ['student.support.history'              ,'مشاهده تاریخچه ی تغییر پشتیبان دانش آموزان'],
-            ['student.excel'                        ,'دانلود خروجی اکسل از لیست دانش آموزان'],
-            ['student.group-register'               ,'ثبت نام گروهی دانش آموز'],
+            ['student.index'                        ,'مشاهده صفحه لیست دانشجوان'],
+            ['student.manage-all-user'              ,'مشاهده تمام دانشجوان'],
+            ['student.create'                       ,'افزودن دانشجو جدید'],
+            ['student.edit'                         ,'ویرایش دانشجو'],
+            ['student.edit-note'                    ,'ویرایش یادداشت دانشجو'],
+            ['student.edit-support'                 ,'ویرایش پشتیبان دانشجو'],
+            ['student.verify'                       ,'تایید شماره دانشجو'],
+            ['student.support.history'              ,'مشاهده تاریخچه ی تغییر پشتیبان دانشجوان'],
+            ['student.excel'                        ,'دانلود خروجی اکسل از لیست دانشجوان'],
+            ['student.group-register'               ,'ثبت نام گروهی دانشجو'],
 
             ['referral_code.index'                  ,'مشاهده کد های معرف'],
             ['referral_code.create'                 ,'افزودن کد معرف'],
@@ -74,7 +74,7 @@ class PermissionList {
             ['classes.create'                       ,'افزودن کلاس جدید'],
             ['classes.edit'                         ,'ویرایش کلاس'],
 
-            ['cc_servers'                           ,'سرورهای درسینو کانکت'],
+            ['cc_servers'                           ,'سرورهای شفا‌آموز کانکت'],
             ['commission'                           ,'پورسانت تیم فروش'],
             ['sales_report_by_category'             ,'آمار فروش بر اساس دسته بندی'],
 
@@ -112,7 +112,7 @@ class PermissionList {
             ['random-students-distribution'         ,'پخش تصادفی دانش‌آموزها'],
             ['selective-students-distribution'      ,'پخش انتخابی دانش‌آموزها'],
 
-            ['student-account.charge'               ,'افزایش اعتبار دانش آموز'],
+            ['student-account.charge'               ,'افزایش اعتبار دانشجو'],
             ['installment.index'                    ,'مشاهده اقساط'],
 
         ];

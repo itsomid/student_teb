@@ -1,0 +1,192 @@
+.cl-loading {
+  --primary: #007bff;
+  --vs-background: 255,255,255;
+  --vs-opacity: .6;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  width: 100%;
+  height: 100%;
+  z-index: 100000;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  //background: rgba(var(--vs-background), var(--vs-opacity));
+  -webkit-transition: all 0.25s ease;
+  transition: all 0.25s ease;
+  padding: 20px;
+  border-radius: inherit;
+}
+.cl-loading--target {
+  position: absolute;
+}
+.cl-loading__load {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+.cl-loading__load__text {
+  font-size: 0.75em;
+  margin: 7px;
+  font-weight: bold;
+  color: #007bff;
+}
+.cl-loading__load__percent {
+  position: relative;
+  font-size: 0.65rem;
+  font-weight: bold;
+  color: #007bff;
+  margin-top: 1px;
+  z-index: 200;
+}
+.cl-loading__load__animation {
+  width: 40px;
+  height: 40px;
+  position: relative;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+}
+
+.cl-loading__progress {
+  width: 100%;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  height: 4px;
+  background: rgba(var(--primary), 0.2);
+}
+.cl-loading__progress__bar {
+  background: #007bff;
+  height: 100%;
+  position: relative;
+  border-radius: 0px 10px 10px 0px;
+}
+
+.cl-loading--default .cl-loading__load__animation {
+  border-radius: 50%;
+}
+.cl-loading--default .cl-loading__load__animation__1 {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 3px solid #007bff;
+  border-radius: inherit;
+  border-top: 3px solid transparent;
+  border-left: 3px solid transparent;
+  border-right: 3px solid transparent;
+  -webkit-animation: rotate 0.8s ease infinite;
+  animation: rotate 0.8s ease infinite;
+  top: 0px;
+}
+.cl-loading--default .cl-loading__load__animation__2 {
+  top: 0px;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 3px dashed #007bff;
+  border-radius: inherit;
+  border-top: 3px solid transparent;
+  border-left: 3px solid transparent;
+  border-right: 3px solid transparent;
+  -webkit-animation: rotate 0.8s linear infinite;
+  animation: rotate 0.8s linear infinite;
+  opacity: 0.2;
+}
+.cl-loading--default .cl-loading__load__animation__3 {
+  display: none;
+}
+
+@-webkit-keyframes rotate {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes rotate {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+.cl-loading--circles .cl-loading__load__animation {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+}
+.cl-loading--circles .cl-loading__load__animation__1 {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  -webkit-animation: rotate 1s ease infinite;
+  animation: rotate 1s ease infinite;
+  border-radius: 50%;
+  border: 2px solid #007bff;
+  border-top: 3px solid transparent;
+  border-left: 3px solid transparent;
+  border-right: 3px solid transparent;
+}
+.cl-loading--circles .cl-loading__load__animation__2 {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  -webkit-animation: rotate 1s ease-in-out infinite;
+  animation: rotate 1s ease-in-out infinite;
+  border-radius: 50%;
+  border: 2px dashed #007bff;
+  border-top: 3px solid transparent;
+  border-left: 3px solid transparent;
+  border-right: 3px solid transparent;
+}
+.cl-loading--circles .cl-loading__load__animation__3 {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  animation: rotate 1s linear infinite reverse;
+  border-radius: 50%;
+  border: 2px solid #007bff;
+  border-top: 3px solid transparent;
+  border-left: 3px solid transparent;
+  border-right: 3px solid transparent;
+}

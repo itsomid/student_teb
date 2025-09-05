@@ -121,7 +121,7 @@ return array(
         "sales_support_expire_days"           =>       "تاریخ انقضا",
         "start_date"                          =>       "زمان شروع دوره",
         "amount"                              =>       "قیمت",
-        'user_id'                             =>        'دانش آموز',
+        'user_id'                             =>        'دانشجو',
         "original_price"                      =>       "قیمت",
         "off_price"                           =>       "قیمت حراجی",
         "about_course"                        =>       "درباره دوره",
@@ -139,6 +139,6 @@ return array(
         "tracking_code"                       =>        "شماره پیگیری",
         "paid_date"                           =>        "تاریخ پرداخت",
         "filename"                            =>        "فایل",
-        "student_id"                          =>        "دانش آموز",
+        "student_id"                          =>        "دانشجو",
     ),
 );

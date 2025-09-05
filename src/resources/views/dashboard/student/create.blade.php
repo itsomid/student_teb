@@ -1,10 +1,10 @@
 @extends('dashboard.layout.master')
-@section('title', 'افزودن دانش آموز جدید')
+@section('title', 'افزودن دانشجو جدید')
 @section('content')
 
     <div class="card">
         <div class="card-body">
-            <h5 class="card-title">فرم افزودن دانش آموز</h5>
+            <h5 class="card-title">فرم افزودن دانشجو</h5>
             <form action="{{route('admin.student.store')}}" method="post">
                 @csrf
                 <div class="row">
@@ -123,7 +123,7 @@
                     <div class="col-md-6 mb-1">
                         <div class="form-group mt-3">
 
-                            <label class="form-label" for="familiarity_way">نحوه آشنایی با درسینو :</label>
+                            <label class="form-label" for="familiarity_way">نحوه آشنایی با شفا‌آموز :</label>
                             <select id="familiarity_way" class="form-select text-capitalize mb-md-0 ">
                                 @foreach(\App\Data\FamiliarityWays::get() as $key=>$way)
                                     <option value="{{$key}}" {{old('familiarity_way') == $key ? 'selected' : null}}>

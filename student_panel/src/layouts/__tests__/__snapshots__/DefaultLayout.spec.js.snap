@@ -1,0 +1,3 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`DefaultLayout.vue | @/src/layouts > renders match to snapshot 1`] = `"<v-app-stub overlaps=\\"\\" fullheight=\\"true\\"></v-app-stub>"`;

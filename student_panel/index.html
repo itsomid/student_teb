@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="icon" href="/icons/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" sizes="180x180">
+    <link rel="mask-icon" href="/icons/maskable-icon-512x512.png" color="#FFFFFF">
+    <title>کلاسینو - اولین و بزرگترین آموزشگاه و کلاس آنلاین کنکور و پایه</title>
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon-180x180.png" sizes="180x180">
+    <link rel="mask-icon" href="/icons/maskable-icon-512x512.png" color="#FFFFFF">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="msapplication-TileImage" content="/ic_launcher.png">
+    <meta name="theme-color" content="#ffffff">
+    <meta property="og:image" content="<%= BASE_URL %>classinoLogo.svg">
+    <meta property="og:image:secure_url" content="<%= BASE_URL %>apple-touch-icon-180x180.png">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:width" content="30">
+    <meta property="og:image:height" content="30">
+    <meta name="apple-mobile-web-app-title" content="کلاسینو">
+    <meta property="og:site_name" content="کلاسینو">
+    <meta property="og:title" content="کلاسینو">
+    <meta name="description" content="کلاسینو آموزشگاه کنکور آنلاینی هست که مجازی سرکلاس حاضر میشی، به صورت زنده با استاد حرف میزنی، تکالیف و آزمون ها جدی پیگیری میشن و از هر جای دنیا میتونی به کلاسینو دسترسی پیدا کنی">
+    <style>
+        body {
+            margin: 0;
+        }
+        #loading-section {
+            top: 0;
+            width: 100%;
+            position: fixed;
+            display: flex;
+            height: 100%;
+            justify-content: center;
+            margin: auto 0;
+            align-items: center;
+        }
+        #loading-section img {
+            width: 100px;
+            height: auto;
+        }
+        .classino-version {
+            margin-bottom: 2em;
+            width: 92%;
+            position: fixed;
+            bottom: 0;
+            text-align: center;
+            letter-spacing: 4px;
+            font-family: sans-serif;
+            font-size: 14px;
+            color: #a1a1a1;
+            font-weight: 300;
+        }
+        .classino-version span {
+            font-family: sans-serif;
+            word-spacing: -4px;
+            letter-spacing: 1px;
+            color: #e08e00;
+            font-size: 13px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app"></div>
+    <div id="loading-section">
+        <img src="./la-loading.gif" alt="loading...">
+        <p class="classino-version">
+            CLASSINO
+            <span>v1.19.5</span>
+        </p>
+    </div>
+    <script type="module" src="./src/main.js"></script>
+</body>
+
+</html>

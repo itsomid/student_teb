@@ -99,6 +99,9 @@ Route::patch('students/{student}/verify', [StudentController::class, 'verifyStud
 Route::get('/students/{student}/tokens',                  [StudentTokenController::class, 'index'])  ->name('student.token.index') ->can('student.edit');
 Route::patch('/students/{student}/tokens/{token}/revoke', [StudentTokenController::class, 'revoke']) ->name('student.token.revoke')->can('student.edit');
 
+Route::get('/students/{student}/change-password', [StudentController::class, 'changePasswordForm'])->name('student.change-password')->can('student.edit');
+Route::patch('/students/{student}/change-password', [StudentController::class, 'changePassword'])->name('student.change-password.update')->can('student.edit');
+
 
 Route::get('/user_support', [UserSupportController::class, 'index'])->name('user_support.get')->can('student.support.history');
 

@@ -45,7 +45,7 @@ class AdminTableSeeder extends Seeder
         return [
             [
                 'id' => 1,
-                'first_name' => 'درسینو',
+                'first_name' => 'شفا‌آموز',
                 'last_name' => ' ',
                 'email' => 'info@classino.com',
                 'mobile' => '091219909744',

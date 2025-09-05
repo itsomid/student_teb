@@ -1,16 +1,16 @@
 @extends('dashboard.layout.master')
-@section('title', 'استعلام دانش آموز')
+@section('title', 'استعلام دانشجو')
 @section('content')
     <div class="row">
         <div class="col-md-12">
             <div class="card mb-3">
                 <div class="card-body">
-                    <h5 class="card-title">استعلام دانش آموز</h5>
+                    <h5 class="card-title">استعلام دانشجو</h5>
                     <form action="{{route('admin.inquiry.submit')}}" class="row mt-3 d-flex align-items-end justify-content-between" method="post">
                         @csrf
                         <div class="col-md-4 user_role">
-                            <label class="form-label" for="UserRole">شماره موبایل یا ایدی دانش آموز: :</label>
-                            <input type="number" name="mobile" class="form-control" placeholder="شماره موبایل یا ایدی دانش آموز">
+                            <label class="form-label" for="UserRole">شماره موبایل یا ایدی دانشجو: :</label>
+                            <input type="number" name="mobile" class="form-control" placeholder="شماره موبایل یا ایدی دانشجو">
                         </div>
                         <div class="col-md-2 mt-2">
                             <button type="submit" class="btn btn-primary mt-2 text-white">
@@ -43,7 +43,7 @@
                         </div>
                         <div class="info-container">
                             <ul class="list-unstyled">
-                                <p class="mt-4 small text-uppercase text-muted">وضعیت کلی پنل دانش آموز:</p>
+                                <p class="mt-4 small text-uppercase text-muted">وضعیت کلی پنل دانشجو:</p>
                                 <li class="mb-2 d-flex  text-center">
                                     <h6 class="bg-success text-right rounded p-1 text-white">
                                         دسترسی باز است (حالات بدهکاری مالی یا بلاکی از جلسات کلاس در نظر گرفته نشده است)
@@ -94,11 +94,11 @@
                                 <p class="mt-4 small text-uppercase text-muted">عملیات</p>
                                 <li class="mb-2 pt-1 d-flex justify-content-center text-white">
                                     <a href="{{route('admin.student.edit',$student->id)}}" type="button" class="btn btn-primary mx-1">
-                                        <span class="mx-1">ویرایش دانش آموز</span>
+                                        <span class="mx-1">ویرایش دانشجو</span>
                                         <i class="fa-regular fa-user-pen"></i>
                                     </a>
                                     <button type="button" class="btn btn-success mx-1" disabled>
-                                        <span class="mx-1">ورود به پنل دانش آموز</span>
+                                        <span class="mx-1">ورود به پنل دانشجو</span>
                                         <i class="fa-sharp fa-solid fa-castle"></i>
                                     </button>
                                     {{--                                    <button type="button" class="btn btn-warning mx-1">--}}
@@ -117,7 +117,7 @@
                 <div class="card mb-4">
                     <div class="card-body">
                         <div class="card-title">
-                            <h6>درس های خریداری شده دانش آموز</h6>
+                            <h6>درس های خریداری شده دانشجو</h6>
                             <p class="small text-uppercase text-muted">
                                 تعداد درس های خریداری شده: <strong class="text-dark">{{$student->productAccess}}</strong>
                             </p>

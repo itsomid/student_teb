@@ -1,5 +1,5 @@
 @extends('dashboard.layout.master')
-@section('title', 'نمایش دانش آموز')
+@section('title', 'نمایش دانشجو')
 @section('content')
     <div class="row">
         <div class="col-xl-5 col-lg-5 col-md-5 order-1 order-md-0">
@@ -20,7 +20,7 @@
                     </div>
                     <div class="info-container">
                         <ul class="list-unstyled">
-                            <p class="mt-4 small text-uppercase text-muted">وضعیت کلی پنل دانش آموز:</p>
+                            <p class="mt-4 small text-uppercase text-muted">وضعیت کلی پنل دانشجو:</p>
                             <li class="mb-2 d-flex  text-center">
                                 <h6 class="bg-success rounded p-1 text-white">
                                     دسترسی باز است (حالات بدهکاری مالی یا بلاکی از جلسات کلاس در نظر گرفته نشده است)
@@ -93,7 +93,7 @@
             <div class="card mb-4">
                 <div class="card-body">
                     <div class="card-title">
-                        <h6>درس های خریداری شده دانش آموز</h6>
+                        <h6>درس های خریداری شده دانشجو</h6>
                         <p class="small text-uppercase text-muted">
                             تعداد درس های خریداری شده: <strong class="text-dark">2</strong>
                         </p>

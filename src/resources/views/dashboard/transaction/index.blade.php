@@ -25,7 +25,7 @@
         <div class="col-md">
             <div class="card shadow-none bg-success h-100">
                 <div class="card-body d-flex justify-content-between align-items-center">
-                    <h6 class="card-title text-white my-0">دانش آموزان با بیشترین واریز امروز</h6>
+                    <h6 class="card-title text-white my-0">دانشجوان با بیشترین واریز امروز</h6>
                     <ul class="list-unstyled avatar-group d-flex my-0">
                         @foreach($usersWithGreatestAmountOfTransaction as $transaction)
                             <li data-bs-toggle="tooltip" data-popup="tooltip-custom" data-bs-placement="top" title="{{$transaction->user->name}}" class="avatar pull-up">

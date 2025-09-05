@@ -209,7 +209,7 @@
                     <div class="col-md-3 mb-1">
                         <div class="form-group mt-2">
                             <div class="form-check form-switch">
-                                <label class="form-check-label" for="homework">به دانش آموزان نمایش داده شود؟</label>
+                                <label class="form-check-label" for="homework">به دانشجوان نمایش داده شود؟</label>
                                 <input class="form-check-input" type="checkbox" role="switch" id="homework">
                             </div>
                         </div>

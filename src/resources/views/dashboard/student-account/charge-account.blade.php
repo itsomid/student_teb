@@ -10,7 +10,7 @@
                     @csrf
 
                     <div class="col-md-6">
-                        <label for="selectStudent" class="form-label mb-0">دانش آموز:
+                        <label for="selectStudent" class="form-label mb-0">دانشجو:
                         </label>
                         <div class="form-group">
                             <select name="user_id"

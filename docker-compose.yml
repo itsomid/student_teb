@@ -35,6 +35,12 @@ services:
         #            - mailhog
         networks:
             - laravel
+    client_view:
+        build: ./student_panel_v3
+        restart: always
+        container_name: student_view_container
+        ports:
+            - 8005:80
 
     php:
         build:
@@ -55,7 +61,7 @@ services:
             - laravel
 
     mysql:
-        image: dockerhub.classino.com/mysql:latest
+        image: mysql:latest
         container_name: mysql
         restart: unless-stopped
         tty: true
@@ -197,7 +203,6 @@ services:
             - laravel
 
     npm:
-        image: dockerhub.classino.com/node:alpine
         container_name: npm
         volumes:
             - ./src:/var/www/html

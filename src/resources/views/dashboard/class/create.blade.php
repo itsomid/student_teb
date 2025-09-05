@@ -223,7 +223,7 @@
                     <h5 class="card-title">موارد دیگر</h5>
                     <div class="col-md-12 mb-1">
                         <div class="form-group mt-3">
-                            <label class="form-label" for="familiarity_way">سرور های درسینو کانکت:</label>
+                            <label class="form-label" for="familiarity_way">سرور های شفا‌آموز کانکت:</label>
                             <select id="familiarity_way" class="form-select text-capitalize mb-md-0 mb-2xx" multiple>
                                 <option value="">انتخاب نشده</option>
                                 <option>dawdawd</option>

@@ -1,5 +1,5 @@
 @extends('dashboard.layout.master')
-@section('title', 'توزیع دانش آموزان به صورت رندوم')
+@section('title', 'توزیع دانشجوان به صورت رندوم')
 @section('content')
     <div class="row">
         <form class="card" action="{{route('admin.random.students.distribution.distribute')}}" method="post">
@@ -22,7 +22,7 @@
                     </div>
                     <div class="col-md-12 text-center">
                         <button class="btn btn-danger mt-5">
-                            توزیع دانش آموزان این پشتیبان
+                            توزیع دانشجوان این پشتیبان
                         </button>
                     </div>
                 </div>

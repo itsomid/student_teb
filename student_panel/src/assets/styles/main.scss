@@ -1,0 +1,91 @@
+/* 
+  * @created        17/06/2023 - 14:24
+  * @author         Nariman Palangi
+  * @user           ragnarok  
+  * @organization   
+  * @project        boilerplate-vue-3
+  * @file name      main.scss
+  * @file dir       src/assets/styles
+  */
+
+@use 'vuetify' with (
+  $color-pack: false,
+  $body-font-family: IRANSansX,
+);
+
+@import "components/variables";
+@import "components/banner";
+@import "components/icons";
+@import "components/navigationDrawer";
+@import "components/card";
+@import "components/actionBottun";
+@import "components/bottomMenu";
+@import "components/chat";
+@import "components/course";
+@import "components/filepond";
+@import "components/typography";
+@import "components/list";
+
+* {
+  letter-spacing: 0!important;
+}
+.cursor-pointer {
+  cursor: pointer;
+}
+
+*::-webkit-scrollbar {
+  width: 6px!important;;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent!important;;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: #b0b0b0!important;
+  border-radius: 7px!important;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: black!important;;
+}
+
+*::-webkit-scrollbar {
+  width: 6px!important;;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent!important;;
+}
+
+
+.invert {
+  filter: invert(0.85);
+  -webkit-filter: invert(0.85);
+  -moz-filter: invert(0.85);
+  -o-filter: invert(0.85);
+  -ms-filter: invert(0.85);
+}
+//$border-radius-root: 8px;
+
+.module-border-wrap {
+
+  background: linear-gradient(to right, #4795FF, #F26F7B);
+  padding: 1px;
+  box-shadow: 0px var(--0-5, 2px) var(--2, 8px) 0px rgba(72, 150, 255, 0.25);
+}
+.module {
+  padding: 0.6rem;
+}
+
+.font-color {
+  background: linear-gradient(87deg, #4795FF 5.18%, #F26F7B 95.1%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.span-fixer {
+  line-height: 25px;
+}
+
+

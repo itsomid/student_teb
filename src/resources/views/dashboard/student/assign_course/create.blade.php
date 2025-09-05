@@ -1,5 +1,5 @@
 @extends('dashboard.layout.master')
-@section('title', 'افزودن دانش آموز جدید')
+@section('title', 'افزودن دانشجو جدید')
 @section('content')
     <div class="card">
         <div class="card-body">

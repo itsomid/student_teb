@@ -24,7 +24,7 @@ class User extends Authenticatable
     use HasFactory, Filterable, HasApiTokens;
 
     const NEW_TOKEN_INTERVAL = 20;
-    const MAX_TOKENS = 2;
+    const MAX_TOKENS = 20;
 
     public $filterNameSpace = 'App\Filters\StudentFilter';
 

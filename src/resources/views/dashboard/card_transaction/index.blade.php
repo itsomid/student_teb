@@ -1,5 +1,5 @@
 @extends('dashboard.layout.master')
-@section('title', 'تراکنش های کارت به کارت دانش آموز')
+@section('title', 'تراکنش های کارت به کارت دانشجو')
 @section('content')
     <div class="row">
         <div class="card mb-3">
@@ -68,7 +68,7 @@
                         <thead>
                         <tr>
                             <th>شناسه یکتا</th>
-                            <th>دانش آموز</th>
+                            <th>دانشجو</th>
                             <th>کد رهگیری</th>
                             <th>مبلغ</th>
                             <th>وضعیت</th>

@@ -7,7 +7,7 @@
 
     <div class="card my-4 my-3">
         <div class="card-body">
-            <h5 class="card-title"> افزودن کد تخفیف برای یک دانش آموز</h5>
+            <h5 class="card-title"> افزودن کد تخفیف برای یک دانشجو</h5>
             <div class="row">
                 <div class="col-md-6 mt-3" id="coupon-code-field-group">
                     <div class="form-group ">

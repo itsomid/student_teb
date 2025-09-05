@@ -1,5 +1,5 @@
 @extends('dashboard.layout.master')
-@section('title', 'تاریخچه ی پشتیبان های دانش آموز')
+@section('title', 'تاریخچه ی پشتیبان های دانشجو')
 @section('content')
     <div class="row">
         <div class="card mb-5">
@@ -7,7 +7,7 @@
                 <div class="row justify-content-center card-body ">
                     <div class="col-md-12">
                         <div class="form- mb-5">
-                            <label for="username">نام دانش آموز:</label>
+                            <label for="username">نام دانشجو:</label>
                             <input class="form-control" id="username" type="text" name="student_name" value="{{request()->input('fields')['user.name'] ?? ''}}">
                         </div>
                     </div>
@@ -36,14 +36,14 @@
         <div class="card">
             <div class="card-body">
                 <div class="card-title header-elements">
-                    <h5 class="m-0 me-2">تاریخچه ی تغییر پشتیبان دانش آموزان </h5>
+                    <h5 class="m-0 me-2">تاریخچه ی تغییر پشتیبان دانشجوان </h5>
                 </div>
                 <div class="table-responsive text-nowrap">
                     <table class="table">
                         <thead>
                         <tr>
                             <th>ID</th>
-                            <th>نام دانش آموز</th>
+                            <th>نام دانشجو</th>
                             <th>پشتیبان</th>
                             <th>نقش پشتیبان</th>
                             <th>زمان آغاز</th>

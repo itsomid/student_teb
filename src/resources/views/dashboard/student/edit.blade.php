@@ -1,9 +1,9 @@
 @extends('dashboard.layout.master')
-@section('title', 'ویرایش دانش آموز ')
+@section('title', 'ویرایش دانشجو ')
 @section('content')
     <div class="card">
         <div class="card-body">
-            <h5 class="card-title">فرم ویرایش دانش آموز</h5>
+            <h5 class="card-title">فرم ویرایش دانشجو</h5>
             <form action="{{route('admin.student.update',['student' => $student->id])}}" method="post">
                 @csrf
                 @method('PATCH')
@@ -134,7 +134,7 @@
 
                     <div class="col-md-6 mb-1">
                         <div class="form-group mt-3">
-                            <label class="form-label" for="familiarity_way">نحوه آشنایی با درسینو :</label>
+                            <label class="form-label" for="familiarity_way">نحوه آشنایی با شفا‌آموز :</label>
                             <select id="familiarity_way" class="form-select text-capitalize mb-md-0 "
                                     name="familiarity_way">
                                 @foreach(\App\Data\FamiliarityWays::get() as $key=>$way)
@@ -188,7 +188,7 @@
 
 
                     <hr class="mt-3">
-                    <h5 class="card-title">دسترسی دانش آموز</h5>
+                    <h5 class="card-title">دسترسی دانشجو</h5>
                     <div class="col-md-6 mb-1">
                         <div class="form-group mt-3">
                             <label class="form-label" for="block">وضعیت دسترسی به پنل:</label>

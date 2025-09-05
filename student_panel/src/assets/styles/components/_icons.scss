@@ -1,0 +1,405 @@
+/**
+* 4. icons
+* ----------------------------------------------------------------------- *
+*/
+
+@font-face {
+  font-family: '#{$icomoon-font-family}';
+  src:  url('#{$icomoon-font-path}/#{$icomoon-font-family}.eot?93703f');
+  src:  url('#{$icomoon-font-path}/#{$icomoon-font-family}.eot?93703f#iefix') format('embedded-opentype'),
+  url('#{$icomoon-font-path}/#{$icomoon-font-family}.ttf?93703f') format('truetype'),
+  url('#{$icomoon-font-path}/#{$icomoon-font-family}.woff?93703f') format('woff'),
+  url('#{$icomoon-font-path}/#{$icomoon-font-family}.svg?93703f##{$icomoon-font-family}') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+
+[class^="icon-"], [class*=" icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: '#{$icomoon-font-family}' !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-CL_magnifying-glass {
+  &:before {
+    content: $icon-CL_magnifying-glass;
+  }
+}
+.icon-CL_bars {
+  &:before {
+    content: $icon-CL_bars;
+  }
+}
+.icon-CL_message-light {
+  &:before {
+    content: $icon-CL_message-light;
+  }
+}
+.icon-CL_download {
+  &:before {
+    content: $icon-CL_download;
+  }
+}
+.icon-CL_file-lines {
+  &:before {
+    content: $icon-CL_file-lines;
+  }
+}
+.icon-CL_paperclip {
+  &:before {
+    content: $icon-CL_paperclip;
+  }
+}
+.icon-CL_circle-xmark {
+  &:before {
+    content: $icon-CL_circle-xmark;
+  }
+}
+.icon-CL_angle-right {
+  &:before {
+    content: $icon-CL_angle-right;
+  }
+}
+.icon-CL_tag {
+  &:before {
+    content: $icon-CL_tag;
+  }
+}
+.icon-CL_copy {
+  &:before {
+    content: $icon-CL_copy;
+  }
+}
+.icon-CL_share-nodes {
+  &:before {
+    content: $icon-CL_share-nodes;
+  }
+}
+.icon-CL_circle-check {
+  &:before {
+    content: $icon-CL_circle-check;
+  }
+}
+.icon-CL_arrow-left {
+  &:before {
+    content: $icon-CL_arrow-left;
+  }
+}
+.icon-CL_circle-play {
+  &:before {
+    content: $icon-CL_circle-play;
+  }
+}
+.icon-CL_basket-shopping {
+  &:before {
+    content: $icon-CL_basket-shopping;
+  }
+}
+.icon-CL_check {
+  &:before {
+    content: $icon-CL_check;
+  }
+}
+.icon-CL_plus {
+  &:before {
+    content: $icon-CL_plus;
+  }
+}
+.icon-CL_trash {
+  &:before {
+    content: $icon-CL_trash;
+  }
+}
+.icon-CL_eye {
+  &:before {
+    content: $icon-CL_eye;
+  }
+}
+.icon-CL_angle-down {
+  &:before {
+    content: $icon-CL_angle-down;
+  }
+}
+.icon-CL_lock-keyhole-open {
+  &:before {
+    content: $icon-CL_lock-keyhole-open;
+  }
+}
+.icon-CL_wallet {
+  &:before {
+    content: $icon-CL_wallet;
+  }
+}
+.icon-CL_cart-shopping {
+  &:before {
+    content: $icon-CL_cart-shopping;
+  }
+}
+.icon-CL_message {
+  &:before {
+    content: $icon-CL_message;
+  }
+}
+.icon-CL_sun-bright {
+  &:before {
+    content: $icon-CL_sun-bright;
+  }
+}
+.icon-CL_moon {
+  &:before {
+    content: $icon-CL_moon;
+  }
+}
+.icon-CL_heart {
+  &:before {
+    content: $icon-CL_heart;
+  }
+}
+.icon-CL_angle-up {
+  &:before {
+    content: $icon-CL_angle-up;
+  }
+}
+.icon-CL_phone {
+  &:before {
+    content: $icon-CL_phone;
+  }
+}
+.icon-CL_xmark {
+  &:before {
+    content: $icon-CL_xmark;
+  }
+}
+.icon-CL_message-lines {
+  &:before {
+    content: $icon-CL_message-lines;
+  }
+}
+.icon-CL_paper-plane {
+  &:before {
+    content: $icon-CL_paper-plane;
+  }
+}
+.icon-CL_face-frown {
+  &:before {
+    content: $icon-CL_face-frown;
+  }
+}
+.icon-CL_angle-left {
+  &:before {
+    content: $icon-CL_angle-left;
+  }
+}
+.icon-CL_clock {
+  &:before {
+    content: $icon-CL_clock;
+  }
+}
+.icon-CL_exclamation {
+  &:before {
+    content: $icon-CL_exclamation;
+  }
+}
+.icon-CL_Moshavere {
+  &:before {
+    content: $icon-CL_Moshavere;
+  }
+}
+.icon-CL_Maali {
+  &:before {
+    content: $icon-CL_Maali;
+  }
+}
+.icon-CL_Miz {
+  &:before {
+    content: $icon-CL_Miz;
+  }
+}
+.icon-CL_Takjalase {
+  &:before {
+    content: $icon-CL_Takjalase;
+  }
+}
+.icon-CL_Exam {
+  &:before {
+    content: $icon-CL_Exam;
+  }
+}
+.icon-CL_Homework {
+  &:before {
+    content: $icon-CL_Homework;
+  }
+}
+.icon-CL_Addtocard {
+  &:before {
+    content: $icon-CL_Addtocard;
+  }
+}
+.icon-CL_Add {
+  &:before {
+    content: $icon-CL_Add;
+  }
+}
+.icon-CL_Tick {
+  &:before {
+    content: $icon-CL_Tick;
+  }
+}
+.icon-CL_Close {
+  &:before {
+    content: $icon-CL_Close;
+  }
+}
+.icon-CL_Plus {
+  &:before {
+    content: $icon-CL_Plus;
+  }
+}
+.icon-CL_Price {
+  &:before {
+    content: $icon-CL_Price;
+  }
+}
+.icon-CL_Calendar {
+  &:before {
+    content: $icon-CL_Calendar;
+  }
+}
+.icon-CL_Downarrow {
+  &:before {
+    content: $icon-CL_Downarrow;
+  }
+}
+.icon-CL_Logout {
+  &:before {
+    content: $icon-CL_Logout;
+  }
+}
+.icon-CL_Unlock {
+  &:before {
+    content: $icon-CL_Unlock;
+  }
+}
+.icon-CL_Lock {
+  &:before {
+    content: $icon-CL_Lock;
+  }
+}
+.icon-CL_Time {
+  &:before {
+    content: $icon-CL_Time;
+  }
+}
+.icon-CL_Nezam {
+  &:before {
+    content: $icon-CL_Nezam;
+  }
+}
+.icon-CL_Search {
+  &:before {
+    content: $icon-CL_Search;
+  }
+}
+.icon-CL_Play {
+  &:before {
+    content: $icon-CL_Play;
+  }
+}
+.icon-CL_Tak_Jalase {
+  &:before {
+    content: $icon-CL_Tak_Jalase;
+  }
+}
+.icon-CL_Visible {
+  &:before {
+    content: $icon-CL_Visible;
+  }
+}
+.icon-CL_Mail {
+  &:before {
+    content: $icon-CL_Mail;
+  }
+}
+.icon-CL_Profile {
+  &:before {
+    content: $icon-CL_Profile;
+  }
+}
+.icon-CL_Wallet {
+  &:before {
+    content: $icon-CL_Wallet;
+  }
+}
+.icon-CL_Livestream {
+  &:before {
+    content: $icon-CL_Livestream;
+  }
+}
+.icon-CL_Mycourses2 {
+  &:before {
+    content: $icon-CL_Mycourses2;
+  }
+}
+.icon-CL_Exam2 {
+  &:before {
+    content: $icon-CL_Exam2;
+  }
+}
+.icon-CL_Mycourses {
+  &:before {
+    content: $icon-CL_Mycourses;
+  }
+}
+.icon-CL_Store {
+  &:before {
+    content: $icon-CL_Store;
+  }
+}
+.icon-CL_Download {
+  &:before {
+    content: $icon-CL_Download;
+  }
+}
+.icon-CL_bookmark {
+  &:before {
+    content: $icon-CL_bookmark;
+  }
+}
+.icon-CL_calendar1 {
+  &:before {
+    content: $icon-CL_calendar1;
+  }
+}
+.icon-CL_close-outline {
+  &:before {
+    content: $icon-CL_close-outline;
+  }
+}
+.icon-CL_close-solid {
+  &:before {
+    content: $icon-CL_close-solid;
+  }
+}
+.icon-CL_notification {
+  &:before {
+    content: $icon-CL_notification;
+  }
+}
+.icon-CL_calendar {
+  &:before {
+    content: $icon-CL_calendar;
+  }
+}
+
+

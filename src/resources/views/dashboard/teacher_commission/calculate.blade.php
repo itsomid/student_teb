@@ -1,5 +1,5 @@
 @extends('dashboard.layout.master')
-@section('title', 'افزودن دانش آموز جدید')
+@section('title', 'افزودن دانشجو جدید')
 @section('content')
     <div class="content" style="min-height: auto;">
 
@@ -136,7 +136,7 @@
                         <th>درصد استاد</th>
                         <th>درصد بلاک مالیات</th>
                         <th>نام محصول</th>
-                        <th>تعداد دانش آموزان</th>
+                        <th>تعداد دانشجوان</th>
                         <th>مجموع خرید</th>
                         <th>مجموع نقدینگی</th>
                     </tr>

@@ -85,7 +85,7 @@ class DistributeStudents
             foreach ($admins as $support) {
                 $allocation[$support->id] = [
                     'support' => $support->id,
-                    //فرمول اصلی که به پشتیبان چند دانش آموز داده شود
+                    //فرمول اصلی که به پشتیبان چند دانشجو داده شود
                     'students_count' => intval($support->allocationRate->last()->allocation_rate / $totalRate * count($students)),
                 ];
             }

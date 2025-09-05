@@ -20,7 +20,7 @@ $(document).ready(function () {
             cache: true
         },
         minimumInputLength: 2,
-        placeholder: 'جهت انتخاب دانش آموز کلیک کنید',
+        placeholder: 'جهت انتخاب دانشجو کلیک کنید',
         allowClear: true,
         language: {
             inputTooShort: function (args) {

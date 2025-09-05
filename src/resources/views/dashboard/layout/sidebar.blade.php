@@ -39,7 +39,7 @@
             <li class="menu-item @if(request()->is('admin/students*')) active @endif">
                 <a href="{{route('admin.student.index')}}" class="menu-link">
                     <i class="menu-icon fa-light fa-screen-users fa-sm"></i>
-                    <div data-i18n="Page 1">مدیریت دانش آموزان</div>
+                    <div data-i18n="Page 1">مدیریت دانشجوان</div>
                 </a>
             </li>
         @endcan
@@ -233,7 +233,7 @@
             <li class="menu-item @if(request()->is('admin/cc_servers*')) active @endif">
                 <a href="{{route('admin.cc_servers.index')}}" class="menu-link">
                     <i class="menu-icon fa-light fa-user-group fa-sm"></i>
-                    <div data-i18n="Page 1">سرورهای درسینو کانکت</div>
+                    <div data-i18n="Page 1">سرورهای برگزاری کلاس</div>
                 </a>
             </li>
         @endcan
