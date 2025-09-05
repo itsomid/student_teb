@@ -23,7 +23,7 @@ services:
             - 8000:80
 
         volumes:
-            - ./src:/var/www/html:delegated,ro
+            - ./src:/var/www/html:delegated
             - .env:/var/www/html/.env
             - ./src/storage:/var/www/html/storage
         depends_on:
@@ -48,7 +48,7 @@ services:
         #        ports:
         #            - ":9000"
         volumes:
-            - ./src:/var/www/html:delegated,ro
+            - ./src:/var/www/html:delegated
             - .env:/var/www/html/.env
             - ./src/storage:/var/www/html/storage
         networks:
@@ -92,7 +92,7 @@ services:
                 - USER=${USER:-laraveluser}
         container_name: laravel-cron
         volumes:
-            - ./src:/var/www/html:delegated,ro
+            - ./src:/var/www/html:delegated
             - .env:/var/www/html/.env:ro
         depends_on:
             - mysql
@@ -111,7 +111,7 @@ services:
                 - USER=${USER:-laraveluser}
         container_name: laravel-queue
         volumes:
-            - ./src:/var/www/html:delegated,ro
+            - ./src:/var/www/html:delegated
             - .env:/var/www/html/.env:ro
         depends_on:
             - mysql
