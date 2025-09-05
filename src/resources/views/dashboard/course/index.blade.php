@@ -40,6 +40,7 @@
                     <table class="table">
                         <thead>
                         <tr>
+                            <th>تصویر</th>
                             <th>نام</th>
                             <th>ساعات برگزاری</th>
                             <th>تاریخ شروع</th>
@@ -51,6 +52,9 @@
                         <tbody class="table-border-bottom-0">
                         @foreach($courses as $course)
                             <tr>
+                                <td>
+                                    <img src="{{$course->image()}}" alt="Course Image" width="60" height="60" style="object-fit:cover; border-radius:8px;">
+                                </td>
                                 <td>
                                     <p title="{{$course->about_course}}">
                                         {{$course->product->name}}
@@ -70,25 +74,30 @@
                                     <a href="" class="btn btn-sm btn-primary">آمار کلاس</a>
                                     <a href="" class="btn btn-sm btn-warning">آمار آزمون</a>
                                 </td>
-                                <td >
+                                <td>
                                     <div class="dropdown">
                                         <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
                                             <i class="fa-solid fa-screen-users"></i>
                                         </button>
-                                        <div class="dropdown-menu custom">
-                                            <a class="dropdown-item btn btn-sm btn-danger  text-white"  href="">
+                                        <div class="dropdown-menu">
+                                            <a class="dropdown-item text-danger" href="">
+                                                <i class="fa-solid fa-calendar-days mx-1"></i>
                                                 کلاس های آینده در یک نگاه
                                             </a>
-                                            <a class="dropdown-item btn btn-sm btn-success"  href="{{route('admin.classes.index', ['course' => $course->id])}}">
+                                            <a class="dropdown-item text-success" href="{{route('admin.classes.index', ['course' => $course->id])}}">
+                                                <i class="fa-solid fa-chalkboard-user mx-1"></i>
                                                 مدیریت جلسات کلاس
                                             </a>
-                                            <a class="dropdown-item btn btn-sm btn-success"  href="">
+                                            <a class="dropdown-item text-success" href="">
+                                                <i class="fa-solid fa-file-lines mx-1"></i>
                                                 مدیریت آزمون ها
                                             </a>
-                                            <a class="dropdown-item btn btn-sm btn-primary"  href="">
+                                            <a class="dropdown-item text-primary" href="">
+                                                <i class="fa-solid fa-chart-bar mx-1"></i>
                                                 آمار حضور غیاب
                                             </a>
-                                            <a class="dropdown-item btn btn-sm btn-primary"  href="">
+                                            <a class="dropdown-item text-primary" href="">
+                                                <i class="fa-solid fa-star mx-1"></i>
                                                 نمرات کوییز در یک نگاه
                                             </a>
                                         </div>

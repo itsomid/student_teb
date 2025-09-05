@@ -74,7 +74,7 @@ class PermissionList {
             ['classes.create'                       ,'افزودن کلاس جدید'],
             ['classes.edit'                         ,'ویرایش کلاس'],
 
-            ['cc_servers'                           ,'سرورهای کلاسینو کانکت'],
+            ['cc_servers'                           ,'سرورهای درسینو کانکت'],
             ['commission'                           ,'پورسانت تیم فروش'],
             ['sales_report_by_category'             ,'آمار فروش بر اساس دسته بندی'],
 

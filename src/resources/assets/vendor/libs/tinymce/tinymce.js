@@ -12,6 +12,6 @@ import 'tinymce/plugins/table/plugin.min.js';
 
 try {
     window.Tinymce = Tinymce;
-} catch (e) {}
+} catch (e) { }
 
 export { Tinymce };

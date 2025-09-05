@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Builder;
+use Morilog\Jalali\Jalalian;
 
 
 class Product extends Model
@@ -250,5 +251,18 @@ class Product extends Model
     static public function formatPrice(int $price): string
     {
         return number_format($price, 0) . " ریال";
+    }
+
+    /**
+     * Get the final installment date in Jalali format
+     *
+     * @return string|null
+     */
+    public function final_installment_date(): ?string
+    {
+        if (!$this->final_installment_date) {
+            return null;
+        }
+        return Jalalian::forge($this->final_installment_date)->format('%Y/%m/%d H:i:s');
     }
 }

@@ -1,9 +1,8 @@
-<textarea id="{{ $selector }}" name="{{ $selector }}" value="{{$value}}"></textarea>
+<textarea id="{{ $selector }}" name="{{ $selector }}" value="{{ $value }}"></textarea>
 
 
 @push('scripts')
     <script type="module">
-
         Tinymce.init({
             selector: '#{{ $selector }}',
             license_key: 'gpl',
@@ -14,4 +13,3 @@
         });
     </script>
 @endpush
-

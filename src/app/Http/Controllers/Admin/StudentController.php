@@ -66,10 +66,10 @@ class StudentController extends Controller
             'block'                 => $request->block,
             'gender'                => $request->gender,
         ]);
-
+        if($request->block){
         $student->block->block = $request->block;
         $student->block->save();
-
+        }
         Toast::message('افزودن دانش آموز با موفقیت انجام شد')->success()->notify();
         return redirect()->route('admin.student.index');
     }
@@ -98,10 +98,11 @@ class StudentController extends Controller
             'description'             => $request->description,
             'gender'                  => $request->gender,
         ]);
-
+        if($request->block){
         $student->block->block = $request->block;
         $student->block->block_reason_description = $request->block_reason_description;
         $student->block->save();
+        }
 
         Toast::message('ویرایش دانش آموز با موفقیت انجام شد')->success()->notify();
         return redirect()->route('admin.student.index');

@@ -123,7 +123,7 @@
                     <div class="col-md-6 mb-1">
                         <div class="form-group mt-3">
 
-                            <label class="form-label" for="familiarity_way">نحوه آشنایی با کلاسینو :</label>
+                            <label class="form-label" for="familiarity_way">نحوه آشنایی با درسینو :</label>
                             <select id="familiarity_way" class="form-select text-capitalize mb-md-0 ">
                                 @foreach(\App\Data\FamiliarityWays::get() as $key=>$way)
                                     <option value="{{$key}}" {{old('familiarity_way') == $key ? 'selected' : null}}>

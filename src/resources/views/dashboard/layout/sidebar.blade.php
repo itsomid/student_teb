@@ -1,7 +1,7 @@
 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
     <div class="app-brand demo">
         <a href="" class="app-brand-link layout-menu-toggle" draggable="false">
-            <img  src="{{asset('assets/images/logos/logo_sec_horiz.png')}}" class="img-fluid w-50" >
+            <img  src="{{asset('assets/images/logos/logo.png')}}" class="img-fluid w-25" >
         </a>
         <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto">
             {{--            <i class="ti menu-toggle-icon d-none d-xl-block ti-sm align-middle"></i>--}}
@@ -233,7 +233,7 @@
             <li class="menu-item @if(request()->is('admin/cc_servers*')) active @endif">
                 <a href="{{route('admin.cc_servers.index')}}" class="menu-link">
                     <i class="menu-icon fa-light fa-user-group fa-sm"></i>
-                    <div data-i18n="Page 1">سرورهای کلاسینو کانکت</div>
+                    <div data-i18n="Page 1">سرورهای درسینو کانکت</div>
                 </a>
             </li>
         @endcan

@@ -4,9 +4,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
-    <meta name="author" content="آموزشگاه آنلاین کلاسینو">
+    <meta name="author" content="آموزشگاه آنلاین درسینو">
     <meta name="generator" content="">
-    <title>کلاسینو | پنل کاربری</title>
+    <title>درسینو | پنل کاربری</title>
     @vite(['resources/assets/scss/student/app.scss'])
 </head>
 <body>
@@ -15,7 +15,7 @@
         <div id="navbar" class="d-flex justify-content-between container">
             <i class="fa-solid fa-bars"></i>
             <a id="header-navbar-logo" href="/">
-                <img alt="کلاسینو" class="img-fluid" width="120">
+                <img alt="درسینو" class="img-fluid" width="120">
             </a>
             <div class="left-section d-flex align-items-center">
 

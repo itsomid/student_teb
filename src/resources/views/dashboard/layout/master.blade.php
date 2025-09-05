@@ -2,7 +2,7 @@
 @php
     $configData['styleOpt'] = session('theme', 'light');
     $configData['contentLayout'] = 'compact'  ;//'wide','compact'
-    $container = ($configData['contentLayout'] === 'compact') ? 'container-xxl' : 'container-fluid';
+    $container = ($configData['contentLayout'] === 'compact') ? 'container-fluid' : 'container-fluid';
     $contentLayout = (isset($container) ? (($container === 'container-xxl') ? "layout-compact" : "layout-wide") : "");
     $navbarType  = "layout-navbar-fixed" // "layout-navbar-fixed" : "";
 @endphp
@@ -19,7 +19,7 @@
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/>
     <title>
-        پنل کلاسینو -
+        پنل درسینو -
         @yield('title')
     </title>
 

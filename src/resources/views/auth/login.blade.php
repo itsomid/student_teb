@@ -11,7 +11,7 @@
             </div>
             <!-- /Logo -->
             <h4>
-                ورود به قسمت ادمین کلاسینو
+                ورود به قسمت ادمین درسینو
             </h4>
             @if (session('status'))
                 <div class="alert alert-danger text-12" role="alert">

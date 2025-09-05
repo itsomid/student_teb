@@ -41,7 +41,7 @@
                                 </button>
                             @endif
                         </form>
-                        <p class="text-10 text-center mb-0">ورود شما به معنای پذیرش شرایط کلاسینو وقوانین حریم‌خصوصی است</p>
+                        <p class="text-10 text-center mb-0">ورود شما به معنای پذیرش شرایط درسینو وقوانین حریم‌خصوصی است</p>
 {{--                        @if(! $errors->has('403'))--}}
 {{--                            <div class="text-center mt-3">--}}
 {{--                                <a href="{{route('login.with_password')}}" class="change-login-method">ورود با رمز عبور</a>--}}

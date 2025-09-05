@@ -52,6 +52,7 @@
                                 role="teacher"
                                 placeholder-name="لطفا استاد را انتخاب کنید."
                             >
+                            >
                             </x-admin-selection-component>
 
                             @error('user_id')<small class="text-danger">{{$message}}</small>@enderror

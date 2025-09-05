@@ -67,7 +67,7 @@ class Course extends Model
 
     public function image(): string
     {
-        return asset('images/Courses').'/'.$this->product->img_filename;
+        return asset('storage/products/' . $this->product->img_filename);
     }
 
     public function subscription_start_at(): string
