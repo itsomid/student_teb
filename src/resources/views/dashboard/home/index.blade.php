@@ -567,8 +567,3 @@
         });
     </script>
 @endpush
-
-{{-- حذف سکشن تکراری vendor-script که در انتهای فایل بود --}}
-@section('vendor-script')
-    @vite(['resources/assets/vendor/css/apex-charts.css', 'resources/assets/vendor/js/apexcharts.js'])
-@endsection
