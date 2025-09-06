@@ -1,4 +1,4 @@
-FROM dockerhub.classino.com/nginx:stable-alpine
+FROM nginx:stable-alpine
 
 # environment arguments
 ARG UID

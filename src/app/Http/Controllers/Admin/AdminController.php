@@ -46,11 +46,11 @@ class AdminController extends Controller
             'supervisor_id' => 'nullable',
             'mobile' => ['required', 'regex:/(09)[0-9]{9}/', 'digits:11', 'unique:admins,mobile'],
             'password' => ['required', 'min:6'],
-            'roles' => ['required','array'],
+            'roles' => ['required', 'array'],
             'email' => ['nullable', 'email', 'unique:admins,email'],
-            'instagram'=>'nullable',
-            'telegram'=>'nullable',
-            'whatsapp'=>'nullable'
+            'instagram' => 'nullable',
+            'telegram' => 'nullable',
+            'whatsapp' => 'nullable'
         ]);
 
         $user = Admin::create([
@@ -58,9 +58,9 @@ class AdminController extends Controller
             'last_name' => $data['last_name'],
             'mobile' => $data['mobile'],
             'email' => $data['email'],
-            'supervisor_id'=>$data['supervisor_id'],
+            'supervisor_id' => $data['supervisor_id'],
             'password' => Hash::make($data['password']),
-            'gender'=>$request->gender,
+            'gender' => $request->gender,
             'instagram' => $data['instagram'],
             'telegram' => $data['telegram'],
             'whatsapp' => $data['whatsapp'],
@@ -77,7 +77,7 @@ class AdminController extends Controller
 
         $supervisors = Admin::adminAndSupervisor()->get();
         $teachers = '';
-        if ($admin->hasRole('teacher_assistant')){
+        if ($admin->hasRole('teacher_assistant')) {
             $teachers = Admin::role('teacher')->get();
         }
 
@@ -94,7 +94,7 @@ class AdminController extends Controller
     {
         $this->validate($request, [
             'first_name' => ['required', 'max:30'],
-            'last_name' => [ 'max:30'],
+            'last_name' => ['max:30'],
             'supervisor_id' => ['required', 'numeric'],
             'teacher_id' => ['numeric'],
             'email' => ['nullable', 'email', Rule::unique('admins', 'email')->ignore($admin->id)],
@@ -106,7 +106,7 @@ class AdminController extends Controller
             'last_name' => $request->last_name,
             'supervisor_id' => $request->supervisor_id,
             'teacher_id' => $request->teacher_id,
-            'gender'=> $request->gender,
+            'gender' => $request->gender,
             'email' => $request->email,
             'instagram' => $request->instagram,
             'telegram' => $request->telegram,
@@ -126,7 +126,7 @@ class AdminController extends Controller
     public function passwordUpdate(Request $request, Admin $admin)
     {
         $this->validate($request, [
-            'password' => ['required','confirmed','min:6']
+            'password' => ['required', 'confirmed', 'min:6']
         ]);
 
         $admin->password = Hash::make($request->password);
@@ -134,6 +134,7 @@ class AdminController extends Controller
         Toast::message('رمز عبور با موفقیت ویرایش شد.')->success()->notify();
         return redirect()->route('admin.admin.index');
     }
+    
     public function toggle(Admin $admin)
     {
         $admin->is_active = !$admin->is_active;
@@ -145,7 +146,7 @@ class AdminController extends Controller
     public function login_as_admin($admin)
     {
         $user = auth()->user();
-        $admin= Admin::query()->findOrFail($admin);
+        $admin = Admin::query()->findOrFail($admin);
 
         session()->put('super_admin', $user->id);
 
@@ -160,7 +161,7 @@ class AdminController extends Controller
             $admin_id = session()->get('super_admin');
             session()->forget('super_admin');
 
-           auth()->login(Admin::find($admin_id));
+            auth()->login(Admin::find($admin_id));
             return redirect("/admin");
         } else {
             return abort(404);

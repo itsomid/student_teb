@@ -1,6 +1,6 @@
 #FROM composer:latest as build
 
-FROM dockerhub.classino.com/php:8.3-fpm-alpine
+FROM php:8.3-fpm-alpine
 
 # environment arguments
 ARG UID

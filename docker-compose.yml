@@ -61,7 +61,7 @@ services:
             - laravel
 
     mysql:
-        image: dockerhub.classino.com/mysql:latest
+        image: mysql:latest
         container_name: mysql
         restart: unless-stopped
         tty: true
@@ -203,7 +203,7 @@ services:
             - laravel
 
     npm:
-        image: dockerhub.classino.com/node:alpine
+        image: node:alpine
         container_name: npm
         volumes:
             - ./src:/var/www/html
