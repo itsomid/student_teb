@@ -307,7 +307,7 @@
     </div>
 @endsection
 @section('vendor-script')
-    @vite(['resources/assets/vendor/css/apex-charts.css', 'resources/assets/vendor/js/apexcharts.js'])
+    @vite(['resources/assets/vendor/libs/apex-charts/apex-charts.scss', 'resources/assets/vendor/js/apexcharts.js'])
 @endsection
 
 @push('scripts')
